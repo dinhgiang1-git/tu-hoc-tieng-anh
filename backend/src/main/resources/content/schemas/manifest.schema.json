@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://englishlearning.vn/schemas/manifest.schema.json",
+  "title": "CurriculumManifestSchema",
+  "description": "JSON Schema xác thực manifest của gói giáo trình tự học tiếng Anh",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "curriculumKey",
+    "version",
+    "title",
+    "description",
+    "targetLocale",
+    "authors",
+    "provenance",
+    "phases"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "curriculumKey": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10
+    },
+    "targetLocale": {
+      "type": "string",
+      "enum": ["en-GB", "en-US"]
+    },
+    "authors": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["sourceName", "sourceLicense", "authorCompiled", "verificationStatus"],
+      "properties": {
+        "sourceName": { "type": "string" },
+        "sourceUrl": { "type": "string" },
+        "sourceLicense": { "type": "string" },
+        "authorCompiled": { "type": "boolean" },
+        "verificationStatus": {
+          "type": "string",
+          "enum": ["UNVERIFIED_DRAFT", "LINK_CHECKED", "PEDAGOGICALLY_REVIEWED"]
+        }
+      }
+    },
+    "phases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["key", "title", "orderIndex", "weeks"],
+        "properties": {
+          "key": { "type": "string", "pattern": "^[a-z0-9.-]+$" },
+          "title": { "type": "string" },
+          "orderIndex": { "type": "integer", "minimum": 1 },
+          "weeks": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["key", "path"],
+              "properties": {
+                "key": { "type": "string", "pattern": "^[a-z0-9.-]+$" },
+                "path": { "type": "string", "pattern": "^[a-zA-Z0-9/_.-]+\\.json$" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
