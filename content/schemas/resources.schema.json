@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://englishlearning.vn/schemas/resources.schema.json",
+  "title": "CurriculumResourcesSchema",
+  "description": "JSON Schema xác thực danh mục tài nguyên liên kết ngoài",
+  "type": "object",
+  "required": ["curriculumKey", "version", "resources"],
+  "properties": {
+    "curriculumKey": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "title",
+          "url",
+          "mediaType",
+          "targetLocale",
+          "attribution",
+          "license",
+          "verificationStatus"
+        ],
+        "properties": {
+          "key": { "type": "string", "pattern": "^[a-z0-9.-]+$" },
+          "title": { "type": "string", "minLength": 3 },
+          "url": { "type": "string", "format": "uri" },
+          "mediaType": {
+            "type": "string",
+            "enum": ["VIDEO", "AUDIO", "ARTICLE", "PDF"]
+          },
+          "targetLocale": { "type": "string", "enum": ["en-GB", "en-US"] },
+          "attribution": { "type": "string" },
+          "license": { "type": "string" },
+          "verificationStatus": {
+            "type": "string",
+            "enum": ["UNVERIFIED_DRAFT", "LINK_CHECKED", "PEDAGOGICALLY_REVIEWED"]
+          }
+        }
+      }
+    }
+  }
+}

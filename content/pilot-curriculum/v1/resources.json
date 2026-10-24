@@ -1,0 +1,56 @@
+{
+  "curriculumKey": "pilot-curriculum",
+  "version": "1.0.0",
+  "resources": [
+    {
+      "key": "res.bbc.vowels-i-long-short",
+      "title": "BBC Learning English: The Sounds of English - /iː/ and /ɪ/",
+      "url": "https://www.youtube.com/watch?v=3g5Y4fP3E7w",
+      "mediaType": "VIDEO",
+      "targetLocale": "en-GB",
+      "attribution": "BBC Learning English (Kênh YouTube công khai)",
+      "license": "Public Educational Link (Tham khảo bên ngoài)",
+      "verificationStatus": "UNVERIFIED_DRAFT"
+    },
+    {
+      "key": "res.bbc.consonants-p-b",
+      "title": "BBC Learning English: The Sounds of English - /p/ and /b/",
+      "url": "https://www.youtube.com/watch?v=k1tU_F8bW6U",
+      "mediaType": "VIDEO",
+      "targetLocale": "en-GB",
+      "attribution": "BBC Learning English (Kênh YouTube công khai)",
+      "license": "Public Educational Link (Tham khảo bên ngoài)",
+      "verificationStatus": "UNVERIFIED_DRAFT"
+    },
+    {
+      "key": "res.oxford.phonetics-guide",
+      "title": "Oxford Learner's Dictionaries: Pronunciation Guide and Phonetic Symbols",
+      "url": "https://www.oxfordlearnersdictionaries.com/about/english-language/pronunciation-guide",
+      "mediaType": "ARTICLE",
+      "targetLocale": "en-GB",
+      "attribution": "Oxford University Press (Website tham khảo công khai)",
+      "license": "Public Educational Link (Tham khảo bên ngoài)",
+      "verificationStatus": "UNVERIFIED_DRAFT"
+    },
+    {
+      "key": "res.britishcouncil.word-stress",
+      "title": "British Council: How to Master Word Stress in English",
+      "url": "https://learnenglish.britishcouncil.org/grammar/b1-b2-grammar/word-stress",
+      "mediaType": "ARTICLE",
+      "targetLocale": "en-GB",
+      "attribution": "British Council LearnEnglish (Website tham khảo công khai)",
+      "license": "Public Educational Link (Tham khảo bên ngoài)",
+      "verificationStatus": "UNVERIFIED_DRAFT"
+    },
+    {
+      "key": "res.bbc.schwa-vowel",
+      "title": "BBC Learning English: The Sounds of English - The Schwa /ə/",
+      "url": "https://www.youtube.com/watch?v=f252G6d3Xb4",
+      "mediaType": "VIDEO",
+      "targetLocale": "en-GB",
+      "attribution": "BBC Learning English (Kênh YouTube công khai)",
+      "license": "Public Educational Link (Tham khảo bên ngoài)",
+      "verificationStatus": "UNVERIFIED_DRAFT"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "curriculumKey": "pilot-curriculum",
+  "version": "1.0.0",
+  "title": "Lộ trình Thử nghiệm: Phát âm Anh-Anh Cốt lõi (Pilot)",
+  "description": "Giáo trình thử nghiệm 1 tuần hoàn chỉnh biên soạn theo chuẩn phát âm Anh-Anh (Modern RP / General British) nhằm kiểm chứng kỹ thuật: vòng học hàng ngày, lưu tiến độ, lịch học linh hoạt và giao diện tập trung.",
+  "targetLocale": "en-GB",
+  "authors": [
+    "Antigravity Coding Assistant",
+    "Project Coordinator"
+  ],
+  "provenance": {
+    "sourceName": "Khung mục tiêu Lộ trình tiếng Anh tham khảo",
+    "sourceUrl": "https://docs.google.com/spreadsheets/d/1Yim4AAiIfHMmNTrPsTXQtGfAkhsMcsBc_6-eURCgFEU/edit#gid=0",
+    "sourceLicense": "Educational Fair Use / Pedagogical Framework Reference",
+    "authorCompiled": true,
+    "verificationStatus": "UNVERIFIED_DRAFT"
+  },
+  "phases": [
+    {
+      "key": "pilot.phase01",
+      "title": "Giai đoạn 1: Chuẩn hóa Ngữ âm IPA Anh-Anh Cốt lõi",
+      "orderIndex": 1,
+      "weeks": [
+        {
+          "key": "pilot.w01",
+          "path": "weeks/week-01.json"
+        }
+      ]
+    }
+  ]
+}

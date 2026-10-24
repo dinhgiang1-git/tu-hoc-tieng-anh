@@ -1,0 +1,53 @@
+# Environment files
+.env
+*.env
+!.env.example
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE & Editor files
+.idea/
+*.iml
+.vscode/
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# Node / Frontend
+node_modules/
+dist/
+.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs & Caches
+*.log
+logs/
+.system_generated/
+scratch/
+.cache/
+*.pyc
+__pycache__/
+
+# Local AI coordinator state, prompts and logs
+tools/agent-desk/.data/
+
+# Legacy copy; maintained separately in D:/WorkSpace/agent-desk
+/tools/agent-desk/

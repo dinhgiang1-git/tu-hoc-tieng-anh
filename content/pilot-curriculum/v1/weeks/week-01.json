@@ -1,0 +1,263 @@
+{
+  "key": "pilot.w01",
+  "title": "Tuần 1: Chuẩn hóa Ngữ âm IPA Anh-Anh cốt lõi",
+  "weekNumber": 1,
+  "orderIndex": 1,
+  "description": "Nắm vững khẩu hình cặp nguyên âm /iː/ và /ɪ/, cặp phụ âm /p/ và /b/, âm lướt Schwa /ə/, và quy tắc trọng âm từ 2 âm tiết chuẩn Received Pronunciation (RP).",
+  "lessons": [
+    {
+      "key": "pilot.w01.l01",
+      "title": "Buổi 1: Cặp nguyên âm đơn /iː/ và /ɪ/",
+      "orderIndex": 1,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w01-l01-vowels.md",
+      "activities": [
+        {
+          "key": "pilot.w01.l01.a01",
+          "title": "Lý thuyết khẩu hình: Phân biệt âm /iː/ dài và /ɪ/ ngắn",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ giải thích về vị trí lưỡi, độ căng cơ môi và độ mở của miệng khi tạo 2 âm.",
+          "skillTags": ["pronunciation", "ipa", "vowels"]
+        },
+        {
+          "key": "pilot.w01.l01.a02",
+          "title": "Xem video minh họa từ BBC Learning English",
+          "type": "EXTERNAL_RESOURCE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "resourceKeys": ["res.bbc.vowels-i-long-short"],
+          "instructions": "Xem cách chuyên gia BBC phát âm và quan sát khẩu hình miệng thực tế.",
+          "skillTags": ["pronunciation", "listening"]
+        },
+        {
+          "key": "pilot.w01.l01.a03",
+          "title": "Thực hành phát âm 10 cặp từ tối thiểu (Minimal Pairs)",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Đọc to từng cặp từ: sheep/ship, feel/fill, beat/bit, seat/sit, sleep/slip. Nhập ghi chú về cặp từ bạn thấy khó phân biệt nhất.",
+          "skillTags": ["pronunciation", "speaking"]
+        },
+        {
+          "key": "pilot.w01.l01.a04",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn vừa nhận ra về sự khác biệt giữa hai âm này.",
+          "skillTags": ["reflection"]
+        }
+      ]
+    },
+    {
+      "key": "pilot.w01.l02",
+      "title": "Buổi 2: Cặp phụ âm /p/ bật hơi và /b/ hữu thanh",
+      "orderIndex": 2,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w01-l02-consonants.md",
+      "activities": [
+        {
+          "key": "pilot.w01.l02.a01",
+          "title": "Lý thuyết cơ chế bật hơi (Aspiration) của âm /p/",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Tìm hiểu vì sao âm /p/ tiếng Anh khác hoàn toàn chữ 'p' tiếng Việt nhờ luồng hơi bật mạnh.",
+          "skillTags": ["pronunciation", "ipa", "consonants"]
+        },
+        {
+          "key": "pilot.w01.l02.a02",
+          "title": "Xem video hướng dẫn phát âm /p/ và /b/",
+          "type": "EXTERNAL_RESOURCE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "resourceKeys": ["res.bbc.consonants-p-b"],
+          "instructions": "Quan sát kỹ sự khép môi và giải phóng luồng hơi.",
+          "skillTags": ["pronunciation", "listening"]
+        },
+        {
+          "key": "pilot.w01.l02.a03",
+          "title": "Thực hành bài tập tờ giấy thử nghiệm",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Cầm một mảnh giấy mỏng trước miệng 5cm. Khi đọc 'pen', 'paper', 'post', tờ giấy phải bay mạnh. Khi đọc 'bin', 'book', 'baby', tờ giấy hầu như đứng yên. Ghi lại kết quả thử nghiệm.",
+          "skillTags": ["pronunciation", "speaking"]
+        },
+        {
+          "key": "pilot.w01.l02.a04",
+          "title": "Phản tư cảm giác bật hơi",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Bạn đã cảm thấy luồng hơi bật ra rõ rệt ở môi chưa? Có bị mỏi cơ môi không?",
+          "skillTags": ["reflection"]
+        }
+      ]
+    },
+    {
+      "key": "pilot.w01.l03",
+      "title": "Buổi 3: Quy tắc Trọng âm từ 2 âm tiết",
+      "orderIndex": 3,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w01-l03-word-stress.md",
+      "activities": [
+        {
+          "key": "pilot.w01.l03.a01",
+          "title": "Quy tắc cốt lõi: Danh từ/Tính từ nhấn âm 1, Động từ nhấn âm 2",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Học quy tắc áp dụng cho hơn 80% từ vựng 2 âm tiết trong tiếng Anh.",
+          "skillTags": ["pronunciation", "word-stress"]
+        },
+        {
+          "key": "pilot.w01.l03.a02",
+          "title": "Đọc tài liệu chuyên sâu của British Council",
+          "type": "EXTERNAL_RESOURCE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "resourceKeys": ["res.britishcouncil.word-stress"],
+          "instructions": "Đọc phần ví dụ về sự chuyển dịch trọng âm khi đổi từ loại (record danh từ vs record động từ).",
+          "skillTags": ["reading", "word-stress"]
+        },
+        {
+          "key": "pilot.w01.l03.a03",
+          "title": "Thực hành gõ trọng âm cho 8 từ mẫu",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Xác định trọng âm cho các từ: table, export (v), export (n), present (n), present (v), decide, happy, relax. Nhập kết quả vào ô trả lời.",
+          "skillTags": ["practice", "word-stress"]
+        },
+        {
+          "key": "pilot.w01.l03.a04",
+          "title": "Phản tư về thói quen nhấn trọng âm",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Từ nào trước đây bạn thường đọc ngang bằng (không có trọng âm) giống tiếng Việt?",
+          "skillTags": ["reflection"]
+        }
+      ]
+    },
+    {
+      "key": "pilot.w01.l04",
+      "title": "Buổi 4: Âm lướt Schwa /ə/ - Âm phổ biến nhất tiếng Anh",
+      "orderIndex": 4,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w01-l04-schwa.md",
+      "activities": [
+        {
+          "key": "pilot.w01.l04.a01",
+          "title": "Bản chất âm Schwa trong các âm tiết không nhấn",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Hiểu vì sao âm Schwa giúp câu nói tiếng Anh có nhịp điệu và tự nhiên.",
+          "skillTags": ["pronunciation", "ipa", "schwa"]
+        },
+        {
+          "key": "pilot.w01.l04.a02",
+          "title": "Video BBC: Nhận diện và phát âm Schwa",
+          "type": "EXTERNAL_RESOURCE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "resourceKeys": ["res.bbc.schwa-vowel"],
+          "instructions": "Lắng nghe cách người bản xứ thả lỏng toàn bộ cơ miệng khi phát ra âm này.",
+          "skillTags": ["pronunciation", "listening"]
+        },
+        {
+          "key": "pilot.w01.l04.a03",
+          "title": "Thực hành tìm vị trí âm Schwa trong từ vựng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Chỉ ra âm tiết chứa âm Schwa trong: banana /bəˈnɑː.nə/, computer /kəmˈpjuː.tə/, teacher /ˈtiː.tʃə/. Nhập câu trả lời.",
+          "skillTags": ["practice", "ipa"]
+        },
+        {
+          "key": "pilot.w01.l04.a04",
+          "title": "Phản tư âm Schwa",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Việc thả lỏng miệng có giúp bạn phát âm bớt mệt hơn không?",
+          "skillTags": ["reflection"]
+        }
+      ]
+    },
+    {
+      "key": "pilot.w01.l05",
+      "title": "Buổi 5: Đánh giá thực hành & Tổng hợp tuần 1",
+      "orderIndex": 5,
+      "estimatedMinutes": 30,
+      "required": true,
+      "contentFile": "lessons/w01-l05-week1-review.md",
+      "activities": [
+        {
+          "key": "pilot.w01.l05.a01",
+          "title": "Bảng tổng hợp 4 âm và 2 quy tắc cốt lõi",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Ôn lại nhanh hệ thống kiến thức đã học trong tuần.",
+          "skillTags": ["review"]
+        },
+        {
+          "key": "pilot.w01.l05.a02",
+          "title": "Đọc to đoạn văn tổng hợp 50 từ (Chuẩn Anh-Anh)",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Đọc đoạn văn mẫu kết hợp cả 4 âm và trọng âm từ. Bạn có thể tự ghi âm trên điện thoại/máy tính để nghe lại.",
+          "skillTags": ["speaking", "pronunciation"]
+        },
+        {
+          "key": "pilot.w01.l05.a03",
+          "title": "Checklist tự đánh giá tuần 1",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Tự đánh giá mức độ tự tin (Thang điểm 1-5) đối với: /iː/ vs /ɪ/, /p/ vs /b/, âm Schwa và Trọng âm từ.",
+          "skillTags": ["assessment", "reflection"]
+        }
+      ]
+    },
+    {
+      "key": "pilot.w01.l06",
+      "title": "Buổi 6: Góc Tự học: Hiện tượng Non-Rhoticity trong tiếng Anh-Anh",
+      "orderIndex": 6,
+      "estimatedMinutes": 15,
+      "required": false,
+      "contentFile": "lessons/w01-l06-optional-rhoticity.md",
+      "activities": [
+        {
+          "key": "pilot.w01.l06.a01",
+          "title": "Khám phá vì sao người Anh không đọc âm 'r' ở cuối từ",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Tìm hiểu hiện tượng Non-Rhotic accent: 'car' đọc là /kɑː/, 'water' đọc là /ˈwɔː.tə/.",
+          "skillTags": ["pronunciation", "culture"]
+        },
+        {
+          "key": "pilot.w01.l06.a02",
+          "title": "Tra cứu cách đọc từ điển Oxford cho 3 từ: car, bird, mother",
+          "type": "EXTERNAL_RESOURCE",
+          "required": false,
+          "completionPolicy": "MANUAL_CHECK",
+          "resourceKeys": ["res.oxford.phonetics-guide"],
+          "instructions": "Bấm nghe loa biểu tượng cờ Vương quốc Anh (British flag) để cảm nhận âm không có âm 'r' uốn lưỡi.",
+          "skillTags": ["listening", "ipa"]
+        }
+      ]
+    }
+  ]
+}

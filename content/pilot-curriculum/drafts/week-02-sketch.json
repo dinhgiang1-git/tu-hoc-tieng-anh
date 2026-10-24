@@ -1,0 +1,195 @@
+{
+  "key": "pilot.w02.draft",
+  "title": "Bản phác thảo Tuần 2: Ngữ pháp Cơ bản Hiện tại đơn & Shadowing Hội thoại ngắn",
+  "weekNumber": 2,
+  "orderIndex": 2,
+  "description": "Bản phác thảo thiết kế sư phạm nhằm kiểm tra tính linh hoạt của cấu trúc dữ liệu với các dạng bài ngữ pháp và shadowing. Chưa nằm trong manifest phát hành v1.0.0.",
+  "status": "DRAFT_SKETCH",
+  "lessons": [
+    {
+      "key": "pilot.w02.l01",
+      "title": "Buổi 1: Thì Hiện tại đơn (Present Simple) - Bản chất và Cách dùng",
+      "orderIndex": 1,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "drafts/lessons/w02-l01-present-simple.md",
+      "activities": [
+        {
+          "key": "pilot.w02.l01.a01",
+          "title": "Lý thuyết: Khi nào dùng thì Hiện tại đơn?",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Phân biệt thói quen lặp đi lặp lại (habits) và chân lý hiển nhiên (facts).",
+          "skillTags": ["grammar"]
+        },
+        {
+          "key": "pilot.w02.l01.a02",
+          "title": "Thực hành viết 3 câu về thói quen buổi sáng của bạn",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Sử dụng các trạng từ tần suất: always, usually, often, never. Nhập 3 câu vào ô bên dưới.",
+          "skillTags": ["grammar", "writing"]
+        },
+        {
+          "key": "pilot.w02.l01.a03",
+          "title": "Phản tư về thì Hiện tại đơn",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Bạn có hay quên chia động từ với chủ ngữ ngôi thứ 3 số ít (He/She/It) không?",
+          "skillTags": ["reflection"]
+        }
+      ]
+    },
+    {
+      "key": "pilot.w02.l02",
+      "title": "Buổi 2: Quy tắc phát âm đuôi -s/-es (/s/, /z/, /ɪz/)",
+      "orderIndex": 2,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "drafts/lessons/w02-l02-ending-s.md",
+      "activities": [
+        {
+          "key": "pilot.w02.l02.a01",
+          "title": "Lý thuyết 3 cách phát âm đuôi -s/-es",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Nguyên tắc âm vô thanh đi với /s/, âm hữu thanh đi với /z/, và âm gió đi với /ɪz/.",
+          "skillTags": ["pronunciation", "grammar"]
+        },
+        {
+          "key": "pilot.w02.l02.a02",
+          "title": "Phân loại 9 động từ sau theo 3 nhóm phát âm",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Phân loại: books, plays, watches, stops, lives, teaches, eats, reads, washes. Nhập đáp án phân nhóm.",
+          "skillTags": ["pronunciation", "practice"]
+        },
+        {
+          "key": "pilot.w02.l02.a03",
+          "title": "Phản tư về âm gió /s/ và /z/",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại cặp từ bạn thấy dễ nhầm lẫn nhất khi thêm đuôi -s.",
+          "skillTags": ["reflection"]
+        }
+      ]
+    },
+    {
+      "key": "pilot.w02.l03",
+      "title": "Buổi 3: Luyện nghe hội thoại giới thiệu bản thân",
+      "orderIndex": 3,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "drafts/lessons/w02-l03-listening-intro.md",
+      "activities": [
+        {
+          "key": "pilot.w02.l03.a01",
+          "title": "Nghe đoạn hội thoại mẫu chuẩn Anh-Anh",
+          "type": "EXTERNAL_RESOURCE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Lắng nghe lần 1 để nắm ý chính, lần 2 để bắt các từ khóa về nghề nghiệp và nơi chốn.",
+          "skillTags": ["listening"]
+        },
+        {
+          "key": "pilot.w02.l03.a02",
+          "title": "Trả lời 3 câu hỏi nghe hiểu",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Ghi lại nghề nghiệp, thành phố đang sống và sở thích của nhân vật trong bài nghe.",
+          "skillTags": ["listening", "comprehension"]
+        },
+        {
+          "key": "pilot.w02.l03.a03",
+          "title": "Phản tư tốc độ nghe",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Bạn nghe được bao nhiêu % nội dung ở lần nghe đầu tiên mà không nhìn transcript?",
+          "skillTags": ["reflection"]
+        }
+      ]
+    },
+    {
+      "key": "pilot.w02.l04",
+      "title": "Buổi 4: Kỹ thuật Shadowing phản xạ câu ngắn",
+      "orderIndex": 4,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "drafts/lessons/w02-l04-shadowing.md",
+      "activities": [
+        {
+          "key": "pilot.w02.l04.a01",
+          "title": "Hướng dẫn kỹ thuật Shadowing (Nói đuổi)",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc nguyên tắc nói đuổi ngay sau người bản xứ 0.5 giây để rèn ngữ điệu và nối âm tự nhiên.",
+          "skillTags": ["speaking", "shadowing"]
+        },
+        {
+          "key": "pilot.w02.l04.a02",
+          "title": "Thực hành Shadowing 5 câu thoại đời thường",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Lặp lại 5 lần từng câu thoại. Ghi lại cảm nhận về độ bắt kịp tốc độ.",
+          "skillTags": ["speaking", "shadowing"]
+        },
+        {
+          "key": "pilot.w02.l04.a03",
+          "title": "Phản tư cảm giác Shadowing",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Kỹ thuật này có làm bạn thấy khó khăn trong việc vừa nghe vừa nói đồng thời không?",
+          "skillTags": ["reflection"]
+        }
+      ]
+    },
+    {
+      "key": "pilot.w02.l05",
+      "title": "Buổi 5: Đánh giá & Tổng hợp tuần 2",
+      "orderIndex": 5,
+      "estimatedMinutes": 30,
+      "required": true,
+      "contentFile": "drafts/lessons/w02-l05-week2-review.md",
+      "activities": [
+        {
+          "key": "pilot.w02.l05.a01",
+          "title": "Ôn tập tổng kết ngữ pháp và ngữ âm tuần 2",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Rà soát lại toàn bộ kiến thức thì Hiện tại đơn và đuôi -s/-es.",
+          "skillTags": ["review"]
+        },
+        {
+          "key": "pilot.w02.l05.a02",
+          "title": "Viết đoạn văn ngắn 50 từ giới thiệu thói quen tuần của bạn",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Áp dụng thì Hiện tại đơn, có ít nhất 3 động từ có đuôi -s/-es. Nhập đoạn văn.",
+          "skillTags": ["writing", "grammar"]
+        },
+        {
+          "key": "pilot.w02.l05.a03",
+          "title": "Checklist tự đánh giá tuần 2",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Đánh giá mức độ làm chủ thì Hiện tại đơn và kỹ năng Shadowing.",
+          "skillTags": ["assessment", "reflection"]
+        }
+      ]
+    }
+  ]
+}

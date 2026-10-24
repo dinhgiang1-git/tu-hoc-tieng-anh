@@ -1,0 +1,1711 @@
+openapi: 3.1.0
+info:
+  title: English Self-Study WebApp API
+  version: 1.0.0
+  description: >
+    API contract chuẩn hóa cho ứng dụng webapp tự học tiếng Anh theo lộ trình.
+    Tuân thủ BE_CODE_CONVENTION.md, FE_CODE_CONVENTION.md, và các sửa đổi G0-FIX.
+    Bảo mật bằng HttpOnly Session Cookie và X-CSRF-TOKEN.
+servers:
+  - url: /api/v1
+    description: API v1 Endpoint
+
+security:
+  - CookieAuth: []
+
+paths:
+  # ===========================================================================
+  # 1. AUTHENTICATION & SESSION
+  # ===========================================================================
+  /auth/csrf:
+    get:
+      summary: Lấy CSRF token cho phiên làm việc
+      description: Trả về CSRF token trong bộ nhớ. Cache-Control no-store.
+      operationId: getCsrfToken
+      tags: [Authentication]
+      security: []
+      responses:
+        '200':
+          description: CSRF token hiện hành
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                example: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CsrfTokenResponse'
+
+  /auth/login:
+    post:
+      summary: Đăng nhập người học
+      description: Xác thực người dùng và thiết lập HttpOnly session cookie. Yêu cầu CSRF token.
+      operationId: login
+      tags: [Authentication]
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/CsrfHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Đăng nhập thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+
+  /auth/logout:
+    post:
+      summary: Đăng xuất
+      description: Hủy session cookie và làm mất hiệu lực phiên làm việc.
+      operationId: logout
+      tags: [Authentication]
+      parameters:
+        - $ref: '#/components/parameters/CsrfHeader'
+      responses:
+        '204':
+          description: Đăng xuất thành công, không có body
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+
+  /me:
+    get:
+      summary: Lấy thông tin tài khoản hiện hành
+      operationId: getCurrentUser
+      tags: [Identity]
+      responses:
+        '200':
+          description: Thông tin người dùng hiện tại
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+
+  /me/preferences:
+    get:
+      summary: Lấy tùy chọn cá nhân của người học
+      operationId: getPreferences
+      tags: [Identity]
+      responses:
+        '200':
+          description: Tùy chọn học tập hiện hành
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearnerPreferencesResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+    patch:
+      summary: Cập nhật tùy chọn cá nhân
+      operationId: updatePreferences
+      tags: [Identity]
+      parameters:
+        - $ref: '#/components/parameters/CsrfHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePreferencesRequest'
+      responses:
+        '200':
+          description: Tùy chọn đã được cập nhật
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearnerPreferencesResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+
+  # ===========================================================================
+  # 2. CURRICULUM & CATALOG
+  # ===========================================================================
+  /curricula:
+    get:
+      summary: Lấy danh sách lộ trình học tập
+      operationId: listCurricula
+      tags: [Curriculum]
+      security: []
+      responses:
+        '200':
+          description: Danh sách lộ trình công khai có phiên bản Published
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CurriculumSummaryResponse'
+
+  /curricula/{slug}:
+    get:
+      summary: Lấy chi tiết lộ trình theo slug
+      operationId: getCurriculumBySlug
+      tags: [Curriculum]
+      security: []
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+            example: pilot-curriculum
+      responses:
+        '200':
+          description: Chi tiết lộ trình kèm phiên bản xuất bản hiện hành
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurriculumDetailResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
+  /revisions/{revisionId}/outline:
+    get:
+      summary: Lấy cấu trúc mục lục nhẹ (Outline) của phiên bản lộ trình
+      operationId: getRevisionOutline
+      tags: [Curriculum]
+      security: []
+      parameters:
+        - name: revisionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Mục lục các giai đoạn, tuần và buổi học (không tải Markdown)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RevisionOutlineResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
+  # ===========================================================================
+  # 3. ENROLLMENT & LEARNING PROGRESS
+  # ===========================================================================
+  /enrollments:
+    post:
+      summary: Đăng ký một lộ trình học tập
+      description: Tạo mới enrollment với lịch học ban đầu. Bắt buộc Idempotency-Key.
+      operationId: createEnrollment
+      tags: [Enrollment]
+      parameters:
+        - $ref: '#/components/parameters/CsrfHeader'
+        - $ref: '#/components/parameters/IdempotencyKeyHeaderRequired'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEnrollmentRequest'
+      responses:
+        '201':
+          description: Đăng ký thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+        '409':
+          $ref: '#/components/responses/ConflictProblem'
+
+  /enrollments/{enrollmentId}:
+    get:
+      summary: Lấy chi tiết thông tin và phiên bản hiện hành của enrollment
+      description: Cung cấp enrollmentVersion và cấu hình lịch học sau khi reload trang.
+      operationId: getEnrollmentDetail
+      tags: [Enrollment]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Chi tiết enrollment và version đồng bộ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentDetailResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
+  /me/enrollments:
+    get:
+      summary: Danh sách lộ trình người dùng đã đăng ký
+      operationId: getMyEnrollments
+      tags: [Enrollment]
+      responses:
+        '200':
+          description: Danh sách enrollment của người dùng hiện hành kèm version
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EnrollmentSummaryResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+
+  /me/today:
+    get:
+      summary: Lấy thông tin học tập của trang Hôm nay
+      description: >
+        Trả về trạng thái Hôm nay và hành động chính dựa trên thứ tự ưu tiên.
+        Biểu diễn đầy đủ các trạng thái: NO_ENROLLMENT, PAUSED, IN_PROGRESS, DUE_TODAY, REST_DAY, OVERDUE, CURRICULUM_COMPLETED.
+        Luôn trả kèm enrollmentVersion để phục vụ đồng bộ sau reload.
+      operationId: getTodayDashboard
+      tags: [Learning]
+      parameters:
+        - name: enrollmentId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+          description: Nếu không cung cấp, lấy enrollment đang tập trung.
+      responses:
+        '200':
+          description: Dữ liệu trang Hôm nay theo trạng thái hiện hành
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodayResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+
+  /enrollments/{enrollmentId}/lessons/{lessonId}:
+    get:
+      summary: Lấy chi tiết không gian học của một buổi học
+      description: >
+        Trả về nội dung Markdown, danh sách nhiệm vụ, trạng thái học của từng nhiệm vụ,
+        câu trả lời đã lưu, và enrollmentVersion hiện hành để client gửi mutation có optimistic locking.
+      operationId: getLessonWorkspace
+      tags: [Learning]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Chi tiết không gian buổi học
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonDetailResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
+  /enrollments/{enrollmentId}/activities/{activityId}/progress:
+    put:
+      summary: Cập nhật trạng thái hoàn thành nhiệm vụ thủ công (Complete / Undo)
+      description: >
+        Cập nhật tiến độ của READING, EXTERNAL_RESOURCE, PRACTICE.
+        Với REFLECTION, nếu chưa có nội dung trả lời sẽ bị từ chối 400 RESPONSE_REQUIRED.
+        Yêu cầu expectedVersion (enrollmentVersion).
+      operationId: updateActivityProgress
+      tags: [Learning]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: activityId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/CsrfHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProgressRequest'
+      responses:
+        '200':
+          description: Trạng thái tiến độ mới nhất sau khi cập nhật
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgressResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+        '409':
+          $ref: '#/components/responses/ConflictProblem'
+
+  /enrollments/{enrollmentId}/activities/{activityId}/response:
+    put:
+      summary: Lưu bản nháp câu trả lời thực hành hoặc phản tư
+      description: >
+        Lưu nháp text câu trả lời. KHÔNG tự động chuyển trạng thái hoàn thành activity.
+      operationId: saveActivityResponseDraft
+      tags: [Learning]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: activityId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/CsrfHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveResponseDraftRequest'
+      responses:
+        '200':
+          description: Bản nháp phản hồi đã được lưu
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
+  /enrollments/{enrollmentId}/activities/{activityId}/response/submit:
+    post:
+      summary: Nộp câu trả lời phản tư và xác nhận hoàn thành (Submit Response)
+      description: >
+        Yêu cầu responseText không rỗng và expectedVersion.
+        Lưu câu trả lời và chuyển trạng thái activity sang COMPLETED nguyên tử trong 1 transaction,
+        tăng enrollmentVersion và trả về ProgressResponse.
+      operationId: submitActivityResponse
+      tags: [Learning]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: activityId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/CsrfHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitResponseRequest'
+      responses:
+        '200':
+          description: Phản hồi đã nộp thành công và activity đã hoàn thành
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgressResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+        '409':
+          $ref: '#/components/responses/ConflictProblem'
+
+  /enrollments/{enrollmentId}/summary:
+    get:
+      summary: Lấy tóm tắt tiến độ tổng thể của enrollment
+      description: Trả về số đếm nhiệm vụ, phần trăm tiến độ và enrollmentVersion hiện hành.
+      operationId: getEnrollmentSummary
+      tags: [Learning]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Thống kê số lượng nhiệm vụ và phần trăm tiến độ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgressSummaryResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
+  # ===========================================================================
+  # 4. NOTES (GHI CHÚ HỌC TẬP)
+  # ===========================================================================
+  /me/notes:
+    get:
+      summary: Lấy danh sách ghi chú cá nhân có phân trang
+      operationId: getMyNotes
+      tags: [Notes]
+      parameters:
+        - name: enrollmentId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: lessonId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        '200':
+          description: Danh sách ghi chú phân trang
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotePageResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+
+  /notes:
+    post:
+      summary: Tạo mới ghi chú
+      operationId: createNote
+      tags: [Notes]
+      parameters:
+        - $ref: '#/components/parameters/CsrfHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateNoteRequest'
+      responses:
+        '201':
+          description: Ghi chú đã tạo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NoteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+
+  /notes/{id}:
+    patch:
+      summary: Cập nhật ghi chú (hỗ trợ autosave và optimistic lock)
+      operationId: updateNote
+      tags: [Notes]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/CsrfHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateNoteRequest'
+      responses:
+        '200':
+          description: Ghi chú đã cập nhật
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NoteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+        '409':
+          $ref: '#/components/responses/ConflictProblem'
+    delete:
+      summary: Xóa ghi chú
+      operationId: deleteNote
+      tags: [Notes]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/CsrfHeader'
+      responses:
+        '204':
+          description: Đã xóa thành công
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
+  # ===========================================================================
+  # 5. SCHEDULING & RESCHEDULING
+  # ===========================================================================
+  /enrollments/{enrollmentId}/schedule:
+    get:
+      summary: Lấy danh sách lịch học của enrollment theo khoảng ngày
+      operationId: getSchedule
+      tags: [Scheduling]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+            example: '2026-10-26'
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+            example: '2026-11-30'
+      responses:
+        '200':
+          description: Danh sách lịch học các buổi
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LessonScheduleResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
+  /enrollments/{enrollmentId}/schedule/preview:
+    post:
+      summary: Xem trước kết quả đổi lịch học
+      description: Tính toán phân bổ ngày mới cho các bài chưa học, không lưu vào cơ sở dữ liệu.
+      operationId: previewReschedule
+      tags: [Scheduling]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/CsrfHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SchedulePreviewRequest'
+      responses:
+        '200':
+          description: Bản xem trước lịch mới kèm enrollmentVersion để commit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchedulePreviewResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
+  /enrollments/{enrollmentId}/schedule/commit:
+    post:
+      summary: Áp dụng lịch học mới
+      description: Lưu lịch học đã xem trước vào database. Yêu cầu expectedVersion và Idempotency-Key.
+      operationId: commitReschedule
+      tags: [Scheduling]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/CsrfHeader'
+        - $ref: '#/components/parameters/IdempotencyKeyHeaderRequired'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleCommitRequest'
+      responses:
+        '200':
+          description: Lịch học mới đã được áp dụng
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+        '409':
+          $ref: '#/components/responses/ConflictProblem'
+
+  /enrollments/{enrollmentId}/pause:
+    post:
+      summary: Tạm dừng lộ trình học (G4)
+      description: Đóng băng tiến độ, ngừng tạo cảnh báo quá hạn. Yêu cầu expectedVersion.
+      operationId: pauseEnrollment
+      tags: [EnrollmentLifecycle]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/CsrfHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LifecycleTransitionRequest'
+      responses:
+        '200':
+          description: Enrollment đã chuyển sang trạng thái PAUSED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+        '409':
+          $ref: '#/components/responses/ConflictProblem'
+
+  /enrollments/{enrollmentId}/resume:
+    post:
+      summary: Tiếp tục lộ trình học với lịch mới (G4)
+      description: Tiếp tục học và phân bổ lại lịch chưa học trong 1 transaction duy nhất.
+      operationId: resumeEnrollment
+      tags: [EnrollmentLifecycle]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/CsrfHeader'
+        - $ref: '#/components/parameters/IdempotencyKeyHeaderRequired'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleCommitRequest'
+      responses:
+        '200':
+          description: Enrollment đã tiếp tục và lịch mới đã được kích hoạt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+        '409':
+          $ref: '#/components/responses/ConflictProblem'
+
+  /enrollments/{enrollmentId}/abandon:
+    post:
+      summary: Chủ động kết thúc lần học dở để đăng ký lại từ đầu (G4)
+      description: Chuyển enrollment sang ABANDONED (read-only).
+      operationId: abandonEnrollment
+      tags: [EnrollmentLifecycle]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/CsrfHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LifecycleTransitionRequest'
+      responses:
+        '200':
+          description: Enrollment đã chuyển sang trạng thái ABANDONED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+        '409':
+          $ref: '#/components/responses/ConflictProblem'
+
+# =============================================================================
+# COMPONENTS (SCHEMAS, RESPONSES, PARAMETERS, SECURITY)
+# =============================================================================
+components:
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      in: cookie
+      name: SESSION
+      description: Spring Security HttpOnly session cookie
+
+  parameters:
+    CsrfHeader:
+      name: X-CSRF-TOKEN
+      in: header
+      required: true
+      schema:
+        type: string
+      description: CSRF token lấy từ endpoint GET /auth/csrf
+
+    IdempotencyKeyHeaderRequired:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Khóa chống lặp bắt buộc cho các thao tác ghi nhạy cảm (ADR-003)
+
+    IdempotencyKeyHeaderOptional:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema:
+        type: string
+        format: uuid
+      description: Khóa chống lặp tùy chọn
+
+  responses:
+    BadRequestProblem:
+      description: Yêu cầu không hợp lệ (400)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+
+    UnauthorizedProblem:
+      description: Yêu cầu xác thực phiên đăng nhập (401)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+
+    ForbiddenProblem:
+      description: Bị từ chối do thiếu quyền hoặc CSRF token không hợp lệ (403)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+
+    NotFoundProblem:
+      description: Tài nguyên không tồn tại hoặc không thuộc người học (404)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+
+    ConflictProblem:
+      description: Xung đột phiên lạc quan hoặc trạng thái nghiệp vụ (409)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+
+  schemas:
+    # --- Problem Details (RFC 7807) ---
+    ProblemDetail:
+      type: object
+      required: [type, title, status, detail, code, traceId, fieldErrors]
+      properties:
+        type:
+          type: string
+          example: about:blank
+        title:
+          type: string
+          example: Conflict
+        status:
+          type: integer
+          example: 409
+        detail:
+          type: string
+          example: Dữ liệu đã thay đổi từ một phiên khác. Vui lòng tải lại.
+        instance:
+          type: [string, "null"]
+          example: /api/v1/enrollments/8f9a2b/activities/c4d1/progress
+        code:
+          type: string
+          example: VERSION_CONFLICT
+        traceId:
+          type: string
+          example: 7c8e1a90f1b2
+        fieldErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldViolation'
+
+    FieldViolation:
+      type: object
+      required: [field, code, message]
+      properties:
+        field:
+          type: string
+          example: startDate
+        code:
+          type: string
+          example: INVALID_DATE
+        message:
+          type: string
+          example: Ngày bắt đầu không thể là ngày trong quá khứ.
+
+    # --- Pagination ---
+    NotePageResponse:
+      type: object
+      required: [items, page, size, totalItems, totalPages]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/NoteResponse'
+        page:
+          type: integer
+          example: 0
+        size:
+          type: integer
+          example: 20
+        totalItems:
+          type: integer
+          example: 5
+        totalPages:
+          type: integer
+          example: 1
+
+    # --- Auth & User ---
+    CsrfTokenResponse:
+      type: object
+      required: [headerName, token]
+      properties:
+        headerName:
+          type: string
+          example: X-CSRF-TOKEN
+        token:
+          type: string
+          example: f9d2a4e8-7c1b-4d3e-a8f2-5b9c0e1d3a7f
+
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          example: giangdinh
+        password:
+          type: string
+          format: password
+          example: Password123!
+
+    UserResponse:
+      type: object
+      required: [id, username, fullName, timeZone, role]
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+          example: giangdinh
+        fullName:
+          type: string
+          example: Giang Dinh
+        timeZone:
+          type: string
+          example: Asia/Ho_Chi_Minh
+        role:
+          type: string
+          enum: [LEARNER, ADMIN]
+
+    UpdatePreferencesRequest:
+      type: object
+      properties:
+        dailyTargetMinutes:
+          type: [integer, "null"]
+          minimum: 10
+          maximum: 180
+          example: 30
+        focusedEnrollmentId:
+          type: [string, "null"]
+          format: uuid
+
+    LearnerPreferencesResponse:
+      type: object
+      required: [dailyTargetMinutes]
+      properties:
+        dailyTargetMinutes:
+          type: integer
+          example: 30
+        focusedEnrollmentId:
+          type: [string, "null"]
+          format: uuid
+
+    # --- Curriculum Models ---
+    CurriculumSummaryResponse:
+      type: object
+      required: [id, slug, title, description, targetLocale, currentRevisionId, currentRevisionVersion]
+      properties:
+        id:
+          type: string
+          format: uuid
+        slug:
+          type: string
+          example: pilot-curriculum
+        title:
+          type: string
+          example: 'Lộ trình Thử nghiệm: Phát âm Anh-Anh'
+        description:
+          type: string
+        targetLocale:
+          type: string
+          example: en-GB
+        currentRevisionId:
+          type: string
+          format: uuid
+        currentRevisionVersion:
+          type: string
+          example: 1.0.0
+
+    CurriculumDetailResponse:
+      type: object
+      required: [id, slug, title, description, targetLocale, revision]
+      properties:
+        id:
+          type: string
+          format: uuid
+        slug:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        targetLocale:
+          type: string
+        revision:
+          $ref: '#/components/schemas/RevisionOutlineResponse'
+
+    RevisionOutlineResponse:
+      type: object
+      required: [id, version, status, phases]
+      properties:
+        id:
+          type: string
+          format: uuid
+        version:
+          type: string
+          example: 1.0.0
+        status:
+          $ref: '#/components/schemas/RevisionStatus'
+        phases:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhaseOutlineDto'
+
+    PhaseOutlineDto:
+      type: object
+      required: [id, key, title, orderIndex, weeks]
+      properties:
+        id:
+          type: string
+          format: uuid
+        key:
+          type: string
+          example: pilot.phase01
+        title:
+          type: string
+        orderIndex:
+          type: integer
+        weeks:
+          type: array
+          items:
+            $ref: '#/components/schemas/WeekOutlineDto'
+
+    WeekOutlineDto:
+      type: object
+      required: [id, key, title, weekNumber, orderIndex, lessons]
+      properties:
+        id:
+          type: string
+          format: uuid
+        key:
+          type: string
+          example: pilot.w01
+        title:
+          type: string
+        weekNumber:
+          type: integer
+        orderIndex:
+          type: integer
+        lessons:
+          type: array
+          items:
+            $ref: '#/components/schemas/LessonOutlineDto'
+
+    LessonOutlineDto:
+      type: object
+      required: [id, key, title, orderIndex, estimatedMinutes, required]
+      properties:
+        id:
+          type: string
+          format: uuid
+        key:
+          type: string
+          example: pilot.w01.l01
+        title:
+          type: string
+        orderIndex:
+          type: integer
+        estimatedMinutes:
+          type: integer
+          example: 25
+        required:
+          type: boolean
+
+    # --- Enrollment Models ---
+    CreateEnrollmentRequest:
+      type: object
+      required: [curriculumId, revisionId, startDate, studyDays, dailyTargetMinutes, timeZone]
+      properties:
+        curriculumId:
+          type: string
+          format: uuid
+        revisionId:
+          type: string
+          format: uuid
+        startDate:
+          type: string
+          format: date
+          example: '2026-10-26'
+        studyDays:
+          type: array
+          items:
+            $ref: '#/components/schemas/DayOfWeek'
+          minItems: 1
+          example: [MONDAY, WEDNESDAY, FRIDAY]
+        dailyTargetMinutes:
+          type: integer
+          minimum: 10
+          maximum: 180
+          example: 30
+        timeZone:
+          type: string
+          example: Asia/Ho_Chi_Minh
+
+    EnrollmentResponse:
+      type: object
+      required: [id, userId, curriculumId, revisionId, status, startDate, timeZone, studyDays, version]
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        curriculumId:
+          type: string
+          format: uuid
+        revisionId:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/EnrollmentStatus'
+        startDate:
+          type: string
+          format: date
+        timeZone:
+          type: string
+        studyDays:
+          type: array
+          items:
+            $ref: '#/components/schemas/DayOfWeek'
+        version:
+          type: integer
+          format: int64
+          example: 1
+
+    EnrollmentDetailResponse:
+      type: object
+      required: [id, userId, curriculumId, revisionId, status, startDate, timeZone, studyDays, dailyTargetMinutes, version]
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        curriculumId:
+          type: string
+          format: uuid
+        revisionId:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/EnrollmentStatus'
+        startDate:
+          type: string
+          format: date
+        timeZone:
+          type: string
+        studyDays:
+          type: array
+          items:
+            $ref: '#/components/schemas/DayOfWeek'
+        dailyTargetMinutes:
+          type: integer
+          example: 30
+        version:
+          type: integer
+          format: int64
+          example: 1
+
+    EnrollmentSummaryResponse:
+      type: object
+      required: [id, curriculumTitle, revisionVersion, status, completedRequiredActivities, totalRequiredActivities, progressPercent, version]
+      properties:
+        id:
+          type: string
+          format: uuid
+        curriculumTitle:
+          type: string
+        revisionVersion:
+          type: string
+        status:
+          $ref: '#/components/schemas/EnrollmentStatus'
+        completedRequiredActivities:
+          type: integer
+        totalRequiredActivities:
+          type: integer
+        progressPercent:
+          type: [number, "null"]
+          example: 20.0
+        version:
+          type: integer
+          format: int64
+          example: 1
+
+    # --- Learning Models ---
+    TodayResponse:
+      type: object
+      required: [state, todayDate, isRestDay, overdueLessons]
+      properties:
+        state:
+          type: string
+          enum: [NO_ENROLLMENT, PAUSED, IN_PROGRESS, DUE_TODAY, REST_DAY, OVERDUE, UPCOMING, CURRICULUM_COMPLETED]
+          example: IN_PROGRESS
+        enrollmentId:
+          type: [string, "null"]
+          format: uuid
+          example: 8f9a2b1c-3d4e-5f6a-7b8c-9d0e1f2a3b4c
+        revisionId:
+          type: [string, "null"]
+          format: uuid
+        curriculumTitle:
+          type: [string, "null"]
+          example: 'Lộ trình Thử nghiệm: Phát âm Anh-Anh'
+        todayDate:
+          type: string
+          format: date
+          example: '2026-10-28'
+        isRestDay:
+          type: boolean
+          example: false
+        enrollmentVersion:
+          type: [integer, "null"]
+          format: int64
+          example: 2
+        primaryAction:
+          anyOf:
+            - $ref: '#/components/schemas/PrimaryActionDto'
+            - type: "null"
+        overdueLessons:
+          type: array
+          items:
+            $ref: '#/components/schemas/OverdueLessonDto'
+        progress:
+          anyOf:
+            - $ref: '#/components/schemas/ProgressSummaryResponse'
+            - type: "null"
+
+    PrimaryActionDto:
+      type: object
+      required: [type, message]
+      properties:
+        type:
+          type: string
+          enum: [IN_PROGRESS, DUE_TODAY, OVERDUE, UPCOMING, CURRICULUM_COMPLETED]
+          example: IN_PROGRESS
+        message:
+          type: string
+          example: Bạn đang học dở Buổi 2. Hãy tiếp tục để hoàn thành mục tiêu!
+        lessonId:
+          type: [string, "null"]
+          format: uuid
+        lessonTitle:
+          type: [string, "null"]
+          example: 'Buổi 2: Cặp phụ âm /p/ và /b/'
+        estimatedMinutes:
+          type: [integer, "null"]
+          example: 20
+        completedActivities:
+          type: [integer, "null"]
+          example: 2
+        totalActivities:
+          type: [integer, "null"]
+          example: 4
+
+    OverdueLessonDto:
+      type: object
+      required: [lessonId, lessonTitle, plannedDate, overdueDays]
+      properties:
+        lessonId:
+          type: string
+          format: uuid
+        lessonTitle:
+          type: string
+        plannedDate:
+          type: string
+          format: date
+        overdueDays:
+          type: integer
+          example: 2
+
+    LessonDetailResponse:
+      type: object
+      required: [lessonId, title, estimatedMinutes, required, markdownContent, activities, enrollmentVersion]
+      properties:
+        lessonId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        estimatedMinutes:
+          type: integer
+        required:
+          type: boolean
+        markdownContent:
+          type: string
+        enrollmentVersion:
+          type: integer
+          format: int64
+          example: 1
+        activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityWorkspaceDto'
+
+    ActivityWorkspaceDto:
+      type: object
+      required: [activityId, title, type, required, completionPolicy, instructions, status]
+      properties:
+        activityId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        type:
+          $ref: '#/components/schemas/ActivityType'
+        required:
+          type: boolean
+        completionPolicy:
+          $ref: '#/components/schemas/CompletionPolicy'
+        instructions:
+          type: string
+        status:
+          $ref: '#/components/schemas/ActivityStatus'
+        userResponse:
+          type: [string, "null"]
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceDto'
+
+    ResourceDto:
+      type: object
+      required: [id, title, url, mediaType, attribution]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        url:
+          type: string
+          format: uri
+        mediaType:
+          type: string
+          enum: [VIDEO, AUDIO, ARTICLE, PDF]
+        attribution:
+          type: string
+
+    UpdateProgressRequest:
+      type: object
+      required: [status, expectedVersion]
+      properties:
+        status:
+          $ref: '#/components/schemas/ActivityStatus'
+        expectedVersion:
+          type: integer
+          format: int64
+          description: Version hiện tại của enrollment
+
+    ProgressResponse:
+      type: object
+      required: [activityId, status, enrollmentVersion, completedRequiredActivities, totalRequiredActivities, progressPercent]
+      properties:
+        activityId:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/ActivityStatus'
+        enrollmentVersion:
+          type: integer
+          format: int64
+        completedRequiredActivities:
+          type: integer
+        totalRequiredActivities:
+          type: integer
+        progressPercent:
+          type: [number, "null"]
+          example: 25.0
+
+    SaveResponseDraftRequest:
+      type: object
+      required: [responseText]
+      properties:
+        responseText:
+          type: string
+          maxLength: 5000
+
+    SubmitResponseRequest:
+      type: object
+      required: [responseText, expectedVersion]
+      properties:
+        responseText:
+          type: string
+          minLength: 1
+          maxLength: 5000
+        expectedVersion:
+          type: integer
+          format: int64
+
+    ActivityResponseDto:
+      type: object
+      required: [id, activityId, responseText, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        activityId:
+          type: string
+          format: uuid
+        responseText:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+
+    ProgressSummaryResponse:
+      type: object
+      required: [completedRequiredActivities, totalRequiredActivities, progressPercent, enrollmentVersion]
+      properties:
+        completedRequiredActivities:
+          type: integer
+          example: 2
+        totalRequiredActivities:
+          type: integer
+          example: 19
+        progressPercent:
+          type: [number, "null"]
+          example: 10.5
+        enrollmentVersion:
+          type: integer
+          format: int64
+          example: 2
+
+    # --- Note Models ---
+    CreateNoteRequest:
+      type: object
+      required: [content]
+      properties:
+        enrollmentId:
+          type: [string, "null"]
+          format: uuid
+        lessonId:
+          type: [string, "null"]
+          format: uuid
+        activityId:
+          type: [string, "null"]
+          format: uuid
+        content:
+          type: string
+          minLength: 1
+          maxLength: 10000
+
+    UpdateNoteRequest:
+      type: object
+      required: [content, expectedVersion]
+      properties:
+        content:
+          type: string
+          minLength: 1
+          maxLength: 10000
+        expectedVersion:
+          type: integer
+          format: int64
+
+    NoteResponse:
+      type: object
+      required: [id, content, version, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        lessonId:
+          type: [string, "null"]
+          format: uuid
+        activityId:
+          type: [string, "null"]
+          format: uuid
+        content:
+          type: string
+        version:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # --- Scheduling Models ---
+    LessonScheduleResponse:
+      type: object
+      required: [lessonId, lessonTitle, plannedDate, originalDate, isCompleted]
+      properties:
+        lessonId:
+          type: string
+          format: uuid
+        lessonTitle:
+          type: string
+        plannedDate:
+          type: string
+          format: date
+        originalDate:
+          type: string
+          format: date
+        isCompleted:
+          type: boolean
+
+    SchedulePreviewRequest:
+      type: object
+      required: [resumeDate, studyDays, dailyTargetMinutes]
+      properties:
+        resumeDate:
+          type: string
+          format: date
+        studyDays:
+          type: array
+          items:
+            $ref: '#/components/schemas/DayOfWeek'
+        dailyTargetMinutes:
+          type: integer
+          minimum: 10
+          maximum: 180
+
+    SchedulePreviewResponse:
+      type: object
+      required: [enrollmentVersion, proposedEndDate, modifiedSchedules]
+      properties:
+        enrollmentVersion:
+          type: integer
+          format: int64
+        proposedEndDate:
+          type: string
+          format: date
+        modifiedSchedules:
+          type: array
+          items:
+            $ref: '#/components/schemas/LessonScheduleResponse'
+
+    ScheduleCommitRequest:
+      type: object
+      required: [resumeDate, studyDays, dailyTargetMinutes, expectedVersion]
+      properties:
+        resumeDate:
+          type: string
+          format: date
+        studyDays:
+          type: array
+          items:
+            $ref: '#/components/schemas/DayOfWeek'
+        dailyTargetMinutes:
+          type: integer
+        expectedVersion:
+          type: integer
+          format: int64
+
+    LifecycleTransitionRequest:
+      type: object
+      required: [expectedVersion]
+      properties:
+        expectedVersion:
+          type: integer
+          format: int64
+
+    # --- Enums ---
+    ActivityStatus:
+      type: string
+      enum: [NOT_STARTED, IN_PROGRESS, COMPLETED]
+
+    ActivityType:
+      type: string
+      enum: [READING, EXTERNAL_RESOURCE, PRACTICE, REFLECTION, QUIZ, DICTATION, RECORDING]
+
+    CompletionPolicy:
+      type: string
+      enum: [MANUAL_CHECK, MANUAL_CHECK_WITH_RESPONSE, RESPONSE_SUBMIT, ON_SUBMIT, PASS_SCORE]
+
+    EnrollmentStatus:
+      type: string
+      enum: [ACTIVE, PAUSED, COMPLETED, ABANDONED]
+
+    RevisionStatus:
+      type: string
+      enum: [DRAFT, PUBLISHED, ARCHIVED]
+
+    DayOfWeek:
+      type: string
+      enum: [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY]
