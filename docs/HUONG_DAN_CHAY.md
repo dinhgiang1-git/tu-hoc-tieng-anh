@@ -24,23 +24,12 @@ Chỉ chạy lệnh tạo database một lần. Không trỏ backend vào databa
 
 ```powershell
 cd D:\WorkSpace\tu-hoc-tieng-anh\backend
-$env:JAVA_HOME = 'C:\Program Files\Java\jdk-21.0.10'
-$env:SPRING_PROFILES_ACTIVE = 'dev'
-$env:DB_HOST = 'localhost'
-$env:DB_PORT = '5432'
-$env:DB_NAME = 'english_learning_db'
-$env:DB_USER = 'postgres'
-$dbSecret = Read-Host 'Mật khẩu PostgreSQL' -AsSecureString
-$env:DB_PASSWORD = [System.Net.NetworkCredential]::new('', $dbSecret).Password
-$env:BOOTSTRAP_ADMIN_USERNAME = 'admin'
-$adminSecret = Read-Host 'Mật khẩu tài khoản admin lần đầu' -AsSecureString
-$env:BOOTSTRAP_ADMIN_PASSWORD = [System.Net.NetworkCredential]::new('', $adminSecret).Password
 .\mvnw.cmd spring-boot:run
 ```
 
-Sửa đường dẫn JDK nếu máy dùng bản cài khác. Mật khẩu DB phải khớp container hiện có. Mật khẩu admin là mật khẩu mới bạn tự chọn; chỉ tạo tài khoản khi bảng người dùng còn trống. Nếu đã có tài khoản, biến bootstrap không đặt lại mật khẩu đó.
+Máy cần cấu hình JDK 21 qua JAVA_HOME. Backend dùng profile `dev` mặc định và tự đọc `backend/.env` khi chạy từ thư mục `backend`. Lần đầu ở máy mới, copy `backend/.env.example` thành `backend/.env`, sửa DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD cho đúng PostgreSQL.
 
-Hiện dự án không tự nạp `.env`; chỉ copy `.env.example` chưa đủ. Các biến trên có hiệu lực trong terminal này và các tiến trình con.
+Để tạo admin ở database trống, thêm BOOTSTRAP_ADMIN_USERNAME=admin và BOOTSTRAP_ADMIN_PASSWORD=<mật khẩu tự chọn> vào `.env` trước khi khởi động. Nếu đã có người dùng, bootstrap không đặt lại mật khẩu. `.env` dùng định dạng KEY=value, không dùng `export` hoặc đặt SPRING_PROFILES_ACTIVE trong file này. Biến môi trường đã đặt trong terminal có ưu tiên cao hơn `.env`. File `.env` bị Git bỏ qua và không được push lên GitHub.
 
 Chờ log `Started EnglishLearningApplication`. Kiểm tra [health](http://localhost:8080/actuator/health) có trạng thái `UP`.
 
