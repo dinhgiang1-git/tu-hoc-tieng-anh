@@ -33,6 +33,8 @@ public class IdentityService {
 
   private final AppUserRepository userRepository;
   private final LearnerPreferencesRepository preferencesRepository;
+  private final vn.englishlearning.enrollment.infrastructure.EnrollmentRepository
+      enrollmentRepository;
   private final PasswordEncoder passwordEncoder;
   private final CurrentUser currentUser;
   private final Clock clock;
@@ -42,6 +44,7 @@ public class IdentityService {
   public IdentityService(
       AppUserRepository userRepository,
       LearnerPreferencesRepository preferencesRepository,
+      vn.englishlearning.enrollment.infrastructure.EnrollmentRepository enrollmentRepository,
       PasswordEncoder passwordEncoder,
       CurrentUser currentUser,
       Clock clock,
@@ -49,6 +52,7 @@ public class IdentityService {
       SecurityContextRepository securityContextRepository) {
     this.userRepository = userRepository;
     this.preferencesRepository = preferencesRepository;
+    this.enrollmentRepository = enrollmentRepository;
     this.passwordEncoder = passwordEncoder;
     this.currentUser = currentUser;
     this.clock = clock;
@@ -176,6 +180,12 @@ public class IdentityService {
       preferences.setDailyGoalMinutes(request.dailyTargetMinutes());
     }
     if (request.isFocusedEnrollmentIdPresent()) {
+      if (request.focusedEnrollmentId() != null) {
+        if (!enrollmentRepository.existsByIdAndUserId(request.focusedEnrollmentId(), userId)) {
+          throw new DomainException(
+              ErrorCode.RESOURCE_NOT_FOUND, "Không tìm thấy lần đăng ký học tập.");
+        }
+      }
       preferences.setFocusedEnrollmentId(request.focusedEnrollmentId(), now);
     }
     preferencesRepository.save(preferences);

@@ -283,7 +283,7 @@ paths:
       summary: Lấy thông tin học tập của trang Hôm nay
       description: >
         Trả về trạng thái Hôm nay và hành động chính dựa trên thứ tự ưu tiên.
-        Biểu diễn đầy đủ các trạng thái: NO_ENROLLMENT, PAUSED, IN_PROGRESS, DUE_TODAY, REST_DAY, OVERDUE, CURRICULUM_COMPLETED.
+        Biểu diễn đầy đủ các trạng thái: NO_ENROLLMENT, PAUSED, IN_PROGRESS, DUE_TODAY, REST_DAY, OVERDUE, UPCOMING, CURRICULUM_COMPLETED.
         Luôn trả kèm enrollmentVersion để phục vụ đồng bộ sau reload.
       operationId: getTodayDashboard
       tags: [Learning]
@@ -333,6 +333,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LessonDetailResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
+  /enrollments/{enrollmentId}/lessons/{lessonId}/summary:
+    get:
+      summary: Lấy thông tin tóm tắt chỉ đọc của một buổi học trong enrollment
+      description: >
+        Trả về tiêu đề lộ trình, tiêu đề bài học, thời lượng ước tính và ngày học dự kiến.
+        Chỉ owner của enrollment mới có quyền truy cập. Kiểm tra lesson thuộc revision đã đăng ký.
+      operationId: getLessonSummary
+      tags: [Learning]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Thông tin tóm tắt buổi học
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonSummaryResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedProblem'
         '404':
@@ -1422,6 +1455,33 @@ components:
         overdueDays:
           type: integer
           example: 2
+
+    LessonSummaryResponse:
+      type: object
+      required: [enrollmentId, lessonId, curriculumTitle, lessonTitle, estimatedMinutes, isRequired]
+      properties:
+        enrollmentId:
+          type: string
+          format: uuid
+        lessonId:
+          type: string
+          format: uuid
+        curriculumTitle:
+          type: string
+          example: 'Lộ trình Thử nghiệm: Phát âm Anh-Anh'
+        lessonTitle:
+          type: string
+          example: 'Buổi 1: Giới thiệu hệ thống ngữ âm Anh-Anh'
+        estimatedMinutes:
+          type: integer
+          example: 25
+        plannedDate:
+          type: [string, "null"]
+          format: date
+          example: '2026-10-26'
+        isRequired:
+          type: boolean
+          example: true
 
     LessonDetailResponse:
       type: object

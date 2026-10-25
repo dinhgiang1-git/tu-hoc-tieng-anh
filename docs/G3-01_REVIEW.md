@@ -1,5 +1,7 @@
 # Review G3-01 — chưa nghiệm thu
 
+> Đã khắc phục và nghiệm thu G3-01 sau tối đa hai lượt sửa, ngày 25/10/2026. Xem kết luận cuối trong [G3-01_RECHECK.md](G3-01_RECHECK.md). Các finding bên dưới giữ làm lịch sử.
+
 Ngày: 25/10/2026, Asia/Ho_Chi_Minh. Phạm vi: docs/tasks/G3-01_HANDOFF.md.
 
 ## Kết quả kiểm tra

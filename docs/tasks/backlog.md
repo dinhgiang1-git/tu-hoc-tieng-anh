@@ -211,23 +211,51 @@
 ## 4. Chi tiết Backlog Giai đoạn G3 — Vòng học Cốt lõi có Lưu Tiến độ (Mốc M1)
 
 ### Task G3-01: Đăng ký Lộ trình (Enrollment), Lịch ban đầu & Trang "Hôm nay"
-- **Trạng thái:** Sẵn sàng triển khai; phạm vi, quyết định và DoD tại [G3-01_HANDOFF.md](G3-01_HANDOFF.md).
+- **Trạng thái:** [x] Codex đã nghiệm thu ngày 25/10/2026 sau tối đa hai lượt sửa: 81 unit + 31 PostgreSQL integration + 54 FE tests đạt. R1–R5 đã đóng; xem [G3-01_RECHECK.md](../G3-01_RECHECK.md).
 - **Mục tiêu:** Người học bấm đăng ký lộ trình, hệ thống sinh lịch học ban đầu và hiển thị hành động chính trên trang "Hôm nay" theo đúng quy tắc ưu tiên và 8 trạng thái.
-- **Đầu vào:** `product-rules.md` (Mục 5), `openapi.yaml`, Task G2-02.
-- **Phạm vi:**
-  * Backend:
-    * Flyway migration kế tiếp `V005__create_enrollment_and_learning_tables.sql` (`enrollment`, `lesson_schedule`, `activity_progress`, `learning_event` và idempotency nếu cần); V004 đã dùng cho bất biến nội dung.
-    * Service `CreateEnrollmentService`: nhận ngày bắt đầu, timezone, studyDays, phân bổ 1 buổi bắt buộc cho 1 ngày học, hỗ trợ Idempotency-Key.
-    * `GET /api/v1/me/today`: truy vấn bài theo 8 trạng thái (`NO_ENROLLMENT`, `PAUSED`, `IN_PROGRESS`, `DUE_TODAY`, `REST_DAY`, `OVERDUE`, `UPCOMING`, `CURRICULUM_COMPLETED`).
-    * `GET /api/v1/enrollments/{enrollmentId}`: trả về chi tiết enrollment kèm `enrollmentVersion` để khôi phục phiên sau khi tải lại.
-  * Frontend:
-    * Dialog/Form đăng ký lộ trình: chọn ngày bắt đầu, chọn các thứ học (checkboxes), mục tiêu phút/ngày.
-    * Trang "Hôm nay" (`/today`): Card hành động chính nổi bật, thông báo ngày nghỉ nếu rơi vào ngày nghỉ, danh sách bài quá hạn thu gọn.
-- **Tiêu chí nghiệm thu (DoD):**
-  1. Người học chọn học 3 ngày/tuần (T2-T4-T6) bắt đầu từ 26/10: 5 buổi bắt buộc được xếp đúng vào 26/10, 28/10, 30/10, 02/11, 04/11. Ngày T3, T5, T7, CN không có bài bắt buộc.
-  2. Một người học chỉ tạo được tối đa 1 enrollment Active/Paused cho cùng 1 lộ trình.
-  3. Trang Hôm nay hiển thị đúng Buổi 1 là hành động chính với nút `"Bắt đầu học ➔"`.
-  4. Khi người học chưa đăng ký lộ trình nào, `GET /api/v1/me/today` trả về trạng thái `NO_ENROLLMENT` với các trường chi tiết null an toàn, UI điều hướng người học đến trang danh mục.
+- **Đầu vào:** `product-rules.md` (Mục 5), `openapi.yaml`, `docs/tasks/G3-01_HANDOFF.md`, `docs/G3-01_REVIEW.md`, `docs/G3-01_RECHECK.md`, Task G2-02.
+- **Khắc phục Review R1–R5 & Bổ sung Regression Suite:**
+  * **R1 (P1 - Completion Policy & PAUSED Priority):**
+    - `TodayQueryService`: Sửa điều kiện hoàn thành buổi học — buổi học chỉ đóng khi toàn bộ activity bắt buộc hiệu lực (`ProgressPolicy.isEffectivelyRequired(lesson.isRequired(), a.isRequired())`) hoàn thành; activity tùy chọn (`isRequired == false`) không giữ nợ bài và không cản trở bài học tiếp theo chuyển sang `DUE_TODAY`. Buổi không có activity bắt buộc không bị kẹt `IN_PROGRESS`.
+    - `TodayQueryService`: Đặt guard kiểm tra trạng thái `PAUSED` lên trước khối suy diễn `CURRICULUM_COMPLETED`. Khi enrollment bị tạm dừng, trả ngay trạng thái `PAUSED` với `primaryAction = null` và `overdueLessons = emptyList()`.
+    - Tích hợp repro test `reviewOptionalActivityDoesNotKeepLessonOpen` và `reviewPausedMustTakePriorityOverCompletedCounts` vào [TodayQueryServiceTest.java](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/test/java/vn/englishlearning/learning/application/TodayQueryServiceTest.java).
+  * **R2 (P1 - Enrollment Focus Switcher & Empty State):**
+    - `TodayPage.tsx`: Hiển thị combobox chọn lộ trình khi `enrollments.length >= 1` (thay vì `> 1`); bổ sung option placeholder `-- Chọn lộ trình học --` khi user có lộ trình nhưng `focusedEnrollmentId == null`.
+    - Trạng thái `NO_ENROLLMENT`: Khi user đã có enrollment trong danh sách (`enrollments.length > 0`), hiển thị danh sách lộ trình đã đăng ký kèm CTA «Tiếp tục học lộ trình này» để kích hoạt focus ngay lập tức qua `authApi.updatePreferences`.
+    - Hiển thị banner thông báo lỗi khi mutation chuyển đổi lộ trình gặp sự cố.
+    - Tích hợp test repro và focus selection vào [G301Review.test.tsx](file:///d:/WorkSpace/tu-hoc-tieng-anh/frontend/src/features/learning/__tests__/G301Review.test.tsx).
+  * **R3 (P2 - Lesson Summary Lightweight Endpoint & Page):**
+    - Cập nhật [openapi.yaml](file:///d:/WorkSpace/tu-hoc-tieng-anh/docs/api/openapi.yaml) và sinh type tự động: bổ sung endpoint `GET /api/v1/enrollments/{enrollmentId}/lessons/{lessonId}/summary` và schema `LessonSummaryResponse`.
+    - Triển khai endpoint tại `EnrollmentController` và `EnrollmentQueryService.getLessonSummary`: kiểm tra quyền sở hữu enrollment (404 khi không phải owner), xác minh lesson thuộc đúng `revisionId` của enrollment (404 khi không khớp), truy vấn ngày học theo lịch và thời lượng ước tính; hoạt động chính xác cả khi revision ở trạng thái `ARCHIVED`.
+    - Cập nhật [LessonSummaryPage.tsx](file:///d:/WorkSpace/tu-hoc-tieng-anh/frontend/src/features/learning/pages/LessonSummaryPage.tsx): gọi `enrollmentApi.getLessonSummary`, hiển thị tên bài, lộ trình, ngày theo lịch, thời lượng ước tính, huy hiệu bắt buộc/tự chọn; loại bỏ hoàn toàn raw UUID và mã giai đoạn nội bộ; hiển thị thông báo thân thiện và trạng thái 404 rõ ràng.
+    - Bổ sung unit tests cho summary trong [EnrollmentQueryServiceTest.java](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/test/java/vn/englishlearning/enrollment/application/EnrollmentQueryServiceTest.java) và [LessonSummaryPage.test.tsx](file:///d:/WorkSpace/tu-hoc-tieng-anh/frontend/src/features/learning/__tests__/LessonSummaryPage.test.tsx).
+  * **R4 (P2 - N+1 Elimination, Projection DTOs & Batch Querying):**
+    - Triển khai các lightweight DTO projection không chọn cột nặng: [LessonSummaryDto](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/infrastructure/LessonSummaryDto.java) (loại bỏ `content_markdown`), [ActivitySummaryDto](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/infrastructure/ActivitySummaryDto.java) (loại bỏ `instructions`, `skill_tags`), [RevisionInfoDto](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/infrastructure/RevisionInfoDto.java) (loại bỏ `description`, `authors`, `provenance`), [ActivityProgressDto](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/learning/infrastructure/ActivityProgressDto.java) (loại bỏ `user_response`).
+    - Bổ sung JPQL projection constructor queries trong `LessonRepository`, `ActivityRepository`, `CurriculumRevisionRepository`, `ActivityProgressRepository`.
+    - `TodayQueryService`: Chuyển hoàn toàn sang truy vấn projection DTOs; không tải entity đầy đủ và không rơi vào fallback entity query khi tập dữ liệu progress rỗng.
+    - `EnrollmentQueryService`: `getMyEnrollments()` thực hiện 4 batch query cố định qua SQL độc lập với số lượng enrollment (`findRevisionInfosByIds`, `findLessonSummariesByRevisionIds`, `findActivitySummariesByRevisionIds`, `findProgressDtosByEnrollmentIds`); loại bỏ hoàn toàn việc query entity riêng lẻ từng enrollment hoặc revision.
+    - Kiểm thử tích hợp đo SQL thật: Triển khai [SqlStatementInspector](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/test/java/vn/englishlearning/shared/test/SqlStatementInspector.java) (Hibernate `StatementInspector`) và bổ sung test `testQueryCountAndNoHeavyColumnsSelectedForTodayAndListEnrollments` trong [EnrollmentAndTodayIT.java](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/test/java/vn/englishlearning/enrollment/EnrollmentAndTodayIT.java):
+      * Đo SQL của `GET /api/v1/me/today`: so sánh số lượng query giữa pilot (5 lessons, 10 activities) và giáo trình lớn gấp đôi (10 lessons, 20 activities) $\rightarrow$ số lượng câu lệnh SQL hoàn toàn bằng nhau (hằng số $O(1)$, không tăng theo lessons), 100% không chọn bất kỳ cột nặng nào (`content_markdown`, `instructions`, `skill_tags`, `user_response`).
+      * Đo số lượng câu query của `GET /api/v1/me/enrollments` khi có 1 enrollment (pilot 5 lessons) so với khi có 2 enrollment trên 2 giáo trình/revision độc lập (tổng 15 lessons, 30 activities) $\rightarrow$ số lượng query giữ nguyên hằng số $O(1)$ (không phát sinh N+1 per enrollment hoặc per lesson) và 100% không chọn cột nặng.
+      * Đo SQL của `GET /api/v1/enrollments/{enrollmentId}/lessons/{lessonId}/summary`: xác nhận dùng projection `findLessonSummaryById`, 100% không chọn cột nặng.
+      * Kiểm thử đơn vị: [TodayQueryServiceTest.java](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/test/java/vn/englishlearning/learning/application/TodayQueryServiceTest.java) và [EnrollmentQueryServiceTest.java](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/test/java/vn/englishlearning/enrollment/application/EnrollmentQueryServiceTest.java) xác minh qua Mockito `never()` đối với các method entity (`findByLessonIdOrderByOrderIndexAsc`, `findByLessonWeekPhaseRevisionId`, `findRequiredLessonsByRevisionIdOrdered`, `findByEnrollmentId`, `findById`).
+  * **R5 (P2 - Concurrency, Rollback & Edge-case Integration Evidence):**
+    - Bổ sung 6 kịch bản kiểm thử tích hợp thực tế trên PostgreSQL Testcontainers trong [EnrollmentAndTodayIT.java](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/test/java/vn/englishlearning/enrollment/EnrollmentAndTodayIT.java):
+      1. Hai request đồng thời cùng `Idempotency-Key` và cùng payload: Cả 2 request đều nhận 201 CREATED với cùng `enrollmentId`, DB chỉ tạo đúng 1 enrollment và 5 schedules.
+      2. Hai request đồng thời khác key cho cùng lộ trình: Một request nhận 201 CREATED, request còn lại nhận 409 `STATE_CONFLICT`, không có lỗi 500.
+      3. Transaction rollback khi gặp lỗi giữa chừng: Inject lỗi ghi lịch (`saveAll`), xác minh toàn bộ enrollment, schedules, preference focus và idempotency record đều được rollback nguyên tử (DB sạch 0 bản ghi).
+      4. Chặn đăng ký revision `DRAFT` hoặc `ARCHIVED`: Trả về 409 `STATE_CONFLICT`.
+      5. Đọc enrollment hiện có khi revision đã chuyển `ARCHIVED`: Các API `getDetail`, `getToday`, và `getLessonSummary` vẫn đọc dữ liệu thành công.
+      6. Tính toán lịch học qua ranh giới đổi giờ London DST (25/10/2026) và chuyển giao cuối tháng (31/10 $\rightarrow$ 01/11): Sinh đúng 5 ngày học `LocalDate` chuẩn xác (23/10, 26/10, 28/10, 30/10, 02/11).
+- **Tiêu chí nghiệm thu & Bằng chứng kiểm thử thực tế:**
+  1. Backend Spotless: `.\mvnw.cmd spotless:check` đạt **109/109 files clean**.
+  2. Backend Unit Tests: `.\mvnw.cmd test "-Dtest=!*IT"` đạt **81/81 tests passed** (0 failures, 0 errors, 0 skips, bao gồm 13 tests `TodayQueryServiceTest` và 7 tests `EnrollmentQueryServiceTest`).
+  3. Backend Integration Tests: `.\mvnw.cmd verify "-Dapi.version=1.44"` đạt trọn vẹn **81 unit tests + 31 integration tests** (tổng cộng 112 tests passed, 0 failures, 0 errors, 0 skipped) chạy trên PostgreSQL 16.15 Testcontainers biệt lập (gồm 10 kịch bản toàn diện trong `EnrollmentAndTodayIT`, `CurriculumCatalogIT`, `CurriculumImportPublishIT`, `AuthAndIdentityIT`, `EnglishLearningApplicationIT`).
+  4. Frontend Unit Tests: `npm test -- --run` đạt **54/54 tests passed** trên 8 test suites (gồm `G301Review.test.tsx`, `TodayPage.test.tsx`, `LessonSummaryPage.test.tsx`, `EnrollmentDialog.test.tsx`, `Curricula.test.tsx`, `AuthContext.test.tsx`, `AppSidebar.test.tsx`, `auth.api.test.ts`).
+  5. Frontend Typecheck: `npm run typecheck` đạt (**0 errors**).
+  6. Frontend Lint: `npm run lint` đạt (**0 errors**, 1 warning thông tin của React Compiler về `form.watch()`).
+  7. Frontend Build: `npm run build` đạt (Vite production bundle thành công trong 731ms).
+  8. OpenAPI Contract: `node scripts/validate-openapi-examples.js` đạt. Không chạm DB dev (`localhost:5432`), không sửa `V001`–`V004`, không commit/push.
 
 ---
 

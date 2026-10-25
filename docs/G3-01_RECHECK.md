@@ -1,5 +1,19 @@
 # G3-01 — thẩm định sau lượt sửa thứ nhất
 
+## Kết luận cuối — Đạt sau lượt sửa thứ hai (25/10/2026)
+
+Codex đã đọc bản sửa và chạy độc lập `mvnw.cmd -o -B -ntp verify`: **BUILD SUCCESS, 81 unit tests + 31 integration tests**, 0 failures/errors/skips; Spotless đạt. Log local: `backend/target/review-g301-final.log`. FE: **54/54 tests**, TypeScript (trong build), lint không error và production build đạt.
+
+**R1–R5 đã đóng.** R4 đã dùng LessonSummaryDto/ActivitySummaryDto/ActivityProgressDto/RevisionInfoDto cho projections; my-enrollments batch theo tập enrollment/revision, không query trong vòng lặp từng enrollment. Lesson summary cũng dùng projection.
+
+Integration ghi SQL qua Hibernate StatementInspector trong HTTP request thật trên PostgreSQL Testcontainers: so sánh Today ở pilot và bộ 10 lessons; so sánh danh sách 1 và 2 enrollments thuộc các revisions khác nhau. Query-count giữ nguyên giữa hai kích thước dữ liệu; SQL không chứa content_markdown, instructions, skill_tags hoặc user_response. Màn hình summary cũng được kiểm tra không chọn các cột này.
+
+Các test đã xác nhận lịch 5 buổi bắt buộc, replay và xung đột idempotency, owner isolation, hai request đồng thời, rollback khi ghi lịch lỗi, revision archived vẫn đọc, trạng thái Today và chọn lại focus. Không thay đổi DB dev trong lượt nghiệm thu cuối.
+
+Không còn finding chặn G3-01; không giao công nhân vòng sửa thứ ba. Chỉ dọn một dòng trống EOF trước commit, không đổi chức năng. Chưa kiểm tra trực quan bằng trình duyệt ở 375px/desktop; UI được kiểm tra qua React Testing Library. Warning form.watch và bundle khoảng 569 KB không chặn mốc này. Bước tiếp theo: G3-02.
+
+Các phần bên dưới là lịch sử lượt thẩm định thứ nhất.
+
 Ngày: 25/10/2026 (Asia/Ho_Chi_Minh).
 
 ## Kết luận

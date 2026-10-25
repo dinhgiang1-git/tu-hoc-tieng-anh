@@ -1,6 +1,8 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { LoginPage } from "@/features/auth/pages/LoginPage";
-import { HomePage } from "@/features/home/HomePage";
+import { TodayPage } from "@/features/learning/pages/TodayPage";
+import { LessonSummaryPage } from "@/features/learning/pages/LessonSummaryPage";
+import { PreferencesPage } from "@/features/preferences/pages/PreferencesPage";
 import { AppShell } from "./layouts/AppShell";
 import { CurriculaPage } from "@/features/curricula/pages/CurriculaPage";
 import { CurriculumDetailPage } from "@/features/curricula/pages/CurriculumDetailPage";
@@ -16,7 +18,11 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: <TodayPage />,
+      },
+      {
+        path: "today",
+        element: <TodayPage />,
       },
       {
         path: "curriculum",
@@ -24,6 +30,10 @@ export const router = createBrowserRouter([
       },
       { path: "curricula", element: <CurriculaPage /> },
       { path: "curricula/:slug", element: <CurriculumDetailPage /> },
+      {
+        path: "enrollments/:enrollmentId/lessons/:lessonId",
+        element: <LessonSummaryPage />,
+      },
       {
         path: "schedule",
         element: (
@@ -37,7 +47,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "preferences",
-        element: <HomePage />,
+        element: <PreferencesPage />,
       },
       {
         path: "*",

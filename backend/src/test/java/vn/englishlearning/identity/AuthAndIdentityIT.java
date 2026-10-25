@@ -18,6 +18,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -70,6 +71,8 @@ class AuthAndIdentityIT {
   @Autowired private LearnerPreferencesRepository preferencesRepository;
 
   @Autowired private PasswordEncoder passwordEncoder;
+
+  @Autowired private JdbcTemplate jdbcTemplate;
 
   @Autowired private Clock clock;
 
@@ -363,7 +366,7 @@ class AuthAndIdentityIT {
       "A2 Regression: PATCH preserves focusedEnrollmentId when absent, clears on explicit null, empty does nothing")
   void patchPreferences_preservesFocusedEnrollmentWhenAbsent_andClearsWhenExplicitNull() {
     String username = "patch_prefs_user_" + UUID.randomUUID().toString().substring(0, 8);
-    createTestUser(username, "Password123!", UserRole.LEARNER);
+    AppUser user = createTestUser(username, "Password123!", UserRole.LEARNER);
 
     CsrfSession csrf = obtainCsrfToken();
     HttpHeaders loginHeaders = new HttpHeaders();
@@ -389,8 +392,34 @@ class AuthAndIdentityIT {
     mutationHeaders.set(HttpHeaders.COOKIE, sessionCookie);
     mutationHeaders.set("X-CSRF-TOKEN", freshCsrf.csrfToken());
 
-    // 1. Initial state: set a focused enrollment ID
+    // 1. Initial state: set a valid focused enrollment ID belonging to user
     UUID initialEnrollmentId = UUID.randomUUID();
+    UUID dummyCurriculumId = UUID.randomUUID();
+    UUID dummyRevisionId = UUID.randomUUID();
+    Instant now = Instant.now(clock);
+    jdbcTemplate.update(
+        "INSERT INTO curriculum (id, curriculum_key, target_locale) VALUES (?, ?, ?)",
+        dummyCurriculumId,
+        "dummy-" + UUID.randomUUID(),
+        "en-US");
+    jdbcTemplate.update(
+        "INSERT INTO curriculum_revision (id, curriculum_id, version, status, title, description, authors, provenance, checksum, published_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)",
+        dummyRevisionId,
+        dummyCurriculumId,
+        "1.0.0",
+        "PUBLISHED",
+        "Dummy Curriculum",
+        "Description",
+        "Authors",
+        "Provenance",
+        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef");
+    jdbcTemplate.update(
+        "INSERT INTO enrollment (id, user_id, curriculum_id, revision_id, status, start_date, time_zone, study_days, daily_target_minutes, version, created_at, updated_at) VALUES (?, ?, ?, ?, 'ACTIVE', CURRENT_DATE, 'Asia/Ho_Chi_Minh', 'MON,WED,FRI', 30, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
+        initialEnrollmentId,
+        user.getId(),
+        dummyCurriculumId,
+        dummyRevisionId);
+
     UpdatePreferencesRequest setEnrollmentReq =
         UpdatePreferencesRequest.ofFocusedEnrollment(initialEnrollmentId);
 

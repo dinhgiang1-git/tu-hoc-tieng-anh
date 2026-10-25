@@ -1,11 +1,14 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Clock } from "lucide-react";
+import { ArrowLeft, BookOpen, Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ApiError } from "@/lib/api/api-error";
 import { curriculaApi, curriculaKeys } from "../api/curricula.api";
+import { EnrollmentDialog } from "@/features/enrollment/components/EnrollmentDialog";
 
 const verificationLabels: Record<string, string> = {
   UNVERIFIED_DRAFT: "Nguồn tham khảo chưa được xác minh",
@@ -15,6 +18,8 @@ const verificationLabels: Record<string, string> = {
 
 export function CurriculumDetailPage() {
   const { slug = "" } = useParams();
+  const [isEnrollDialogOpen, setIsEnrollDialogOpen] = useState(false);
+
   const query = useQuery({
     queryKey: curriculaKeys.detail(slug),
     queryFn: ({ signal }) => curriculaApi.detail(slug, signal),
@@ -32,7 +37,23 @@ export function CurriculumDetailPage() {
   return (
     <div className="space-y-6">
       <Link to="/curricula" className="inline-flex items-center gap-2 text-sm text-primary hover:underline"><ArrowLeft className="h-4 w-4" />Tất cả lộ trình</Link>
-      <PageHeader title={curriculum.title} description={curriculum.description} />
+      <PageHeader
+        title={curriculum.title}
+        description={curriculum.description}
+        actions={
+          <Button onClick={() => setIsEnrollDialogOpen(true)} className="gap-2">
+            <BookOpen className="h-4 w-4" />
+            Đăng ký học
+          </Button>
+        }
+      />
+      <EnrollmentDialog
+        curriculumId={curriculum.id}
+        revisionId={curriculum.revision.id}
+        curriculumTitle={curriculum.title}
+        isOpen={isEnrollDialogOpen}
+        onClose={() => setIsEnrollDialogOpen(false)}
+      />
       <section aria-label="Thông tin giáo trình" className="space-y-2 rounded-xl border border-border bg-card p-5 text-sm">
         <p className="font-semibold">{curriculum.targetLocale === "en-GB" ? "Chuẩn phát âm Anh-Anh (en-GB)" : curriculum.targetLocale} · Phiên bản {curriculum.revision.version}</p>
         <p>Biên soạn: {curriculum.authors.join(", ")}</p>

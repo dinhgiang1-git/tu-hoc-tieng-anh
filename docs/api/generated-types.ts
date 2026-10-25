@@ -216,7 +216,7 @@ export interface paths {
         };
         /**
          * Lấy thông tin học tập của trang Hôm nay
-         * @description Trả về trạng thái Hôm nay và hành động chính dựa trên thứ tự ưu tiên. Biểu diễn đầy đủ các trạng thái: NO_ENROLLMENT, PAUSED, IN_PROGRESS, DUE_TODAY, REST_DAY, OVERDUE, CURRICULUM_COMPLETED. Luôn trả kèm enrollmentVersion để phục vụ đồng bộ sau reload.
+         * @description Trả về trạng thái Hôm nay và hành động chính dựa trên thứ tự ưu tiên. Biểu diễn đầy đủ các trạng thái: NO_ENROLLMENT, PAUSED, IN_PROGRESS, DUE_TODAY, REST_DAY, OVERDUE, UPCOMING, CURRICULUM_COMPLETED. Luôn trả kèm enrollmentVersion để phục vụ đồng bộ sau reload.
          */
         get: operations["getTodayDashboard"];
         put?: never;
@@ -239,6 +239,26 @@ export interface paths {
          * @description Trả về nội dung Markdown, danh sách nhiệm vụ, trạng thái học của từng nhiệm vụ, câu trả lời đã lưu, và enrollmentVersion hiện hành để client gửi mutation có optimistic locking.
          */
         get: operations["getLessonWorkspace"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/enrollments/{enrollmentId}/lessons/{lessonId}/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lấy thông tin tóm tắt chỉ đọc của một buổi học trong enrollment
+         * @description Trả về tiêu đề lộ trình, tiêu đề bài học, thời lượng ước tính và ngày học dự kiến. Chỉ owner của enrollment mới có quyền truy cập. Kiểm tra lesson thuộc revision đã đăng ký.
+         */
+        get: operations["getLessonSummary"];
         put?: never;
         post?: never;
         delete?: never;
@@ -786,6 +806,25 @@ export interface components {
             plannedDate: string;
             /** @example 2 */
             overdueDays: number;
+        };
+        LessonSummaryResponse: {
+            /** Format: uuid */
+            enrollmentId: string;
+            /** Format: uuid */
+            lessonId: string;
+            /** @example Lộ trình Thử nghiệm: Phát âm Anh-Anh */
+            curriculumTitle: string;
+            /** @example Buổi 1: Giới thiệu hệ thống ngữ âm Anh-Anh */
+            lessonTitle: string;
+            /** @example 25 */
+            estimatedMinutes: number;
+            /**
+             * Format: date
+             * @example 2026-10-26
+             */
+            plannedDate?: string | null;
+            /** @example true */
+            isRequired: boolean;
         };
         LessonDetailResponse: {
             /** Format: uuid */
@@ -1343,6 +1382,31 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["LessonDetailResponse"];
+                };
+            };
+            401: components["responses"]["UnauthorizedProblem"];
+            404: components["responses"]["NotFoundProblem"];
+        };
+    };
+    getLessonSummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                enrollmentId: string;
+                lessonId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Thông tin tóm tắt buổi học */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LessonSummaryResponse"];
                 };
             };
             401: components["responses"]["UnauthorizedProblem"];

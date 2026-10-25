@@ -14,4 +14,9 @@ public interface AppUserRepository extends JpaRepository<AppUser, UUID> {
   boolean existsByUsername(String username);
 
   boolean existsByEmail(String email);
+
+  @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+  @org.springframework.data.jpa.repository.Query("SELECT u FROM AppUser u WHERE u.id = :id")
+  Optional<AppUser> findByIdForUpdate(
+      @org.springframework.data.repository.query.Param("id") UUID id);
 }

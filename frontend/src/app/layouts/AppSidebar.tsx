@@ -93,7 +93,7 @@ export function AppSidebar({ isOpen, onClose, collapsed }: AppSidebarProps) {
       title: "Hôm nay",
       href: "/",
       icon: Compass,
-      match: location.pathname === "/",
+      match: location.pathname === "/" || location.pathname === "/today",
     },
     {
       title: "Lộ trình học",

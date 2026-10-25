@@ -56,7 +56,7 @@ Frontend proxy `/api` và `/actuator` tới `http://localhost:8080`. Nếu đổ
 
 ## 4. Phạm vi hiện tại và dừng ứng dụng
 
-Hiện có giao diện shell, đăng nhập/đăng xuất, trang chủ nền tảng và danh mục/chi tiết lộ trình. Chưa có toàn bộ chức năng học theo lộ trình. Không cần import/publish nội dung để xem giao diện. G2-01 đã qua kiểm tra bất biến nội dung và integration trên PostgreSQL biệt lập; G2-02 catalog/outline đã nghiệm thu; lộ trình chỉ xuất hiện khi có revision được publish.
+Hiện có giao diện shell, đăng nhập/đăng xuất, danh mục/chi tiết lộ trình, đăng ký lộ trình, lịch ban đầu, trang Hôm nay và tóm tắt bài chỉ đọc. Chưa có toàn bộ chức năng học theo lộ trình. Không cần import/publish nội dung để xem giao diện. G2-01 đã qua kiểm tra bất biến nội dung và integration trên PostgreSQL biệt lập; G3-01 đã nghiệm thu; lộ trình chỉ xuất hiện khi có revision được publish. Chức năng hoàn thành/hoàn tác/nộp phản tư thuộc G3-02 và không gian học đầy đủ thuộc G3-03.
 
 Dừng backend/frontend bằng `Ctrl+C` trong từng terminal. Không cần dừng PostgreSQL nếu ứng dụng khác đang dùng chung container.
 
