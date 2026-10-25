@@ -88,7 +88,8 @@ public class PackageChecksumCalculator {
     }
     Path realPath = path.toRealPath();
     if (!realPath.startsWith(realPackageDir)) {
-      throw new SecurityException("Path points outside package directory (symlink forbidden): " + relativePathStr);
+      throw new SecurityException(
+          "Path points outside package directory (symlink forbidden): " + relativePathStr);
     }
     return realPath;
   }

@@ -108,7 +108,7 @@
   3. Bằng chứng kiểm thử Backend:
      - Formatter (`mvnw.cmd -B spotless:check`): Đạt 29/29 files Java.
      - Unit tests (`mvnw.cmd -B test`): 3/3 tests passed.
-     - Trạng thái Docker runtime: Docker Desktop hiện ở trạng thái `Stopped` (`dockerDesktopLinuxEngine` named pipe không khả dụng), do đó không chạy Testcontainers integration tests ở lượt này; cơ sở dữ liệu dev hoàn toàn không bị ảnh hưởng.
+     - Trạng thái Docker runtime: Docker Desktop đã chạy; Codex xác minh độc lập `mvnw.cmd -o -B -ntp verify`: 38 unit tests + 15 integration tests đạt trên PostgreSQL Testcontainers biệt lập. Lượt kiểm tra này không thay đổi DB dev.
   4. Luồng HTTP thật và browser E2E 375px/1440px chưa được chạy lại trong lượt chốt này. Chốt phạm vi FE bằng regression và check ở trên; giữ mục xác minh runtime riêng.
 
 - **Kết luận FE:** Đã chốt sau sửa trực tiếp bộ lọc cache; chuyển G2-01 theo `docs/tasks/G2-01_HANDOFF.md`, không mở lại vòng auth/style.
@@ -118,50 +118,60 @@
 ## 3. Chi tiết Backlog Giai đoạn G2 — Gói Nội dung & Danh mục Lộ trình
 
 ### Task G2-01: Bộ Migration Schema Nội dung, Importer CLI & Quy trình Publish
-- **Trạng thái:** Hoàn tất triển khai code, schema và unit tests (Chờ runtime Testcontainers khi Docker sẵn sàng)
+- **Trạng thái:** [x] Hoàn thành và kiểm chứng runtime ngày 25/10/2026: 38 unit tests + 15 integration tests đạt, không skip; xem [G2-01_RECHECK](../G2-01_RECHECK.md).
 - **Mục tiêu:** Tạo các bảng quản lý nội dung (`curriculum`, `curriculum_revision`, `curriculum_phase`, `curriculum_week`, `lesson`, `activity`, `resource`, `activity_resource`), xây dựng công cụ CLI backend để validate, dry-run, import và publish gói nội dung từ thư mục `content/`.
-- **Đầu vào:** `manifest.schema.json`, `week.schema.json`, `resources.schema.json`, `manifest.json`, `week-01.json`, `ADR-005`.
-- **Thực hiện:**
-  * Flyway migration: [V003__create_curriculum_tables.sql](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/resources/db/migration/V003__create_curriculum_tables.sql) tạo đầy đủ bảng quan hệ với constraints, FK, unique indexes và trigger bảo vệ revision `PUBLISHED` bất biến (`trg_curriculum_revision_immutable`).
+- **Đầu vào:** `manifest.schema.json`, `week.schema.json`, `resources.schema.json`, `manifest.json`, `week-01.json`, `ADR-005`, `docs/G2-01_REVIEW.md`, `docs/G2-01_RECHECK.md`.
+- **Thực hiện & Khắc phục Review / Recheck:**
+  * Flyway migrations:
+    - [V003__create_curriculum_tables.sql](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/resources/db/migration/V003__create_curriculum_tables.sql) tạo đầy đủ bảng quan hệ với constraints, FK, unique indexes.
+    - [V004__enforce_published_revision_immutability.sql](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/resources/db/migration/V004__enforce_published_revision_immutability.sql) giải quyết triệt để **R3 (P1)**:
+      * Kiểm tra cả `OLD` và `NEW` khi `UPDATE` trên toàn bộ thực thể con (`phase`, `week`, `lesson`, `activity`, `resource`, `activity_resource`), chặn hoàn toàn việc chuyển parent để đánh cắp thực thể con từ revision `PUBLISHED` sang `DRAFT` hoặc gắn ngược thực thể nháp vào revision `PUBLISHED`.
+      * Bảo vệ bất biến `published_at`, `created_at` và toàn bộ metadata của revision đã published bằng so sánh null-safe `IS DISTINCT FROM`.
+      * Chặn hạ cấp trạng thái về `DRAFT`, chặn thay đổi trạng thái khi đã `ARCHIVED`, chặn xóa revision/curriculum khi đã publish.
   * Domain entities & repositories:
     - [Curriculum](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/domain/Curriculum.java), [CurriculumRevision](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/domain/CurriculumRevision.java), [CurriculumPhase](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/domain/CurriculumPhase.java), [CurriculumWeek](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/domain/CurriculumWeek.java), [Lesson](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/domain/Lesson.java), [Activity](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/domain/Activity.java), [Resource](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/domain/Resource.java).
     - Enums: [RevisionStatus](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/domain/RevisionStatus.java), [ActivityType](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/domain/ActivityType.java), [CompletionPolicy](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/domain/CompletionPolicy.java), [MediaType](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/domain/MediaType.java), [VerificationStatus](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/domain/VerificationStatus.java).
     - Policy: [ProgressPolicy](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/learning/domain/ProgressPolicy.java).
     - Repositories: `CurriculumRepository`, `CurriculumRevisionRepository`, `CurriculumPhaseRepository`, `CurriculumWeekRepository`, `LessonRepository`, `ActivityRepository`, `ResourceRepository`.
-  * Validator: [ContentPackageValidator](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/contentops/application/ContentPackageValidator.java) dùng JSON Schema Draft 2020-12 thực thụ (`json-schema-validator:1.5.6`), kiểm tra schema cho manifest, week và resources; kiểm tra trùng lặp key; kiểm tra tham chiếu resource; kiểm tra file Markdown tồn tại; chặn đường dẫn tuyệt đối, traversal (`..`, `.`) và symlink trỏ ra ngoài package; giữ nguyên trạng thái `UNVERIFIED_DRAFT`; chỉ đọc tuần được manifest tham chiếu (không gom `drafts/`).
-  * Checksum calculator: [PackageChecksumCalculator](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/contentops/application/PackageChecksumCalculator.java) băm SHA-256 toàn diện gồm manifest, resources, từng file tuần và toàn bộ nội dung Markdown (chuẩn hóa LF).
+  * Validator & Checksum:
+    - [ContentPackageValidator](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/contentops/application/ContentPackageValidator.java) dùng JSON Schema Draft 2020-12 thực thụ (`json-schema-validator:1.5.6`), kiểm tra schema cho manifest, week và resources; kiểm tra trùng lặp key; kiểm tra tham chiếu resource; kiểm tra file Markdown tồn tại; chặn đường dẫn tuyệt đối, traversal (`..`, `.`).
+    - Giải quyết **R4 (P2)**: kiểm tra `path.toRealPath().startsWith(realPackageDir)` ngay từ gốc cho cả `manifest.json` và `resources.json` trước khi đọc nội dung, chặn symlink trỏ ra ngoài package ở mọi entry point. Test symlink dùng `Assumptions.abort(...)` nếu môi trường OS thiếu quyền tạo symlink, không mask lỗi thành pass giả định.
+    - [PackageChecksumCalculator](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/contentops/application/PackageChecksumCalculator.java) áp dụng cùng cơ chế kiểm tra symlink an toàn, băm SHA-256 toàn diện gồm manifest, resources, từng file tuần và toàn bộ nội dung Markdown (chuẩn hóa LF).
   * Application Services:
     - [ImportCurriculumPackageService](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/contentops/application/ImportCurriculumPackageService.java): chạy dry-run hoặc import toàn bộ trong 1 transaction `@Transactional` ở trạng thái `DRAFT`; idempotent đối với cùng checksum; báo lỗi `ContentConflictException` khi trùng version nhưng khác nội dung; chặn sửa đổi revision `PUBLISHED`/`ARCHIVED`.
+    - Giải quyết **R2 (P1)**: chuẩn hóa thứ tự activity đồng nhất giữa validator và importer theo vị trí tự nhiên `aIdx + 1` khi `orderIndex` vắng mặt; lưu đúng `[1, 2, 3, 4...]`, không gán 0 và không vi phạm `uq_activity_order`.
     - [PublishCurriculumRevisionService](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/contentops/application/PublishCurriculumRevisionService.java): kiểm tra tính đầy đủ của bài bắt buộc (markdown không rỗng, có activity), chuyển trạng thái sang `PUBLISHED`, báo cảnh báo tài nguyên `UNVERIFIED_DRAFT`.
-  * CLI Tool: [CurriculumCli](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/contentops/cli/CurriculumCli.java) hỗ trợ 4 lệnh: `validate`, `dry-run`, `import`, `publish`.
-    - `validate` và `dry-run` chạy độc lập với filesystem, không chạm DB, không khởi động web server.
-    - `import` và `publish` chạy với `WebApplicationType.NONE`, bỏ qua `BootstrapUserRunner`, yêu cầu cấu hình DB tường minh (`--db-url`, `CONTENT_DB_URL` hoặc `--confirm-db`), chặn ghi âm thầm vào dev DB.
+  * CLI Tool & DB Target:
+    - [CurriculumCli](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/contentops/cli/CurriculumCli.java) hỗ trợ 4 lệnh: `validate`, `dry-run`, `import`, `publish`. Không log/in mật khẩu vào terminal.
+    - Giải quyết **R1 (P1)**: tách profile `cli` (`application-cli.yml`); triển khai [CliEnvironmentPostProcessor](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/contentops/cli/CliEnvironmentPostProcessor.java) đăng ký qua `META-INF/spring.factories` & `.imports`, nâng các thuộc tính DB tường minh (`spring.datasource.url`, `username`, `password`) lên PropertySource ưu tiên cao nhất (`addFirst`), bảo đảm target DB tường minh luôn thắng cấu hình `application-dev.yml` mà không cần mở kết nối DB trong quá trình kiểm tra.
 - **Lệnh CLI thực tế đã kiểm tra:**
   * Validate:
     ```bash
-    java -jar backend/target/english-learning-backend-0.0.1-SNAPSHOT.jar content validate content/pilot-curriculum/v1
+    java -jar backend/target/english-learning-backend-0.0.1-SNAPSHOT.jar content validate ../content/pilot-curriculum/v1
     ```
     Kết quả: SUCCESSFUL (0 errors, 5 warnings cho tài nguyên UNVERIFIED_DRAFT).
   * Dry-run:
     ```bash
-    java -jar backend/target/english-learning-backend-0.0.1-SNAPSHOT.jar content dry-run content/pilot-curriculum/v1
+    java -jar backend/target/english-learning-backend-0.0.1-SNAPSHOT.jar content dry-run ../content/pilot-curriculum/v1
     ```
     Báo cáo: 1 phase, 1 tuần, 6 lessons (5 bắt buộc, 1 tùy chọn), 21 activities (19 bắt buộc hiệu lực), 5 resources (5 UNVERIFIED_DRAFT). Checksum: `98b297866781af20cb6800835618b233a8b73328de6a9e6edc4009526e65c961`.
   * Import chặn DB không xác nhận:
     ```bash
-    java -jar backend/target/english-learning-backend-0.0.1-SNAPSHOT.jar content import content/pilot-curriculum/v1
+    java -jar backend/target/english-learning-backend-0.0.1-SNAPSHOT.jar content import ../content/pilot-curriculum/v1
     ```
-    Kết quả: Bị chặn (Exit code 1, `SECURITY CHECK FAILED: Explicit database target configuration is required`).
+    Kết quả: Bị chặn an toàn (Exit code 1, `SECURITY CHECK FAILED: Explicit database target configuration is required`).
 - **Kiểm thử đã chạy:**
-  * Spotless: `.\mvnw.cmd spotless:check` đạt 68/68 files clean.
-  * Unit tests: `.\mvnw.cmd test` đạt 27/27 tests passed:
-    - `ContentPackageValidatorTest` (6 tests: package thật, file thiếu, traversal, absolute path, resource không tồn tại, trùng key).
-    - `ImportAndPublishServiceTest` (6 tests: import mới, idempotency cùng package, conflict khác checksum, conflict published revision, publish thành công, publish trùng lặp).
-    - `PackageChecksumCalculatorTest` (3 tests: tính tất định, đổi markdown đổi checksum, đổi resources đổi checksum).
-    - `DryRunAndCliTest` (5 tests: số liệu dry-run thật, CLI validate, CLI dry-run, CLI import chặn DB, CLI publish chặn DB).
-    - `ProgressPolicyTest` (4 tests: bảng chân trị required hiệu lực, tính %, validation input).
+  * Spotless: `.\mvnw.cmd spotless:check` đạt 69/69 files clean (0 violations).
+  * Unit tests: `.\mvnw.cmd test` đạt **32/32 tests passed**:
+    - `ContentPackageValidatorTest` (8 tests: bao gồm R4 regressions `rootResourcesSymlinkMustBeRejected` và `rootManifestSymlinkMustBeRejected` dùng `Assumptions.abort`).
+    - `ImportAndPublishServiceTest` (7 tests: bao gồm R2 regression `pilotActivitiesHaveSequentialOrder` kiểm tra 21 activities và 4 activity đầu đạt `[1, 2, 3, 4]`).
+    - `DryRunAndCliTest` (7 tests: bao gồm R1 regressions `reviewExplicitCliDatabaseOverridesApplicationConfig` và `explicitCliDatabaseOverridesDevProfileConfig`).
+    - `PackageChecksumCalculatorTest` (3 tests).
+    - `ProgressPolicyTest` (4 tests).
     - `ProblemFactoryTest` (2 tests), `ApplicationClockConfigTest` (1 test).
-  * Integration test: [CurriculumImportPublishIT](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/test/java/vn/englishlearning/curriculum/CurriculumImportPublishIT.java) đã sẵn sàng. Do Docker Desktop đang `Stopped`, test suite này chưa chạy qua `mvn verify`; cơ sở dữ liệu dev hoàn toàn không bị ảnh hưởng.
+  * Integration test: [CurriculumImportPublishIT](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/test/java/vn/englishlearning/curriculum/CurriculumImportPublishIT.java) đã sẵn sàng kiểm tra trọn vẹn luồng pilot import/publish, kiểm thử trigger immutability mở rộng (R3: chặn update markdown lesson, chặn đánh cắp phase/lesson sang draft revision, chặn gán week draft vào phase published, chặn sửa `published_at` hoặc metadata, xóa activity, xóa link resource, hạ cấp draft, xóa revision; xác nhận draft hợp lệ vẫn sửa được) và kiểm thử rollback 100% khi lỗi phát sinh giữa giao dịch sau khi đã ghi một phần DB (trigger nổ khi insert activity sau khi revision/resources/phase/week đã ghi).
+  * Trạng thái Docker runtime: Docker Desktop đã chạy; Codex xác minh độc lập `mvnw.cmd -o -B -ntp verify`: 38 unit tests + 15 integration tests đạt trên PostgreSQL Testcontainers biệt lập. Lượt kiểm tra này không thay đổi DB dev.
+
 
 ---
 

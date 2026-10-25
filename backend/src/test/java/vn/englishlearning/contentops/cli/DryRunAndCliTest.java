@@ -75,4 +75,74 @@ class DryRunAndCliTest {
         CurriculumCli.execute(new String[] {"content", "publish", "pilot-curriculum", "1.0.0"});
     assertThat(exitCode).isEqualTo(1);
   }
+
+  @org.springframework.context.annotation.Configuration(proxyBeanMethods = false)
+  static class NoDatabaseBeans {}
+
+  @Test
+  @DisplayName(
+      "R1 Regression: Reviewer reproduction test - explicit properties override dev config without opening DB")
+  void reviewExplicitCliDatabaseOverridesApplicationConfig() {
+    String expected = "jdbc:postgresql://127.0.0.1:1/review_no_database_connection";
+    java.util.concurrent.atomic.AtomicReference<String> actual =
+        new java.util.concurrent.atomic.AtomicReference<>();
+    org.assertj.core.api.Assertions.assertThatThrownBy(
+            () ->
+                new org.springframework.boot.builder.SpringApplicationBuilder(NoDatabaseBeans.class)
+                    .web(org.springframework.boot.WebApplicationType.NONE)
+                    .properties(java.util.Map.of("spring.datasource.url", expected))
+                    .initializers(
+                        ctx -> {
+                          actual.set(ctx.getEnvironment().getProperty("spring.datasource.url"));
+                          throw new IllegalStateException(
+                              "Review stopped before bean creation or any DB connection");
+                        })
+                    .run("content"))
+        .isInstanceOf(IllegalStateException.class);
+    assertThat(actual.get())
+        .as("Explicit CLI DB target must win; no DB was opened")
+        .isEqualTo(expected);
+  }
+
+  @Test
+  @DisplayName(
+      "R1 Regression: CurriculumCli application builder ensures explicit DB properties override dev profile config")
+  void explicitCliDatabaseOverridesDevProfileConfig() {
+    String expectedUrl = "jdbc:postgresql://127.0.0.1:1/review_no_database_connection";
+    String expectedUser = "cli_override_user";
+    String expectedPass = "cli_override_pass";
+    java.util.concurrent.atomic.AtomicReference<String> actualUrl =
+        new java.util.concurrent.atomic.AtomicReference<>();
+    java.util.concurrent.atomic.AtomicReference<String> actualUser =
+        new java.util.concurrent.atomic.AtomicReference<>();
+    java.util.concurrent.atomic.AtomicReference<String> actualPass =
+        new java.util.concurrent.atomic.AtomicReference<>();
+
+    org.assertj.core.api.Assertions.assertThatThrownBy(
+            () ->
+                CurriculumCli.createCliApplicationBuilder(
+                        NoDatabaseBeans.class,
+                        java.util.Map.of(
+                            "spring.datasource.url", expectedUrl,
+                            "spring.datasource.username", expectedUser,
+                            "spring.datasource.password", expectedPass))
+                    .initializers(
+                        ctx -> {
+                          actualUrl.set(ctx.getEnvironment().getProperty("spring.datasource.url"));
+                          actualUser.set(
+                              ctx.getEnvironment().getProperty("spring.datasource.username"));
+                          actualPass.set(
+                              ctx.getEnvironment().getProperty("spring.datasource.password"));
+                          throw new IllegalStateException(
+                              "Stopped before bean creation or any DB connection");
+                        })
+                    .run("content"))
+        .isInstanceOf(IllegalStateException.class);
+
+    assertThat(actualUrl.get())
+        .as("Explicit CLI DB URL must win over dev profile config; no DB opened")
+        .isEqualTo(expectedUrl);
+    assertThat(actualUser.get()).isEqualTo(expectedUser);
+    assertThat(actualPass.get()).isEqualTo(expectedPass);
+  }
 }

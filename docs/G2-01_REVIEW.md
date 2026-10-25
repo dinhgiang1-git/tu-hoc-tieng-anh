@@ -1,5 +1,7 @@
 # Review G2-01 — nội dung, importer và publish
 
+> Đã khắc phục và chốt G2-01 ngày 25/10/2026. Xem kết luận mới nhất trong [G2-01_RECHECK.md](G2-01_RECHECK.md). Các finding và kết quả bên dưới được giữ làm lịch sử.
+
 ## Kết luận
 
 **Chưa chốt G2-01.** Code đã có migration, domain/repository, JSON Schema validator thực sự, checksum, CLI và import/publish service. Validate và dry-run chạy được trên pilot. Có bốn vấn đề chức năng dưới đây; ba vấn đề được tái hiện bằng kiểm thử bổ sung, vấn đề bất biến được xác định từ SQL. Không mở lại auth, FE hoặc Agent Desk.

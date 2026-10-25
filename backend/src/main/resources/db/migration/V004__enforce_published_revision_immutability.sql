@@ -3,10 +3,106 @@
 -- Description: Enforces deep immutability on PUBLISHED and ARCHIVED curriculum
 --              revisions, child entities (phases, weeks, lessons, activities,
 --              resources), and activity-resource links.
+--              Guards both OLD and NEW relations on UPDATE to prevent stealing/
+--              reassigning child entities between published and draft revisions.
+--              Guards published_at and created_at with null-safe IS DISTINCT FROM.
 -- Conventions: BE_CODE_CONVENTION.md, ADR-005
 -- =============================================================================
 
--- 1. Revision Immutability: prevent reverting to DRAFT, protect metadata across status changes
+-- 1. Helper function: verify revision immutability by ID
+CREATE OR REPLACE FUNCTION check_revision_immutable_by_id(rev_id UUID, action_desc TEXT)
+RETURNS VOID AS $$
+DECLARE
+    rev_status VARCHAR(20);
+BEGIN
+    IF rev_id IS NOT NULL THEN
+        SELECT status INTO rev_status FROM curriculum_revision WHERE id = rev_id;
+        IF rev_status IN ('PUBLISHED', 'ARCHIVED') THEN
+            RAISE EXCEPTION 'Cannot % a % curriculum revision', action_desc, rev_status;
+        END IF;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 2. Helper functions to traverse foreign keys up to revision_id
+CREATE OR REPLACE FUNCTION get_revision_id_by_phase(p_phase_id UUID)
+RETURNS UUID AS $$
+DECLARE
+    r_id UUID;
+BEGIN
+    IF p_phase_id IS NULL THEN
+        RETURN NULL;
+    END IF;
+    SELECT revision_id INTO r_id FROM curriculum_phase WHERE id = p_phase_id;
+    RETURN r_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_revision_id_by_week(p_week_id UUID)
+RETURNS UUID AS $$
+DECLARE
+    r_id UUID;
+BEGIN
+    IF p_week_id IS NULL THEN
+        RETURN NULL;
+    END IF;
+    SELECT p.revision_id INTO r_id
+    FROM curriculum_week w
+    JOIN curriculum_phase p ON p.id = w.phase_id
+    WHERE w.id = p_week_id;
+    RETURN r_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_revision_id_by_lesson(p_lesson_id UUID)
+RETURNS UUID AS $$
+DECLARE
+    r_id UUID;
+BEGIN
+    IF p_lesson_id IS NULL THEN
+        RETURN NULL;
+    END IF;
+    SELECT p.revision_id INTO r_id
+    FROM lesson l
+    JOIN curriculum_week w ON w.id = l.week_id
+    JOIN curriculum_phase p ON p.id = w.phase_id
+    WHERE l.id = p_lesson_id;
+    RETURN r_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_revision_id_by_activity(p_activity_id UUID)
+RETURNS UUID AS $$
+DECLARE
+    r_id UUID;
+BEGIN
+    IF p_activity_id IS NULL THEN
+        RETURN NULL;
+    END IF;
+    SELECT p.revision_id INTO r_id
+    FROM activity a
+    JOIN lesson l ON l.id = a.lesson_id
+    JOIN curriculum_week w ON w.id = l.week_id
+    JOIN curriculum_phase p ON p.id = w.phase_id
+    WHERE a.id = p_activity_id;
+    RETURN r_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_revision_id_by_resource(p_resource_id UUID)
+RETURNS UUID AS $$
+DECLARE
+    r_id UUID;
+BEGIN
+    IF p_resource_id IS NULL THEN
+        RETURN NULL;
+    END IF;
+    SELECT revision_id INTO r_id FROM resource WHERE id = p_resource_id;
+    RETURN r_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 3. Revision Immutability: prevent reverting to DRAFT, protect all metadata & timestamps
 CREATE OR REPLACE FUNCTION trg_check_revision_immutability()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -21,15 +117,18 @@ BEGIN
             RAISE EXCEPTION 'ARCHIVED curriculum revision cannot change status';
         END IF;
 
-        -- Metadata is strictly immutable, even when transitioning from PUBLISHED to ARCHIVED
-        IF OLD.title <> NEW.title
-           OR OLD.description <> NEW.description
-           OR OLD.authors <> NEW.authors
-           OR OLD.provenance <> NEW.provenance
-           OR OLD.checksum <> NEW.checksum
-           OR OLD.version <> NEW.version
-           OR OLD.curriculum_id <> NEW.curriculum_id THEN
-            RAISE EXCEPTION '% curriculum revision is immutable and cannot be modified', OLD.status;
+        -- Metadata, published_at, and created_at are strictly immutable across any update
+        -- (including when transitioning from PUBLISHED to ARCHIVED)
+        IF OLD.title IS DISTINCT FROM NEW.title
+           OR OLD.description IS DISTINCT FROM NEW.description
+           OR OLD.authors IS DISTINCT FROM NEW.authors
+           OR OLD.provenance IS DISTINCT FROM NEW.provenance
+           OR OLD.checksum IS DISTINCT FROM NEW.checksum
+           OR OLD.version IS DISTINCT FROM NEW.version
+           OR OLD.curriculum_id IS DISTINCT FROM NEW.curriculum_id
+           OR OLD.published_at IS DISTINCT FROM NEW.published_at
+           OR OLD.created_at IS DISTINCT FROM NEW.created_at THEN
+            RAISE EXCEPTION '% curriculum revision is immutable and its metadata/timestamps cannot be modified', OLD.status;
         END IF;
     END IF;
     RETURN NEW;
@@ -42,7 +141,7 @@ BEFORE UPDATE ON curriculum_revision
 FOR EACH ROW
 EXECUTE FUNCTION trg_check_revision_immutability();
 
--- 2. Revision Delete Protection
+-- 4. Revision Delete Protection
 CREATE OR REPLACE FUNCTION trg_check_revision_delete()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -59,17 +158,15 @@ BEFORE DELETE ON curriculum_revision
 FOR EACH ROW
 EXECUTE FUNCTION trg_check_revision_delete();
 
--- 3. Phase Immutability
-CREATE OR REPLACE FUNCTION trg_check_phase_parent_immutable()
+-- 5. Phase Immutability (guards both OLD and NEW on UPDATE)
+CREATE OR REPLACE FUNCTION trg_check_phase_immutable()
 RETURNS TRIGGER AS $$
-DECLARE
-    target_rev_id UUID;
-    rev_status VARCHAR(20);
 BEGIN
-    target_rev_id := COALESCE(NEW.revision_id, OLD.revision_id);
-    SELECT status INTO rev_status FROM curriculum_revision WHERE id = target_rev_id;
-    IF rev_status IN ('PUBLISHED', 'ARCHIVED') THEN
-        RAISE EXCEPTION 'Cannot insert, update, or delete phases of a % curriculum revision', rev_status;
+    IF TG_OP IN ('UPDATE', 'DELETE') THEN
+        PERFORM check_revision_immutable_by_id(OLD.revision_id, 'modify or delete phase of');
+    END IF;
+    IF TG_OP IN ('INSERT', 'UPDATE') THEN
+        PERFORM check_revision_immutable_by_id(NEW.revision_id, 'insert or reassign phase to');
     END IF;
     RETURN COALESCE(NEW, OLD);
 END;
@@ -79,23 +176,17 @@ DROP TRIGGER IF EXISTS trg_phase_immutable ON curriculum_phase;
 CREATE TRIGGER trg_phase_immutable
 BEFORE INSERT OR UPDATE OR DELETE ON curriculum_phase
 FOR EACH ROW
-EXECUTE FUNCTION trg_check_phase_parent_immutable();
+EXECUTE FUNCTION trg_check_phase_immutable();
 
--- 4. Week Immutability
-CREATE OR REPLACE FUNCTION trg_check_week_parent_immutable()
+-- 6. Week Immutability (guards both OLD and NEW on UPDATE)
+CREATE OR REPLACE FUNCTION trg_check_week_immutable()
 RETURNS TRIGGER AS $$
-DECLARE
-    target_phase_id UUID;
-    rev_status VARCHAR(20);
 BEGIN
-    target_phase_id := COALESCE(NEW.phase_id, OLD.phase_id);
-    SELECT r.status INTO rev_status
-    FROM curriculum_phase p
-    JOIN curriculum_revision r ON r.id = p.revision_id
-    WHERE p.id = target_phase_id;
-
-    IF rev_status IN ('PUBLISHED', 'ARCHIVED') THEN
-        RAISE EXCEPTION 'Cannot insert, update, or delete weeks of a % curriculum revision', rev_status;
+    IF TG_OP IN ('UPDATE', 'DELETE') THEN
+        PERFORM check_revision_immutable_by_id(get_revision_id_by_phase(OLD.phase_id), 'modify or delete week of');
+    END IF;
+    IF TG_OP IN ('INSERT', 'UPDATE') THEN
+        PERFORM check_revision_immutable_by_id(get_revision_id_by_phase(NEW.phase_id), 'insert or reassign week to');
     END IF;
     RETURN COALESCE(NEW, OLD);
 END;
@@ -105,24 +196,17 @@ DROP TRIGGER IF EXISTS trg_week_immutable ON curriculum_week;
 CREATE TRIGGER trg_week_immutable
 BEFORE INSERT OR UPDATE OR DELETE ON curriculum_week
 FOR EACH ROW
-EXECUTE FUNCTION trg_check_week_parent_immutable();
+EXECUTE FUNCTION trg_check_week_immutable();
 
--- 5. Lesson Immutability
-CREATE OR REPLACE FUNCTION trg_check_lesson_parent_immutable()
+-- 7. Lesson Immutability (guards both OLD and NEW on UPDATE)
+CREATE OR REPLACE FUNCTION trg_check_lesson_immutable()
 RETURNS TRIGGER AS $$
-DECLARE
-    target_week_id UUID;
-    rev_status VARCHAR(20);
 BEGIN
-    target_week_id := COALESCE(NEW.week_id, OLD.week_id);
-    SELECT r.status INTO rev_status
-    FROM curriculum_week w
-    JOIN curriculum_phase p ON p.id = w.phase_id
-    JOIN curriculum_revision r ON r.id = p.revision_id
-    WHERE w.id = target_week_id;
-
-    IF rev_status IN ('PUBLISHED', 'ARCHIVED') THEN
-        RAISE EXCEPTION 'Cannot insert, update, or delete lessons of a % curriculum revision', rev_status;
+    IF TG_OP IN ('UPDATE', 'DELETE') THEN
+        PERFORM check_revision_immutable_by_id(get_revision_id_by_week(OLD.week_id), 'modify or delete lesson of');
+    END IF;
+    IF TG_OP IN ('INSERT', 'UPDATE') THEN
+        PERFORM check_revision_immutable_by_id(get_revision_id_by_week(NEW.week_id), 'insert or reassign lesson to');
     END IF;
     RETURN COALESCE(NEW, OLD);
 END;
@@ -132,25 +216,17 @@ DROP TRIGGER IF EXISTS trg_lesson_immutable ON lesson;
 CREATE TRIGGER trg_lesson_immutable
 BEFORE INSERT OR UPDATE OR DELETE ON lesson
 FOR EACH ROW
-EXECUTE FUNCTION trg_check_lesson_parent_immutable();
+EXECUTE FUNCTION trg_check_lesson_immutable();
 
--- 6. Activity Immutability
-CREATE OR REPLACE FUNCTION trg_check_activity_parent_immutable()
+-- 8. Activity Immutability (guards both OLD and NEW on UPDATE)
+CREATE OR REPLACE FUNCTION trg_check_activity_immutable()
 RETURNS TRIGGER AS $$
-DECLARE
-    target_lesson_id UUID;
-    rev_status VARCHAR(20);
 BEGIN
-    target_lesson_id := COALESCE(NEW.lesson_id, OLD.lesson_id);
-    SELECT r.status INTO rev_status
-    FROM lesson l
-    JOIN curriculum_week w ON w.id = l.week_id
-    JOIN curriculum_phase p ON p.id = w.phase_id
-    JOIN curriculum_revision r ON r.id = p.revision_id
-    WHERE l.id = target_lesson_id;
-
-    IF rev_status IN ('PUBLISHED', 'ARCHIVED') THEN
-        RAISE EXCEPTION 'Cannot insert, update, or delete activities of a % curriculum revision', rev_status;
+    IF TG_OP IN ('UPDATE', 'DELETE') THEN
+        PERFORM check_revision_immutable_by_id(get_revision_id_by_lesson(OLD.lesson_id), 'modify or delete activity of');
+    END IF;
+    IF TG_OP IN ('INSERT', 'UPDATE') THEN
+        PERFORM check_revision_immutable_by_id(get_revision_id_by_lesson(NEW.lesson_id), 'insert or reassign activity to');
     END IF;
     RETURN COALESCE(NEW, OLD);
 END;
@@ -160,19 +236,17 @@ DROP TRIGGER IF EXISTS trg_activity_immutable ON activity;
 CREATE TRIGGER trg_activity_immutable
 BEFORE INSERT OR UPDATE OR DELETE ON activity
 FOR EACH ROW
-EXECUTE FUNCTION trg_check_activity_parent_immutable();
+EXECUTE FUNCTION trg_check_activity_immutable();
 
--- 7. Resource Immutability
-CREATE OR REPLACE FUNCTION trg_check_resource_parent_immutable()
+-- 9. Resource Immutability (guards both OLD and NEW on UPDATE)
+CREATE OR REPLACE FUNCTION trg_check_resource_immutable()
 RETURNS TRIGGER AS $$
-DECLARE
-    target_rev_id UUID;
-    rev_status VARCHAR(20);
 BEGIN
-    target_rev_id := COALESCE(NEW.revision_id, OLD.revision_id);
-    SELECT status INTO rev_status FROM curriculum_revision WHERE id = target_rev_id;
-    IF rev_status IN ('PUBLISHED', 'ARCHIVED') THEN
-        RAISE EXCEPTION 'Cannot insert, update, or delete resources of a % curriculum revision', rev_status;
+    IF TG_OP IN ('UPDATE', 'DELETE') THEN
+        PERFORM check_revision_immutable_by_id(OLD.revision_id, 'modify or delete resource of');
+    END IF;
+    IF TG_OP IN ('INSERT', 'UPDATE') THEN
+        PERFORM check_revision_immutable_by_id(NEW.revision_id, 'insert or reassign resource to');
     END IF;
     RETURN COALESCE(NEW, OLD);
 END;
@@ -182,26 +256,19 @@ DROP TRIGGER IF EXISTS trg_resource_immutable ON resource;
 CREATE TRIGGER trg_resource_immutable
 BEFORE INSERT OR UPDATE OR DELETE ON resource
 FOR EACH ROW
-EXECUTE FUNCTION trg_check_resource_parent_immutable();
+EXECUTE FUNCTION trg_check_resource_immutable();
 
--- 8. Activity-Resource Link Immutability
+-- 10. Activity-Resource Link Immutability (guards both OLD and NEW on UPDATE)
 CREATE OR REPLACE FUNCTION trg_check_activity_resource_immutable()
 RETURNS TRIGGER AS $$
-DECLARE
-    target_act_id UUID;
-    rev_status VARCHAR(20);
 BEGIN
-    target_act_id := COALESCE(NEW.activity_id, OLD.activity_id);
-    SELECT r.status INTO rev_status
-    FROM activity a
-    JOIN lesson l ON l.id = a.lesson_id
-    JOIN curriculum_week w ON w.id = l.week_id
-    JOIN curriculum_phase p ON p.id = w.phase_id
-    JOIN curriculum_revision r ON r.id = p.revision_id
-    WHERE a.id = target_act_id;
-
-    IF rev_status IN ('PUBLISHED', 'ARCHIVED') THEN
-        RAISE EXCEPTION 'Cannot insert, update, or delete activity-resource links of a % curriculum revision', rev_status;
+    IF TG_OP IN ('UPDATE', 'DELETE') THEN
+        PERFORM check_revision_immutable_by_id(get_revision_id_by_activity(OLD.activity_id), 'modify or delete activity-resource link of');
+        PERFORM check_revision_immutable_by_id(get_revision_id_by_resource(OLD.resource_id), 'modify or delete activity-resource link of');
+    END IF;
+    IF TG_OP IN ('INSERT', 'UPDATE') THEN
+        PERFORM check_revision_immutable_by_id(get_revision_id_by_activity(NEW.activity_id), 'insert or reassign activity-resource link to');
+        PERFORM check_revision_immutable_by_id(get_revision_id_by_resource(NEW.resource_id), 'insert or reassign activity-resource link to');
     END IF;
     RETURN COALESCE(NEW, OLD);
 END;
@@ -213,7 +280,7 @@ BEFORE INSERT OR UPDATE OR DELETE ON activity_resource
 FOR EACH ROW
 EXECUTE FUNCTION trg_check_activity_resource_immutable();
 
--- 9. Curriculum Delete Protection when Published Revision Exists
+-- 11. Curriculum Delete Protection when Published Revision Exists
 CREATE OR REPLACE FUNCTION trg_check_curriculum_delete()
 RETURNS TRIGGER AS $$
 DECLARE

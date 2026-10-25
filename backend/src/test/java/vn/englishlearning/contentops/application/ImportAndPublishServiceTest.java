@@ -290,7 +290,8 @@ class ImportAndPublishServiceTest {
   }
 
   @Test
-  @DisplayName("Pilot curriculum activities without orderIndex are normalized sequentially (1, 2, 3, 4...)")
+  @DisplayName(
+      "Pilot curriculum activities without orderIndex are normalized sequentially (1, 2, 3, 4...)")
   void pilotActivitiesHaveSequentialOrder() {
     importPackage_newCurriculumAndRevision_success();
     org.mockito.ArgumentCaptor<Activity> activities =

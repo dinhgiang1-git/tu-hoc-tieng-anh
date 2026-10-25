@@ -125,6 +125,58 @@ class ContentPackageValidatorTest {
     assertThat(result.errors()).anyMatch(e -> e.message().contains("Duplicate activity key"));
   }
 
+  @Test
+  @DisplayName("Rejects package when root resources.json is a symlink pointing outside package")
+  void rootResourcesSymlinkMustBeRejected(@TempDir Path dir) throws Exception {
+    Path source = Paths.get("../content/pilot-curriculum/v1").toRealPath();
+    Path pkg = dir.resolve("package");
+    Files.createDirectories(pkg);
+    copyDirectory(source, pkg);
+
+    Path outside = dir.resolve("outside-resources.json");
+    Files.copy(pkg.resolve("resources.json"), outside);
+    Files.delete(pkg.resolve("resources.json"));
+    try {
+      Files.createSymbolicLink(pkg.resolve("resources.json"), outside);
+    } catch (Exception e) {
+      org.junit.jupiter.api.Assumptions.abort(
+          "OS environment does not support creating symbolic links: " + e.getMessage());
+    }
+
+    ValidationResult result = validator.validate(pkg);
+    assertThat(result.hasErrors())
+        .as("Root resources.json symlink pointing outside package must be rejected")
+        .isTrue();
+    assertThat(result.errors())
+        .anyMatch(err -> err.message().contains("symlink") || err.message().contains("outside"));
+  }
+
+  @Test
+  @DisplayName("Rejects package when root manifest.json is a symlink pointing outside package")
+  void rootManifestSymlinkMustBeRejected(@TempDir Path dir) throws Exception {
+    Path source = Paths.get("../content/pilot-curriculum/v1").toRealPath();
+    Path pkg = dir.resolve("package");
+    Files.createDirectories(pkg);
+    copyDirectory(source, pkg);
+
+    Path outside = dir.resolve("outside-manifest.json");
+    Files.copy(pkg.resolve("manifest.json"), outside);
+    Files.delete(pkg.resolve("manifest.json"));
+    try {
+      Files.createSymbolicLink(pkg.resolve("manifest.json"), outside);
+    } catch (Exception e) {
+      org.junit.jupiter.api.Assumptions.abort(
+          "OS environment does not support creating symbolic links: " + e.getMessage());
+    }
+
+    ValidationResult result = validator.validate(pkg);
+    assertThat(result.hasErrors())
+        .as("Root manifest.json symlink pointing outside package must be rejected")
+        .isTrue();
+    assertThat(result.errors())
+        .anyMatch(err -> err.message().contains("symlink") || err.message().contains("outside"));
+  }
+
   private void copyDirectory(Path source, Path target) throws IOException {
     try (var stream = Files.walk(source)) {
       stream.forEach(

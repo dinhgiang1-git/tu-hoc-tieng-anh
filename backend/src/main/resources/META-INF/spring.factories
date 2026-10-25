@@ -1,0 +1,2 @@
+org.springframework.boot.env.EnvironmentPostProcessor=\
+  vn.englishlearning.contentops.cli.CliEnvironmentPostProcessor

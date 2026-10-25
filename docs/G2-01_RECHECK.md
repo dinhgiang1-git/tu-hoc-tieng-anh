@@ -1,5 +1,18 @@
 # G2-01 — kiểm tra bản sửa sau review
 
+## Kết luận mới nhất — Đã đạt (25/10/2026)
+
+Codex đã đọc bản sửa và chạy độc lập `mvnw.cmd -o -B -ntp verify` với JDK 21.0.10: **BUILD SUCCESS, 38 unit tests + 15 integration tests, 0 failures/errors/skips**, Spotless đạt. Log local: `backend/target/review-g2-verify.log`.
+
+PostgreSQL 16.15 chạy trong Testcontainers biệt lập. Lượt này không chạy import/publish hoặc sửa dữ liệu trong container PostgreSQL dùng chung của người dùng.
+
+- R1/R2/R4: regression DB target CLI, thứ tự activity và đường dẫn gói nội dung đều đạt trong suite.
+- R3: trigger kiểm tra cả OLD và NEW, bảo vệ published_at/created_at bằng so sánh null-safe. Integration kiểm tra chuyển phase/lesson published sang draft, chuyển week draft sang published, sửa timestamp/metadata, xóa nội dung/link/revision và xác nhận draft vẫn sửa/xóa được.
+- Rollback: trigger thử nghiệm gây lỗi khi insert activity ở lesson thứ hai, sau các lần ghi trước đó. Test xác nhận revision mới không tồn tại sau lỗi; trigger thử nghiệm được dọn trong finally.
+- Pilot import đủ 6 lessons/21 activities, import lặp không nhân đôi, publish thành công; CLI import dùng DB Testcontainers được chỉ định tường minh.
+
+**Chốt G2-01, không yêu cầu thêm vòng sửa cho các finding bên dưới.** G2-02 catalog/outline đã có mã ở workspace nhưng chưa được nghiệm thu trong kết luận này. Các mục phía dưới là lịch sử review trước khi sửa.
+
 Ngày kiểm tra: 25/10/2026 (Asia/Ho_Chi_Minh).
 
 ## Kết quả

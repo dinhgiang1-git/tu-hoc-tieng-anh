@@ -144,6 +144,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <!-- docker-java must use an API supported by Docker Engine 29. -->
+                        <api.version>1.44</api.version>
+                        <!-- Windows sandbox TEMP paths can exceed Unix socket path limits. -->
+                        <jdk.net.unixdomain.tmpdir>${project.build.directory}</jdk.net.unixdomain.tmpdir>
+                    </systemPropertyVariables>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
