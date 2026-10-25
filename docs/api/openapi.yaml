@@ -1100,7 +1100,7 @@ components:
 
     CurriculumDetailResponse:
       type: object
-      required: [id, slug, title, description, targetLocale, revision]
+      required: [id, slug, title, description, targetLocale, authors, provenance, revision]
       properties:
         id:
           type: string
@@ -1115,6 +1115,28 @@ components:
           type: string
         revision:
           $ref: '#/components/schemas/RevisionOutlineResponse'
+        authors:
+          type: array
+          items:
+            type: string
+        provenance:
+          $ref: '#/components/schemas/CurriculumProvenanceResponse'
+
+    CurriculumProvenanceResponse:
+      type: object
+      required: [sourceName, sourceUrl, sourceLicense, authorCompiled, verificationStatus]
+      properties:
+        sourceName:
+          type: string
+        sourceUrl:
+          type: [string, 'null']
+        sourceLicense:
+          type: string
+        authorCompiled:
+          type: boolean
+        verificationStatus:
+          type: string
+          enum: [UNVERIFIED_DRAFT, LINK_CHECKED, PEDAGOGICALLY_REVIEWED]
 
     RevisionOutlineResponse:
       type: object

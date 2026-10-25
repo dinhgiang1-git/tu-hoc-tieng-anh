@@ -598,6 +598,16 @@ export interface components {
             description: string;
             targetLocale: string;
             revision: components["schemas"]["RevisionOutlineResponse"];
+            authors: string[];
+            provenance: components["schemas"]["CurriculumProvenanceResponse"];
+        };
+        CurriculumProvenanceResponse: {
+            sourceName: string;
+            sourceUrl: string | null;
+            sourceLicense: string;
+            authorCompiled: boolean;
+            /** @enum {string} */
+            verificationStatus: "UNVERIFIED_DRAFT" | "LINK_CHECKED" | "PEDAGOGICALLY_REVIEWED";
         };
         RevisionOutlineResponse: {
             /** Format: uuid */

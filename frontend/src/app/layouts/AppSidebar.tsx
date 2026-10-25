@@ -97,9 +97,9 @@ export function AppSidebar({ isOpen, onClose, collapsed }: AppSidebarProps) {
     },
     {
       title: "Lộ trình học",
-      href: "/curriculum",
+        href: "/curricula",
       icon: BookOpen,
-      match: location.pathname.startsWith("/curriculum"),
+        match: location.pathname.startsWith("/curricula"),
     },
     {
       title: "Lịch học",

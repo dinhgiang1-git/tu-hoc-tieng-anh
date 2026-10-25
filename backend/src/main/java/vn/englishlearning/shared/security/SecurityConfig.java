@@ -92,6 +92,12 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/auth/csrf")
                     .permitAll()
+                    .requestMatchers(
+                        HttpMethod.GET,
+                        "/api/v1/curricula",
+                        "/api/v1/curricula/*",
+                        "/api/v1/revisions/*/outline")
+                    .permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/v1/auth/login")
                     .permitAll()
                     .requestMatchers("/api/v1/auth/logout")

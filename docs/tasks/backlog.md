@@ -176,22 +176,35 @@
 ---
 
 ### Task G2-02: API Catalog, Outline & Màn hình Danh mục / Chi tiết Lộ trình
+- **Trạng thái:** [x] Codex nghiệm thu ngày 25/10/2026: 48 backend unit tests + 21 PostgreSQL integration tests + 33 frontend tests đạt. Xem [G2-02_REVIEW](../G2-02_REVIEW.md).
 - **Mục tiêu:** Cung cấp API và giao diện để người học xem danh sách lộ trình sẵn có, chi tiết các giai đoạn, tuần học và danh sách buổi học mà không tải toàn bộ nội dung bài viết nặng.
 - **Đầu vào:** Task G2-01, `openapi.yaml`, `wireframes.md`.
-- **Phạm vi:**
+- **Phạm vi & Triển khai thực tế:**
   * Backend:
-    * `GET /api/v1/curricula`: danh sách lộ trình có revision Published.
-    * `GET /api/v1/curricula/{slug}`: chi tiết lộ trình kèm thông tin tác giả, chuẩn ngữ âm (`en-GB`), mục tiêu.
-    * `GET /api/v1/revisions/{id}/outline`: mục lục nhẹ phân cấp (Phase $\rightarrow$ Week $\rightarrow$ Lesson).
+    - [CurriculumCatalogController](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/api/CurriculumCatalogController.java): REST endpoints `/api/v1/curricula`, `/api/v1/curricula/{slug}`, `/api/v1/revisions/{revisionId}/outline` public (`permitAll()`).
+    - [CatalogResponses](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/api/CatalogResponses.java): DTO records khớp chuẩn OpenAPI (`CurriculumSummaryResponse`, `CurriculumDetailResponse`, `RevisionOutlineResponse`, `PhaseOutlineDto`, `WeekOutlineDto`, `LessonOutlineDto`). `LessonOutlineDto` chiếu nhẹ (`id, key, title, orderIndex, estimatedMinutes, required`), tuyệt đối không chứa `content_markdown`, activity payloads hoặc đáp án trắc nghiệm.
+    - [CurriculumCatalogQueryService](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/application/CurriculumCatalogQueryService.java): Điều phối truy vấn danh mục, parse JSON tác giả và provenance, dựng cấu trúc phân cấp phase $\rightarrow$ week $\rightarrow$ lesson với thứ tự ổn định (`LinkedHashMap`). Xử lý không tìm thấy bằng `DomainException(RESOURCE_NOT_FOUND)`.
+    - [CurriculumCatalogRepository](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/main/java/vn/englishlearning/curriculum/infrastructure/CurriculumCatalogRepository.java): Truy vấn tối ưu PostgreSQL: `listPublished()` dùng `DISTINCT ON (c.id)` lấy revision `PUBLISHED` mới nhất; `outline` dùng đúng 3 câu truy vấn phẳng (phases, weeks, lessons theo `revision_id`), gom nhóm in-memory, triệt tiêu hoàn toàn vấn đề N+1 query. Chặn mọi revision `DRAFT` (truy vấn lọc nghiêm ngặt `r.status = 'PUBLISHED'`).
   * Frontend:
-    * Trang Danh mục Lộ trình (`/curricula`).
-    * Trang Chi tiết Lộ trình (`/curricula/:slug`): Accordion các giai đoạn và tuần học, danh sách buổi học với thời lượng ước tính và huy hiệu [Bắt buộc] / [Tùy chọn].
-    * Hiển thị rõ nguồn gốc giáo trình và chuẩn phát âm Anh-Anh.
-- **Tiêu chí nghiệm thu (DoD):**
-  1. Hiển thị đúng Lộ trình Thử nghiệm (Pilot) với 1 tuần nội dung hoàn chỉnh (và hiển thị tuần nháp phác thảo ở trạng thái dự kiến nếu có).
-  2. Bấm mở từng tuần hiển thị danh sách các buổi học kèm thời lượng ước tính; không lộ trước đáp án hoặc nội dung chi tiết.
-  3. Lộ trình chưa publish không xuất hiện trên catalog.
-  4. UI có trạng thái Skeleton loading và Error state có nút retry.
+    - [curricula.api.ts](file:///d:/WorkSpace/tu-hoc-tieng-anh/frontend/src/features/curricula/api/curricula.api.ts): API client và TanStack Query keys (`list`, `detail`, `outline`).
+    - [CurriculaPage](file:///d:/WorkSpace/tu-hoc-tieng-anh/frontend/src/features/curricula/pages/CurriculaPage.tsx): Trang danh mục lộ trình tại `/curricula`, có Skeleton loading (`role="status"`), ErrorState có nút thử lại, Empty state khi chưa có lộ trình xuất bản, danh sách thẻ lộ trình với huy hiệu `Anh-Anh · en-GB`, phiên bản `v1.0.0` và liên kết chi tiết.
+    - [CurriculumDetailPage](file:///d:/WorkSpace/tu-hoc-tieng-anh/frontend/src/features/curricula/pages/CurriculumDetailPage.tsx): Trang chi tiết lộ trình tại `/curricula/:slug`, có Skeleton loading, phân biệt lỗi 404 ("Lộ trình không tồn tại hoặc chưa được xuất bản.") và lỗi mạng có nút thử lại, hiển thị trung thực xuất xứ giáo trình (`UNVERIFIED_DRAFT` hiển thị "Nguồn tham khảo chưa được xác minh", không mô tả là đã xác minh), accordion các giai đoạn và tuần học (`<details open>`), thời lượng từng buổi và huy hiệu `[Bắt buộc]` / `[Tùy chọn]`.
+    - [router.tsx](file:///d:/WorkSpace/tu-hoc-tieng-anh/frontend/src/app/router.tsx): Khai báo route `/curricula`, `/curricula/:slug` và redirect tương thích từ `/curriculum` sang `/curricula`.
+    - [AppSidebar.tsx](file:///d:/WorkSpace/tu-hoc-tieng-anh/frontend/src/app/layouts/AppSidebar.tsx): Mục điều hướng "Lộ trình học" trỏ tới `/curricula`.
+- **Tiêu chí nghiệm thu (DoD) & Bằng chứng kiểm thử:**
+  1. *Hiển thị đúng Lộ trình Thử nghiệm (Pilot) với 1 tuần nội dung hoàn chỉnh:* Đạt. Pilot curriculum hiển thị 1 phase, 1 tuần, 6 lessons (5 bắt buộc, 1 tùy chọn; tổng 135 phút).
+  2. *Bấm mở từng tuần hiển thị danh sách các buổi học kèm thời lượng ước tính; không lộ trước đáp án hoặc nội dung chi tiết:* Đạt. `LessonOutlineDto` và endpoint outline không chứa `content_markdown`, payload hoặc đáp án; FE hiển thị đầy đủ thời lượng và huy hiệu.
+  3. *Lộ trình chưa publish không xuất hiện trên catalog:* Đạt. Truy vấn BE lọc `r.status = 'PUBLISHED'`; draft slug và draft revision outline trả về 404 Problem Details (`RESOURCE_NOT_FOUND`).
+  4. *UI có trạng thái Skeleton loading và Error state có nút retry:* Đạt. Cả hai trang có Skeleton loading và Error state với callback `refetch()`.
+- **Kết quả kiểm thử thực tế:**
+  * Backend Spotless: `.\mvnw.cmd spotless:check` đạt 77/77 files clean.
+  * Backend Unit Tests: `.\mvnw.cmd test "-Dtest=CurriculumCatalogQueryServiceTest,CurriculumCatalogControllerTest"` đạt **10/10 tests passed** (5 query service + 5 controller).
+  * Backend All Unit Tests: `.\mvnw.cmd test "-Dtest=!*IT"` đạt **48/48 tests passed** (0 failures, 0 errors).
+  * Backend Testcontainers Integration Test: [CurriculumCatalogIT](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/test/java/vn/englishlearning/curriculum/CurriculumCatalogIT.java) đã sẵn sàng 6 kịch bản kiểm thử (draft không xuất hiện/404, pilot published 1 phase/1 tuần/6 lessons, outline không rò rỉ markdown/đáp án, 404 Problem Details, sắp xếp ổn định, truy vấn phẳng không N+1). Codex đã chạy cả 6 kịch bản trên PostgreSQL Testcontainers: đạt. Tổng integration backend là 21 tests, không skip; phép đếm xác nhận 4 truy vấn cho endpoint outline (1 metadata + 3 truy vấn phẳng).
+  * Frontend Tests: `npm test -- --run` đạt **33/33 tests passed** (4 suites, bao gồm 9 tests trong `Curricula.test.tsx` phủ loading, empty, error/retry, pilot detail, provenance honesty, accordion, badges, redirect).
+  * Frontend Typecheck: `npm run typecheck` đạt (0 errors).
+  * Frontend Lint: `npm run lint` đạt (oxlint: 0 errors, 0 warnings).
+  * Frontend Build: `npm run build` đạt (Vite production bundle thành công).
 
 ---
 

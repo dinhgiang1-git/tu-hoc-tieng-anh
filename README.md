@@ -8,12 +8,12 @@ Dự án ứng dụng web tự học tiếng Anh theo lộ trình có cấu trú
 
 ## 1. Trạng thái Dự án
 
-- **Giai đoạn hiện tại:** **G2-01 đã chốt**. Codex kiểm tra độc lập backend: 38 unit tests và 15 integration tests PostgreSQL Testcontainers đạt, không skip; xem [kết luận G2-01](docs/G2-01_RECHECK.md). FE G1-03 đã chốt trước đó. G2-02 catalog/outline đang triển khai và chờ review.
+- **Giai đoạn hiện tại:** **G2-02 đã chốt**. Codex kiểm tra độc lập: 48 backend unit tests, 21 PostgreSQL integration tests và 33 frontend tests đạt. TypeScript, lint và build đạt; xem [nghiệm thu G2-02](docs/G2-02_REVIEW.md).
   - `[x]` **Task G1-01:** Khảo sát DB, Khởi tạo Backend Spring Boot 3.4.3 + Java 21, Flyway migration, Clock bean, Problem Details RFC 7807, Healthcheck.
   - `[x]` **Task G1-02:** Xác thực Session (HttpOnly cookie `SESSION`), CSRF Protection (`X-CSRF-TOKEN`), Module Identity (`/auth/csrf`, `/auth/login`, `/auth/logout`, `/me`, `/me/preferences`), xử lý triệt để A1/A2/A3, regression tests trên Testcontainers.
   - `[x]` **Task G1-03:** Khởi tạo Frontend React 19 + TypeScript Vite Shell, Tailwind CSS tokens, UI primitives, API client (CSRF in-memory adapter, Problem Details decoder), AppShell, AppSidebar (responsive mobile drawer + desktop collapse) & Login/Logout flow.
-- **Mục tiêu tiếp theo:** **G2-02 — Catalog và Outline**.
-- **Phạm vi tiếp theo:** [G2-02_HANDOFF.md](docs/tasks/G2-02_HANDOFF.md). FE G1-03 đạt 24/24 tests ở lượt nghiệm thu trước; xem [kết luận G1-03](docs/G1-03_RECHECK.md).
+- **Mục tiêu tiếp theo:** **G3-01 — Enrollment, lịch ban đầu và trang Hôm nay**.
+- **Phạm vi tiếp theo:** [backlog G3](docs/tasks/backlog.md). Các giai đoạn trước đã chốt; giới hạn kiểm tra UI và cảnh báo bundle được ghi trong báo cáo nghiệm thu G2-02.
 - **Mốc quan trọng hướng tới:** **M1** (Dùng thử vòng học cốt lõi hàng ngày với Lộ trình Thử nghiệm sau G3).
 
 ---
