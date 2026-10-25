@@ -174,6 +174,59 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         .body(problem);
   }
 
+  @ExceptionHandler(org.springframework.dao.OptimisticLockingFailureException.class)
+  public ResponseEntity<ProblemDetail> handleOptimisticLockingFailure(
+      org.springframework.dao.OptimisticLockingFailureException ex, HttpServletRequest request) {
+    ProblemDetail problem =
+        ProblemFactory.create(
+            ErrorCode.VERSION_CONFLICT,
+            ErrorCode.VERSION_CONFLICT.getDefaultDetail(),
+            request.getRequestURI());
+    return ResponseEntity.status(ErrorCode.VERSION_CONFLICT.getStatus())
+        .contentType(PROBLEM_JSON_MEDIA_TYPE)
+        .body(problem);
+  }
+
+  @ExceptionHandler(org.springframework.transaction.TransactionSystemException.class)
+  public ResponseEntity<ProblemDetail> handleTransactionSystemException(
+      org.springframework.transaction.TransactionSystemException ex, HttpServletRequest request) {
+    Throwable rootCause = ex.getRootCause();
+    if (rootCause instanceof org.hibernate.StaleObjectStateException
+        || rootCause instanceof org.springframework.dao.OptimisticLockingFailureException
+        || (rootCause != null
+            && rootCause.getMessage() != null
+            && rootCause
+                .getMessage()
+                .contains("Row was updated or deleted by another transaction"))) {
+      ProblemDetail problem =
+          ProblemFactory.create(
+              ErrorCode.VERSION_CONFLICT,
+              ErrorCode.VERSION_CONFLICT.getDefaultDetail(),
+              request.getRequestURI());
+      return ResponseEntity.status(ErrorCode.VERSION_CONFLICT.getStatus())
+          .contentType(PROBLEM_JSON_MEDIA_TYPE)
+          .body(problem);
+    }
+    return handleGenericException(ex, request);
+  }
+
+  @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+  public ResponseEntity<ProblemDetail> handleDataIntegrityViolation(
+      org.springframework.dao.DataIntegrityViolationException ex, HttpServletRequest request) {
+    ErrorCode errorCode = ErrorCode.STATE_CONFLICT;
+    String detail = errorCode.getDefaultDetail();
+    if (ex.getMessage() != null
+        && (ex.getMessage().contains("uq_enrollment_activity_progress_idx")
+            || ex.getMessage().contains("activity_progress"))) {
+      errorCode = ErrorCode.VERSION_CONFLICT;
+      detail = "Dữ liệu đã thay đổi do thao tác đồng thời. Hãy tải lại trước khi lưu.";
+    }
+    ProblemDetail problem = ProblemFactory.create(errorCode, detail, request.getRequestURI());
+    return ResponseEntity.status(errorCode.getStatus())
+        .contentType(PROBLEM_JSON_MEDIA_TYPE)
+        .body(problem);
+  }
+
   @ExceptionHandler(DomainException.class)
   public ResponseEntity<ProblemDetail> handleDomainException(
       DomainException ex, HttpServletRequest request) {

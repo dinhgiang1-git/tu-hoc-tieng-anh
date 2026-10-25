@@ -371,6 +371,41 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundProblem'
 
+  /enrollments/{enrollmentId}/lessons/{lessonId}/activities:
+    get:
+      summary: Lấy danh sách nhiệm vụ của buổi học theo enrollment
+      description: >
+        Read model nhẹ để UI thao tác nhiệm vụ trong G3-02.
+        Trả envelope lessonId, enrollmentVersion, activities[].
+        Mỗi activity có id, title, type, required, completionPolicy, status, responseText nullable.
+        Không chứa Markdown hoặc payload quiz.
+      operationId: getLessonActivities
+      tags: [Learning]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Danh sách nhiệm vụ của buổi học kèm tiến độ của người học
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonActivitiesResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
   /enrollments/{enrollmentId}/activities/{activityId}/progress:
     put:
       summary: Cập nhật trạng thái hoàn thành nhiệm vụ thủ công (Complete / Undo)
@@ -1482,6 +1517,45 @@ components:
         isRequired:
           type: boolean
           example: true
+
+    LessonActivitiesResponse:
+      type: object
+      required: [lessonId, enrollmentVersion, activities]
+      properties:
+        lessonId:
+          type: string
+          format: uuid
+        enrollmentVersion:
+          type: integer
+          format: int64
+          example: 1
+        activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/LessonActivityItemDto'
+
+    LessonActivityItemDto:
+      type: object
+      required: [id, title, type, required, completionPolicy, status, responseText]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          example: 'Nghe và quan sát khẩu hình âm /i:/'
+        type:
+          $ref: '#/components/schemas/ActivityType'
+        required:
+          type: boolean
+          example: true
+        completionPolicy:
+          $ref: '#/components/schemas/CompletionPolicy'
+        status:
+          $ref: '#/components/schemas/ActivityStatus'
+        responseText:
+          type: [string, "null"]
+          example: null
 
     LessonDetailResponse:
       type: object

@@ -260,26 +260,48 @@
 ---
 
 ### Task G3-02: Cập nhật Tiến độ Nhiệm vụ (Complete / Undo), Nộp Phản tư & Tóm tắt Tiến độ
-- **Trạng thái:** Sẵn sàng triển khai theo [G3-02_HANDOFF.md](G3-02_HANDOFF.md). G3-01 đã chốt tại 3af9d1e; công nhân sửa tối đa hai lượt cho cùng finding.
-- **Mục tiêu:** Người học hoàn thành từng nhiệm vụ hoặc nộp phản tư, hệ thống tính toán lại tiến độ nguyên tử, hỗ trợ hoàn tác và đồng bộ qua phiên với optimistic lock.
-- **Đầu vào:** `product-rules.md` (Mục 4, 6), `BE_CODE_CONVENTION.md` (Mục 6.1), `openapi.yaml`.
-- **Phạm vi:**
-  * Backend:
-    * `PUT /api/v1/enrollments/{id}/activities/{activityId}/progress`: nhận status (`COMPLETED` / `IN_PROGRESS`) và `expectedVersion`.
-    * `POST /api/v1/enrollments/{id}/activities/{activityId}/response/submit`: nộp câu trả lời phản tư bắt buộc text kèm `expectedVersion`, lưu câu trả lời và đánh dấu `COMPLETED` trong cùng 1 transaction nguyên tử, trả về `ProgressResponse`.
-    * Cập nhật `activity_progress`, ghi `learning_event`, tăng `enrollmentVersion`.
-    * Tự động kiểm tra hoàn thành Buổi học và hoàn thành Lộ trình.
-    * Xử lý Undo khi enrollment đang `COMPLETED` (quay lại `ACTIVE` an toàn).
-    * `GET /api/v1/enrollments/{id}/summary`: trả về số lượng và phần trăm chính xác kèm `enrollmentVersion`.
-  * Frontend:
-    * Hook `useUpdateProgress`: gửi mutation, xử lý pending, cập nhật TanStack Query cache.
-    * Hook `useSubmitReflection`: gửi mutation nộp phản tư kèm expectedVersion.
-    * Huy hiệu trạng thái và thanh tiến độ tổng thể.
-- **Tiêu chí nghiệm thu (DoD):**
-  1. Bấm hoàn thành nhiệm vụ $\rightarrow$ tải lại trang $\rightarrow$ trạng thái vẫn được giữ nguyên `COMPLETED`.
-  2. Bấm hoàn thành liên tiếp hai lần không làm tăng gấp đôi số đếm trong learning event (idempotent).
-  3. Bấm Bỏ hoàn thành (Undo) $\rightarrow$ tiến độ buổi học và lộ trình giảm tương ứng.
-  4. Mở 2 tab cùng sửa 1 nhiệm vụ: tab thao tác sau bị từ chối 409 `VERSION_CONFLICT`, hiển thị thông báo tải lại trang; sau khi fetch lại `GET /enrollments/{id}`, tab có thể tiếp tục với version mới nhất.
+- **Trạng thái:** [x] Codex nghiệm thu ngày 26/10/2026: 113 unit + 42 PostgreSQL integration + 68 frontend tests đạt. R1/R2 đã đóng sau lượt sửa 1 và Codex tự sửa phần đồng bộ còn sót; xem [G3-02_RECHECK.md](../G3-02_RECHECK.md).
+- **Mục tiêu:** Người học hoàn thành từng nhiệm vụ hoặc nộp phản tư, hệ thống tính toán lại tiến độ nguyên tử, hỗ trợ hoàn tác và đồng bộ qua phiên với optimistic lock (`expectedVersion`).
+- **Đầu vào:** `product-rules.md` (Mục 4, 6), `BE_CODE_CONVENTION.md` (Mục 6.1), `openapi.yaml`, `docs/tasks/G3-02_HANDOFF.md`, `docs/G3-02_REVIEW.md`.
+- **Khắc phục Review R1 & R2:**
+  * **R1 (Backend - Version Increment & Concurrent Serialization):**
+    - `EnrollmentRepository`: Bổ sung `@Modifying(flushAutomatically = true) @Query("UPDATE Enrollment e SET e.version = :newVersion, e.status = :status, e.completedAt = :completedAt, e.updatedAt = :now WHERE e.id = :id AND e.version = :expectedVersion") int updateVersionAndState(...)`. Câu lệnh JPQL có điều kiện nguyên tử cập nhật version tăng đúng 1 đơn vị bất kể clock có tiến hay đóng băng (`now == updatedAt`), đồng thời trả về số dòng bị tác động.
+    - `LearningProgressService`: Trong `updateProgress` và `submitResponse`, tính toán trạng thái mục tiêu (`targetEnrollmentStatus`, `targetCompletedAt`) trong biến cục bộ mà không gán lên entity đang được quản lý (tránh Hibernate auto-flush sớm làm nhảy version trước khi so khớp); tách entity khỏi persistence context (`entityManager.detach(enrollment)`) rồi gọi `updateVersionAndState`. Nếu `updatedRows == 0`, ném ngay `DomainException(ErrorCode.VERSION_CONFLICT)`. Trả về `newVersion` chuẩn xác trong `ProgressResponse`.
+    - Concurrency & Serialization: Trong `updateProgress`, khi undo activity bắt buộc trên enrollment `COMPLETED`, hệ thống serialize trên hàng user (`userRepository.findByIdForUpdate(currentUserId)`), ngăn chặn race condition giữa việc tạo enrollment mới và undo reopening, trả về 409 `STATE_CONFLICT` thay vì 500.
+    - Test Suite Regression R1: Bổ sung 5 regression tests trên PostgreSQL Testcontainers trong [LearningProgressIT.java](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/test/java/vn/englishlearning/learning/LearningProgressIT.java) (tổng cộng 11 tests):
+      1. `testMeaningfulChangeAdvancesVersionWhenClockDoesNotAdvance`: Đồng hồ đóng băng vẫn tăng version từ 1 lên 2 khi hoàn thành activity.
+      2. `testNoOpDoesNotAdvanceVersionWhenClockDoesNotAdvance`: No-op với matching version không tăng version và không sinh event dư thừa.
+      3. `testSubmitResponseAdvancesVersionWhenClockDoesNotAdvance`: Nộp response mới tăng version khi đồng hồ đóng băng; nộp lại text y hệt là no-op không tăng version.
+      4. `testConcurrentMutationsOnDifferentActivitiesWithSameExpectedVersion`: Hai luồng đồng thời gọi PUT trên hai activity khác nhau với cùng expectedVersion $\rightarrow$ duy nhất 1 luồng commit thành công (200), luồng còn lại nhận 409 `VERSION_CONFLICT`.
+      5. `testConcurrentRaceBetweenCreateEnrollmentAndUndoCompletedEnrollment`: Race condition giữa tạo enrollment mới và undo reopening được serialize trên user lock, trả về 409 `STATE_CONFLICT` mà không sinh 500.
+  * **R2 (Frontend - Safe Synchronization, Draft Retention, Error Recovery & Lifecycle Guards):**
+    - `useLearningProgress.ts`: Trong `useUpdateProgress` và `useSubmitReflection`, cập nhật đồng bộ Query Cache (`activities` và `summary`) bằng dữ liệu trả về từ `ProgressResponse` ngay trong `onSuccess`, sau đó `await queryClient.invalidateQueries(...)` qua `activities`, `summary`, `today`, `detail`, và `my-enrollments`.
+    - `ActivityProgressPanel.tsx`:
+      * Khai báo cờ đồng bộ `isSyncing = updateProgressMutation.isPending || submitReflectionMutation.isPending || activitiesQuery.isFetching`. Khóa toàn bộ nút bấm, checkbox, textarea khi `isSyncing || isEnrollmentReadOnly || isConflict` để chặn stale version mutation.
+      * Xử lý lỗi 409: Phân biệt rõ `VERSION_CONFLICT` và `STATE_CONFLICT`. Khi gặp `VERSION_CONFLICT`, giữ nguyên toàn bộ nội dung phản tư trong `draftEdits`, khóa nút gửi và hiển thị nút «Tải lại trạng thái mới nhất» (`activitiesQuery.refetch()`). Không bao giờ tự động resubmit khi chưa có sự xác nhận của người dùng.
+      * Banner phục hồi: Khi background refetch gặp lỗi (`activitiesQuery.isError && activitiesQuery.data`), hiển thị banner cảnh báo kèm nút «Thử lại».
+    - `LessonSummaryPage.tsx`:
+      * Hiển thị Skeleton loading cho đến khi cả `lessonSummaryQuery` và `enrollmentDetailQuery` hoàn tất; hiển thị ErrorState và nút thử lại khi `enrollmentDetailQuery.isError`.
+      * Khóa toàn bộ tương tác ghi (read-only) khi enrollment ở trạng thái `PAUSED` hoặc `ABANDONED`.
+      * Duy trì quyền Undo hợp lệ khi enrollment ở trạng thái `COMPLETED` (`isReadOnly = false`).
+    - Test Suite Regression R2: Bổ sung [G302Review.test.tsx](file:///d:/WorkSpace/tu-hoc-tieng-anh/frontend/src/features/learning/__tests__/G302Review.test.tsx) với 7 unit tests mô phỏng chính xác các kịch bản của reviewer.
+- **Tiêu chí nghiệm thu (DoD) & Bằng chứng kiểm thử thực tế:**
+  1. *Backend Spotless:* `.\mvnw.cmd spotless:check` đạt **117/117 files clean**.
+  2. *Backend Unit Tests:* `.\mvnw.cmd test "-Dtest=!*IT"` đạt **113/113 tests passed** (0 failures, 0 errors, bao gồm 24 tests trong `LearningProgressServiceTest`).
+  3. *Backend Integration Tests (PostgreSQL 16 Testcontainers):*
+     - `.\mvnw.cmd verify "-Dtest=!*" "-Dsurefire.failIfNoSpecifiedTests=false" "-Dit.test=*IT" "-Dapi.version=1.44"` đạt **42/42 tests passed** (0 failures, 0 errors) trên container PostgreSQL 16.15-alpine biệt lập:
+       * [LearningProgressIT.java](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/test/java/vn/englishlearning/learning/LearningProgressIT.java): **11/11 tests passed** (bao gồm 6 tests ban đầu + 5 regression tests cho R1).
+       * [EnrollmentAndTodayIT.java](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/test/java/vn/englishlearning/enrollment/EnrollmentAndTodayIT.java): **10/10 tests passed**.
+       * [CurriculumCatalogIT.java](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/test/java/vn/englishlearning/curriculum/CurriculumCatalogIT.java): **5/5 tests passed**.
+       * [CurriculumImportPublishIT.java](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/test/java/vn/englishlearning/curriculum/CurriculumImportPublishIT.java): **5/5 tests passed**.
+       * [AuthAndIdentityIT.java](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/test/java/vn/englishlearning/identity/AuthAndIdentityIT.java): **10/10 tests passed**.
+       * [EnglishLearningApplicationIT.java](file:///d:/WorkSpace/tu-hoc-tieng-anh/backend/src/test/java/vn/englishlearning/EnglishLearningApplicationIT.java): **1/1 test passed**.
+  4. *Frontend Tests:* `npm test -- --run` đạt **66/66 tests passed** trên 10 test files (bao gồm 7 tests trong `G302Review.test.tsx`, 5 tests trong `ActivityProgressPanel.test.tsx`, 2 tests trong `LessonSummaryPage.test.tsx`).
+  5. *Frontend Typecheck:* `npm run typecheck` đạt (**0 errors**).
+  6. *Frontend Lint:* `npm run lint` đạt (**0 errors**, 1 warning thông tin đã biết về `form.watch` trong `EnrollmentDialog`).
+  7. *Frontend Build:* `npm run build` đạt (Vite production bundle thành công trong 1.19s).
+  8. *OpenAPI Contract Validation:* `node scripts/validate-openapi-examples.js` thành công.
+  9. *Ràng buộc môi trường:* Không sửa `V001`–`V005` (dùng `V006`), không chạm dev DB `localhost:5432`, không sửa `.env`, không commit/push Git.
 
 ---
 

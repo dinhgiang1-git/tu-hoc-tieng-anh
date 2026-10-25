@@ -16,6 +16,9 @@ public interface ActivityProgressRepository extends JpaRepository<ActivityProgre
 
   Optional<ActivityProgress> findByEnrollmentIdAndActivityId(UUID enrollmentId, UUID activityId);
 
+  List<ActivityProgress> findByEnrollmentIdAndActivityIdIn(
+      UUID enrollmentId, Collection<UUID> activityIds);
+
   List<ActivityProgress> findByEnrollmentIdAndStatusIn(
       UUID enrollmentId, Collection<ActivityStatus> statuses);
 

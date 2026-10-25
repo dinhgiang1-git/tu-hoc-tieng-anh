@@ -11,6 +11,8 @@ public enum ErrorCode {
       HttpStatus.NOT_FOUND, "Tài nguyên không tồn tại hoặc không thuộc quyền sở hữu."),
   VALIDATION_FAILED(HttpStatus.BAD_REQUEST, "Dữ liệu yêu cầu không hợp lệ."),
   INVALID_REQUEST(HttpStatus.BAD_REQUEST, "Yêu cầu không hợp lệ hoặc sai định dạng payload."),
+  RESPONSE_REQUIRED(
+      HttpStatus.BAD_REQUEST, "Nhiệm vụ yêu cầu nhập câu trả lời trước khi hoàn thành."),
   AUTHENTICATION_REQUIRED(HttpStatus.UNAUTHORIZED, "Yêu cầu đăng nhập để thực hiện thao tác."),
   INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "Tên đăng nhập hoặc mật khẩu không chính xác."),
   FORBIDDEN(HttpStatus.FORBIDDEN, "Bạn không có quyền truy cập tài nguyên này."),

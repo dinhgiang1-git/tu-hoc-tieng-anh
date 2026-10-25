@@ -7,6 +7,7 @@ import {
   enrollmentApi,
   type LessonSummaryResponse,
 } from "@/features/enrollment/api/enrollment.api";
+import { learningProgressApi } from "../api/learning-progress.api";
 import { ApiError } from "@/lib/api/api-error";
 
 function createTestQueryClient() {
@@ -44,7 +45,7 @@ describe("LessonSummaryPage", () => {
     );
   };
 
-  it("renders lesson summary with real lesson data and friendly notice", async () => {
+  it("renders lesson summary with real lesson data and activity panel", async () => {
     const mockSummary: LessonSummaryResponse = {
       enrollmentId: "e1111111-1111-1111-1111-111111111111",
       lessonId: "l1111111-1111-1111-1111-111111111111",
@@ -56,6 +57,34 @@ describe("LessonSummaryPage", () => {
     };
 
     vi.spyOn(enrollmentApi, "getLessonSummary").mockResolvedValue(mockSummary);
+    vi.spyOn(enrollmentApi, "getDetail").mockResolvedValue({
+      id: "e1111111-1111-1111-1111-111111111111",
+      userId: "u1111111-1111-1111-1111-111111111111",
+      curriculumId: "c1111111-1111-1111-1111-111111111111",
+      revisionId: "r1111111-1111-1111-1111-111111111111",
+      status: "ACTIVE",
+      startDate: "2026-10-26",
+      timeZone: "Asia/Ho_Chi_Minh",
+      studyDays: ["MONDAY", "WEDNESDAY", "FRIDAY"],
+      dailyTargetMinutes: 30,
+      version: 1,
+    });
+
+    vi.spyOn(learningProgressApi, "getLessonActivities").mockResolvedValue({
+      lessonId: "l1111111-1111-1111-1111-111111111111",
+      enrollmentVersion: 1,
+      activities: [
+        {
+          id: "act-1",
+          title: "Đọc lý thuyết âm /i:/",
+          type: "READING",
+          required: true,
+          completionPolicy: "MANUAL_CHECK",
+          status: "NOT_STARTED",
+          responseText: null,
+        },
+      ],
+    });
 
     renderPage(
       "e1111111-1111-1111-1111-111111111111",
@@ -69,17 +98,9 @@ describe("LessonSummaryPage", () => {
       ).toBeInTheDocument();
       expect(screen.getByText("2026-10-26")).toBeInTheDocument();
       expect(screen.getByText("25 phút")).toBeInTheDocument();
-      expect(screen.getByText("Bắt buộc")).toBeInTheDocument();
-      expect(
-        screen.getByText(
-          "Không gian học tập tương tác chi tiết đang chuẩn bị ra mắt",
-        ),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(
-          "Nội dung học chi tiết và bài tập tương tác sẽ sớm được cập nhật trong phiên bản tiếp theo.",
-        ),
-      ).toBeInTheDocument();
+      expect(screen.getAllByText("Bắt buộc").length).toBeGreaterThanOrEqual(1);
+      expect(screen.getByText("Nhiệm vụ học tập (1)")).toBeInTheDocument();
+      expect(screen.getByText("Đọc lý thuyết âm /i:/")).toBeInTheDocument();
       expect(
         screen.getByRole("link", { name: /Quay lại trang Hôm nay/i }),
       ).toBeInTheDocument();

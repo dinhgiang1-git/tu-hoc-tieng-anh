@@ -40,4 +40,16 @@ public interface ActivityRepository extends JpaRepository<Activity, UUID> {
   List<ActivitySummaryDto> findActivitySummariesByRevisionIds(
       @org.springframework.data.repository.query.Param("revisionIds")
           java.util.Collection<UUID> revisionIds);
+
+  @org.springframework.data.jpa.repository.Query(
+      """
+      SELECT new vn.englishlearning.curriculum.infrastructure.ActivityProjectionDto(
+          a.id, a.lesson.id, a.orderIndex, a.title, a.activityType, a.isRequired, a.completionPolicy
+      )
+      FROM Activity a
+      WHERE a.lesson.id = :lessonId
+      ORDER BY a.orderIndex ASC, a.id ASC
+      """)
+  List<ActivityProjectionDto> findActivityProjectionsByLessonId(
+      @org.springframework.data.repository.query.Param("lessonId") UUID lessonId);
 }

@@ -267,6 +267,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/enrollments/{enrollmentId}/lessons/{lessonId}/activities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lấy danh sách nhiệm vụ của buổi học theo enrollment
+         * @description Read model nhẹ để UI thao tác nhiệm vụ trong G3-02. Trả envelope lessonId, enrollmentVersion, activities[]. Mỗi activity có id, title, type, required, completionPolicy, status, responseText nullable. Không chứa Markdown hoặc payload quiz.
+         */
+        get: operations["getLessonActivities"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/enrollments/{enrollmentId}/activities/{activityId}/progress": {
         parameters: {
             query?: never;
@@ -825,6 +845,29 @@ export interface components {
             plannedDate?: string | null;
             /** @example true */
             isRequired: boolean;
+        };
+        LessonActivitiesResponse: {
+            /** Format: uuid */
+            lessonId: string;
+            /**
+             * Format: int64
+             * @example 1
+             */
+            enrollmentVersion: number;
+            activities: components["schemas"]["LessonActivityItemDto"][];
+        };
+        LessonActivityItemDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example Nghe và quan sát khẩu hình âm /i:/ */
+            title: string;
+            type: components["schemas"]["ActivityType"];
+            /** @example true */
+            required: boolean;
+            completionPolicy: components["schemas"]["CompletionPolicy"];
+            status: components["schemas"]["ActivityStatus"];
+            /** @example null */
+            responseText: string | null;
         };
         LessonDetailResponse: {
             /** Format: uuid */
@@ -1407,6 +1450,31 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["LessonSummaryResponse"];
+                };
+            };
+            401: components["responses"]["UnauthorizedProblem"];
+            404: components["responses"]["NotFoundProblem"];
+        };
+    };
+    getLessonActivities: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                enrollmentId: string;
+                lessonId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Danh sách nhiệm vụ của buổi học kèm tiến độ của người học */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LessonActivitiesResponse"];
                 };
             };
             401: components["responses"]["UnauthorizedProblem"];
