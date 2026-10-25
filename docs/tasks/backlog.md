@@ -211,11 +211,12 @@
 ## 4. Chi tiết Backlog Giai đoạn G3 — Vòng học Cốt lõi có Lưu Tiến độ (Mốc M1)
 
 ### Task G3-01: Đăng ký Lộ trình (Enrollment), Lịch ban đầu & Trang "Hôm nay"
+- **Trạng thái:** Sẵn sàng triển khai; phạm vi, quyết định và DoD tại [G3-01_HANDOFF.md](G3-01_HANDOFF.md).
 - **Mục tiêu:** Người học bấm đăng ký lộ trình, hệ thống sinh lịch học ban đầu và hiển thị hành động chính trên trang "Hôm nay" theo đúng quy tắc ưu tiên và 8 trạng thái.
 - **Đầu vào:** `product-rules.md` (Mục 5), `openapi.yaml`, Task G2-02.
 - **Phạm vi:**
   * Backend:
-    * Flyway migration `V004__create_enrollment_and_learning_tables.sql` (`enrollment`, `lesson_schedule`, `activity_progress`, `learning_event`).
+    * Flyway migration kế tiếp `V005__create_enrollment_and_learning_tables.sql` (`enrollment`, `lesson_schedule`, `activity_progress`, `learning_event` và idempotency nếu cần); V004 đã dùng cho bất biến nội dung.
     * Service `CreateEnrollmentService`: nhận ngày bắt đầu, timezone, studyDays, phân bổ 1 buổi bắt buộc cho 1 ngày học, hỗ trợ Idempotency-Key.
     * `GET /api/v1/me/today`: truy vấn bài theo 8 trạng thái (`NO_ENROLLMENT`, `PAUSED`, `IN_PROGRESS`, `DUE_TODAY`, `REST_DAY`, `OVERDUE`, `UPCOMING`, `CURRICULUM_COMPLETED`).
     * `GET /api/v1/enrollments/{enrollmentId}`: trả về chi tiết enrollment kèm `enrollmentVersion` để khôi phục phiên sau khi tải lại.
