@@ -13,7 +13,7 @@ Dự án ứng dụng web tự học tiếng Anh theo lộ trình có cấu trú
   - `[x]` **Task G1-02:** Xác thực Session (HttpOnly cookie `SESSION`), CSRF Protection (`X-CSRF-TOKEN`), Module Identity (`/auth/csrf`, `/auth/login`, `/auth/logout`, `/me`, `/me/preferences`), xử lý triệt để A1/A2/A3, regression tests trên Testcontainers.
   - `[x]` **Task G1-03:** Khởi tạo Frontend React 19 + TypeScript Vite Shell, Tailwind CSS tokens, UI primitives, API client (CSRF in-memory adapter, Problem Details decoder), AppShell, AppSidebar (responsive mobile drawer + desktop collapse) & Login/Logout flow.
 - **Mục tiêu tiếp theo:** **G3-02 — Tiến độ nhiệm vụ, hoàn tác và nộp phản tư**.
-- **Phạm vi tiếp theo:** [backlog G3](docs/tasks/backlog.md). G3-01 đã có đăng ký, lịch ban đầu, Today và tóm tắt bài chỉ đọc; chưa có workspace học/ghi tiến độ đầy đủ. Giới hạn kiểm tra UI và cảnh báo bundle được ghi trong báo cáo nghiệm thu G3-01.
+- **Phạm vi tiếp theo:** [giao việc G3-02](docs/tasks/G3-02_HANDOFF.md), đối chiếu [backlog G3](docs/tasks/backlog.md). G3-01 đã có đăng ký, lịch ban đầu, Today và tóm tắt bài chỉ đọc; chưa có workspace học/ghi tiến độ đầy đủ. Giới hạn kiểm tra UI và cảnh báo bundle được ghi trong báo cáo nghiệm thu G3-01.
 - **Mốc quan trọng hướng tới:** **M1** (Dùng thử vòng học cốt lõi hàng ngày với Lộ trình Thử nghiệm sau G3).
 
 ---

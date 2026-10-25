@@ -260,6 +260,7 @@
 ---
 
 ### Task G3-02: Cập nhật Tiến độ Nhiệm vụ (Complete / Undo), Nộp Phản tư & Tóm tắt Tiến độ
+- **Trạng thái:** Sẵn sàng triển khai theo [G3-02_HANDOFF.md](G3-02_HANDOFF.md). G3-01 đã chốt tại 3af9d1e; công nhân sửa tối đa hai lượt cho cùng finding.
 - **Mục tiêu:** Người học hoàn thành từng nhiệm vụ hoặc nộp phản tư, hệ thống tính toán lại tiến độ nguyên tử, hỗ trợ hoàn tác và đồng bộ qua phiên với optimistic lock.
 - **Đầu vào:** `product-rules.md` (Mục 4, 6), `BE_CODE_CONVENTION.md` (Mục 6.1), `openapi.yaml`.
 - **Phạm vi:**
