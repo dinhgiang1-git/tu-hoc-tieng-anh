@@ -306,6 +306,8 @@
 ---
 
 ### Task G3-03: Không gian Học tập (Learning Workspace), Trình đọc Markdown & Ghi chú Tự lưu
+- **Trạng thái:** [ ] Đã chuẩn bị [G3-03_HANDOFF.md](G3-03_HANDOFF.md), chờ AI công nhân triển khai và Codex nghiệm thu. Baseline G3-02: `6c784b4`.
+- **Quyết định triển khai:** Handoff chốt contract draft có enrollment expectedVersion, note version riêng, một note cấp lesson/enrollment cho workspace, autosave serialize 700ms và giữ/chặn rời trang khi còn bản nháp chưa lưu. Dùng handoff để cụ thể hóa phạm vi bên dưới.
 - **Mục tiêu:** Màn hình học bài chi tiết tập trung, đọc Markdown an toàn, chuyển đổi giữa các nhiệm vụ, nhập câu trả lời thực hành (lưu nháp và nộp) và ghi chú tự lưu (autosave).
 - **Đầu vào:** `wireframes.md` (Mục 4), `FE_CODE_CONVENTION.md` (Mục 8), `openapi.yaml`.
 - **Phạm vi:**
