@@ -29,6 +29,15 @@ cd D:\WorkSpace\tu-hoc-tieng-anh\backend
 
 Máy cần cấu hình JDK 21 qua JAVA_HOME. Backend dùng profile `dev` mặc định và tự đọc `backend/.env` khi chạy từ thư mục `backend`. Lần đầu ở máy mới, copy `backend/.env.example` thành `backend/.env`, sửa DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD cho đúng PostgreSQL.
 
+**Khởi tạo tài khoản lần đầu:** chạy từ thư mục gốc dự án trước khi khởi động backend:
+
+```powershell
+cd D:\WorkSpace\tu-hoc-tieng-anh
+.\scripts\initialize-admin.ps1
+```
+
+Script tạo mật khẩu ngẫu nhiên và lưu `BOOTSTRAP_ADMIN_USERNAME=admin`, `BOOTSTRAP_ADMIN_PASSWORD` trong `backend/.env`; giữ nguyên cấu hình DB và mật khẩu bootstrap đã có. Mở file này để lấy thông tin đăng nhập. Script chỉ chuẩn bị cấu hình: backend tạo tài khoản và thiết lập học tập khi khởi động với bảng người dùng trống. Nếu backend đang chạy, dừng bằng `Ctrl+C` rồi chạy lại `mvnw.cmd spring-boot:run` từ `backend`. File `.env` ở thư mục gốc không được đọc khi chạy từ `backend`.
+
 Để tạo admin ở database trống, thêm BOOTSTRAP_ADMIN_USERNAME=admin và BOOTSTRAP_ADMIN_PASSWORD=<mật khẩu tự chọn> vào `.env` trước khi khởi động. Nếu đã có người dùng, bootstrap không đặt lại mật khẩu. `.env` dùng định dạng KEY=value, không dùng `export` hoặc đặt SPRING_PROFILES_ACTIVE trong file này. Biến môi trường đã đặt trong terminal có ưu tiên cao hơn `.env`. File `.env` bị Git bỏ qua và không được push lên GitHub.
 
 Chờ log `Started EnglishLearningApplication`. Kiểm tra [health](http://localhost:8080/actuator/health) có trạng thái `UP`.
@@ -47,7 +56,7 @@ Frontend proxy `/api` và `/actuator` tới `http://localhost:8080`. Nếu đổ
 
 ## 4. Phạm vi hiện tại và dừng ứng dụng
 
-Hiện có giao diện shell, đăng nhập/đăng xuất và trang chủ nền tảng. Chưa có toàn bộ chức năng học theo lộ trình. Không cần import/publish nội dung để xem giao diện. G2-01 còn chờ hoàn tất kiểm tra bất biến nội dung và integration trên PostgreSQL biệt lập.
+Hiện có giao diện shell, đăng nhập/đăng xuất và trang chủ nền tảng. Chưa có toàn bộ chức năng học theo lộ trình. Không cần import/publish nội dung để xem giao diện. G2-01 đã qua kiểm tra bất biến nội dung và integration trên PostgreSQL biệt lập; G2-02 catalog/outline đang chờ nghiệm thu.
 
 Dừng backend/frontend bằng `Ctrl+C` trong từng terminal. Không cần dừng PostgreSQL nếu ứng dụng khác đang dùng chung container.
 

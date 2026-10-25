@@ -8,12 +8,12 @@ Dự án ứng dụng web tự học tiếng Anh theo lộ trình có cấu trú
 
 ## 1. Trạng thái Dự án
 
-- **Giai đoạn hiện tại:** **FE G1-03 đã chốt; G2-01 đang sửa sau review**. Backend integration còn chờ Docker để xác minh lại; chưa ghi nhận toàn bộ G1 đã được kiểm chứng runtime. Mã G2-01 hiện được lưu như một checkpoint, chưa được duyệt hoàn tất; xem [review G2-01](docs/G2-01_REVIEW.md). Các thay đổi sửa lỗi sau review cần được kiểm tra lại.
+- **Giai đoạn hiện tại:** **G2-01 đã chốt**. Codex kiểm tra độc lập backend: 38 unit tests và 15 integration tests PostgreSQL Testcontainers đạt, không skip; xem [kết luận G2-01](docs/G2-01_RECHECK.md). FE G1-03 đã chốt trước đó. G2-02 catalog/outline đang triển khai và chờ review.
   - `[x]` **Task G1-01:** Khảo sát DB, Khởi tạo Backend Spring Boot 3.4.3 + Java 21, Flyway migration, Clock bean, Problem Details RFC 7807, Healthcheck.
   - `[x]` **Task G1-02:** Xác thực Session (HttpOnly cookie `SESSION`), CSRF Protection (`X-CSRF-TOKEN`), Module Identity (`/auth/csrf`, `/auth/login`, `/auth/logout`, `/me`, `/me/preferences`), xử lý triệt để A1/A2/A3, regression tests trên Testcontainers.
   - `[x]` **Task G1-03:** Khởi tạo Frontend React 19 + TypeScript Vite Shell, Tailwind CSS tokens, UI primitives, API client (CSRF in-memory adapter, Problem Details decoder), AppShell, AppSidebar (responsive mobile drawer + desktop collapse) & Login/Logout flow.
-- **Mục tiêu tiếp theo:** **G2 — Gói Nội dung & Danh mục Lộ trình (Bắt đầu với Task G2-01)**.
-- **Giao việc tiếp theo:** [G2-01_HANDOFF.md](docs/tasks/G2-01_HANDOFF.md). FE hiện đạt 24/24 tests; xem [kết luận G1-03](docs/G1-03_RECHECK.md).
+- **Mục tiêu tiếp theo:** **G2-02 — Catalog và Outline**.
+- **Phạm vi tiếp theo:** [G2-02_HANDOFF.md](docs/tasks/G2-02_HANDOFF.md). FE G1-03 đạt 24/24 tests ở lượt nghiệm thu trước; xem [kết luận G1-03](docs/G1-03_RECHECK.md).
 - **Mốc quan trọng hướng tới:** **M1** (Dùng thử vòng học cốt lõi hàng ngày với Lộ trình Thử nghiệm sau G3).
 
 ---
@@ -38,10 +38,12 @@ Lệnh trên thực hiện toàn bộ:
 3. Integration tests (`*IT.java`) chạy trên database PostgreSQL cô lập (12 test cases kiểm tra CSRF, Session Fixation A1, PATCH partial update A2, User Isolation).
 
 ### 2.3. Cấu hình Biến môi trường Backend (.env)
-Sao chép `.env.example` thành `.env` để chạy local development:
-```bash
-cp .env.example .env
+Sao chép cấu hình vào `backend/.env`, sửa kết nối DB, rồi tạo thông tin đăng nhập ban đầu (PowerShell, từ thư mục gốc):
+```powershell
+Copy-Item backend/.env.example backend/.env # Chỉ chạy nếu chưa có backend/.env
+.\scripts\initialize-admin.ps1
 ```
+Mở `backend/.env` để lấy username/password đã tạo. Khởi động backend từ thư mục `backend`; cần khởi động lại nếu vừa bổ sung cấu hình. Xem [hướng dẫn chạy](docs/HUONG_DAN_CHAY.md).
 Các biến chính:
 - `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`: Thông tin kết nối PostgreSQL dev.
 - `BOOTSTRAP_ADMIN_USERNAME`, `BOOTSTRAP_ADMIN_PASSWORD`: Khởi tạo tài khoản admin đầu tiên lúc bootstrap nếu database trống.

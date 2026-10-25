@@ -59,7 +59,11 @@ public class BootstrapUserRunner implements CommandLineRunner {
     }
 
     if (bootstrapPassword == null || bootstrapPassword.isBlank()) {
-      log.info("No BOOTSTRAP_ADMIN_PASSWORD specified. Skipping bootstrap user creation.");
+      log.warn(
+          "No users exist and BOOTSTRAP_ADMIN_PASSWORD is missing. Login is unavailable. "
+              + "Run scripts/initialize-admin.ps1 from the project root, or set "
+              + "BOOTSTRAP_ADMIN_USERNAME and BOOTSTRAP_ADMIN_PASSWORD in backend/.env, "
+              + "then restart the backend from the backend directory.");
       return;
     }
 
