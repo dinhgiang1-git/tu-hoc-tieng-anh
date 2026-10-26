@@ -367,7 +367,7 @@
 
 - **G4 — Lịch cá nhân Linh hoạt & Đổi lịch (2–4 ngày):**
   * G4-01: [x] Codex nghiệm thu luồng chính ngày 26/10/2026 theo quy trình nhanh: 31 BE unit liên quan + 10 FE schedule tests + 3 E2E thật đạt, build/lint qua; JUnit PostgreSQL IT vướng loopback môi trường, hoãn kiểm tra lại cuối G4. Chi tiết [G4-01_IMPLEMENTATION.md](../G4-01_IMPLEMENTATION.md). Tiếp theo G4-02.
-  * G4-02: Quy trình Đổi lịch 2 bước (Preview & Commit) có kiểm tra version conflict.
+  * G4-02: [ ] Đã chuẩn bị [G4-02_HANDOFF.md](G4-02_HANDOFF.md): preview/confirm đổi lịch, giữ buổi đã xong, transaction/version/idempotency. Chờ triển khai/nghiệm thu theo quy trình nhanh, baseline `aca84d7`.
   * G4-03: Tính năng Tạm dừng (Pause) và Tiếp tục (Resume) lộ trình trong 1 transaction.
 - **G5 — Quiz & Ôn tập Tối thiểu (3–5 ngày):**
   * G5-01: Model câu hỏi trắc nghiệm, server chấm điểm tự động, chính sách `ON_SUBMIT` vs `PASS_SCORE`.
