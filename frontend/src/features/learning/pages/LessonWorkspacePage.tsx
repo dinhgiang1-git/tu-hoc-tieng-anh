@@ -19,7 +19,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { ApiError } from "@/lib/api/api-error";
-import { enrollmentApi, enrollmentKeys } from "@/features/enrollment/api/enrollment.api";
+import { enrollmentApi, enrollmentKeys, scheduleKeys } from "@/features/enrollment/api/enrollment.api";
 import { learningProgressKeys } from "@/features/learning/api/learning-progress.api";
 import { todayKeys } from "@/features/learning/api/today.api";
 import {
@@ -288,7 +288,10 @@ function LessonWorkspaceContent() {
         learningWorkspaceKeys.lesson(enrollmentId, lessonId),
         learningProgressKeys.summary(enrollmentId),
         learningProgressKeys.activities(enrollmentId, lessonId),
-        todayKeys.all, enrollmentKeys.detail(enrollmentId), enrollmentKeys.my(),
+        todayKeys.all,
+        enrollmentKeys.detail(enrollmentId),
+        enrollmentKeys.my(),
+        scheduleKeys.byEnrollment(enrollmentId),
       ].map(queryKey => queryClient.invalidateQueries({ queryKey }, { throwOnError: true })));
       const refreshed = queryClient.getQueryData<{ enrollmentVersion: number }>(
         learningWorkspaceKeys.lesson(enrollmentId, lessonId));

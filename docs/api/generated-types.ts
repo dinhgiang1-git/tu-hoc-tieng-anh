@@ -751,6 +751,11 @@ export interface components {
              * @example 1
              */
             version: number;
+            /**
+             * Format: date
+             * @example 2026-11-20
+             */
+            estimatedEndDate?: string | null;
         };
         EnrollmentSummaryResponse: {
             /** Format: uuid */
@@ -1003,6 +1008,7 @@ export interface components {
             /** Format: date */
             originalDate: string;
             isCompleted: boolean;
+            isOverdue: boolean;
         };
         SchedulePreviewRequest: {
             /** Format: date */
@@ -1764,6 +1770,7 @@ export interface operations {
                     "application/json": components["schemas"]["LessonScheduleResponse"][];
                 };
             };
+            400: components["responses"]["BadRequestProblem"];
             401: components["responses"]["UnauthorizedProblem"];
             404: components["responses"]["NotFoundProblem"];
         };

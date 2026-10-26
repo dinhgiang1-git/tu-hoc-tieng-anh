@@ -5,6 +5,7 @@ export type EnrollmentResponse = components["schemas"]["EnrollmentResponse"];
 export type EnrollmentDetailResponse = components["schemas"]["EnrollmentDetailResponse"];
 export type EnrollmentSummaryResponse = components["schemas"]["EnrollmentSummaryResponse"];
 export type LessonSummaryResponse = components["schemas"]["LessonSummaryResponse"];
+export type LessonScheduleResponse = components["schemas"]["LessonScheduleResponse"];
 export type CreateEnrollmentRequest = components["schemas"]["CreateEnrollmentRequest"];
 export type DayOfWeek = components["schemas"]["DayOfWeek"];
 
@@ -14,6 +15,13 @@ export const enrollmentKeys = {
   my: () => ["enrollments", "me"] as const,
   lessonSummary: (enrollmentId: string, lessonId: string) =>
     ["enrollments", enrollmentId, "lessons", lessonId, "summary"] as const,
+};
+
+export const scheduleKeys = {
+  all: ["schedules"] as const,
+  byEnrollment: (enrollmentId: string) => ["schedules", enrollmentId] as const,
+  list: (enrollmentId: string, from?: string, to?: string) =>
+    ["schedules", enrollmentId, { from, to }] as const,
 };
 
 export const enrollmentApi = {
@@ -57,5 +65,21 @@ export const enrollmentApi = {
         signal,
       },
     );
+  },
+
+  async getSchedule(
+    enrollmentId: string,
+    params?: { from?: string; to?: string },
+    signal?: AbortSignal,
+  ): Promise<LessonScheduleResponse[]> {
+    const searchParams = new URLSearchParams();
+    if (params?.from) searchParams.set("from", params.from);
+    if (params?.to) searchParams.set("to", params.to);
+    const query = searchParams.toString();
+    const url = `/enrollments/${enrollmentId}/schedule${query ? `?${query}` : ""}`;
+    return apiRequest<LessonScheduleResponse[]>(url, {
+      method: "GET",
+      signal,
+    });
   },
 };

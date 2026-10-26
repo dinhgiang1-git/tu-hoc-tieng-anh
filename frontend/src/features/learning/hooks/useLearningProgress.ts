@@ -8,7 +8,7 @@ import {
   type SubmitResponseRequest,
 } from "../api/learning-progress.api";
 import { todayKeys } from "../api/today.api";
-import { enrollmentKeys } from "@/features/enrollment/api/enrollment.api";
+import { enrollmentKeys, scheduleKeys } from "@/features/enrollment/api/enrollment.api";
 
 export function useLessonActivities(enrollmentId: string, lessonId: string) {
   return useQuery<LessonActivitiesResponse>({
@@ -89,6 +89,9 @@ export function useUpdateProgress(enrollmentId: string, lessonId: string) {
         queryClient.invalidateQueries({
           queryKey: enrollmentKeys.my(),
         }),
+        queryClient.invalidateQueries({
+          queryKey: scheduleKeys.byEnrollment(enrollmentId),
+        }),
       ]);
     },
   });
@@ -154,6 +157,9 @@ export function useSubmitReflection(enrollmentId: string, lessonId: string) {
         }),
         queryClient.invalidateQueries({
           queryKey: enrollmentKeys.my(),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: scheduleKeys.byEnrollment(enrollmentId),
         }),
       ]);
     },

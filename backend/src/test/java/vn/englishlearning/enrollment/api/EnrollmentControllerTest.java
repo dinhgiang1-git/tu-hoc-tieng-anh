@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -42,11 +41,18 @@ class EnrollmentControllerTest {
     enrollmentQueryService = mock(EnrollmentQueryService.class);
     EnrollmentController controller =
         new EnrollmentController(createEnrollmentService, enrollmentQueryService);
+    objectMapper =
+        org.springframework.http.converter.json.Jackson2ObjectMapperBuilder.json()
+            .featuresToDisable(
+                com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .build();
     mockMvc =
         MockMvcBuilders.standaloneSetup(controller)
             .setControllerAdvice(new GlobalExceptionHandler())
+            .setMessageConverters(
+                new org.springframework.http.converter.json.MappingJackson2HttpMessageConverter(
+                    objectMapper))
             .build();
-    objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
   }
 
   @Test
@@ -136,7 +142,8 @@ class EnrollmentControllerTest {
             "Asia/Ho_Chi_Minh",
             List.of(DayOfWeek.MONDAY),
             30,
-            1L);
+            1L,
+            LocalDate.of(2026, 11, 20));
 
     when(enrollmentQueryService.getDetail(enrollmentId)).thenReturn(detail);
 
@@ -144,8 +151,10 @@ class EnrollmentControllerTest {
         .perform(get("/api/v1/enrollments/{enrollmentId}", enrollmentId))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(enrollmentId.toString()))
+        .andExpect(jsonPath("$.status").value("ACTIVE"))
         .andExpect(jsonPath("$.dailyTargetMinutes").value(30))
-        .andExpect(jsonPath("$.version").value(1));
+        .andExpect(jsonPath("$.version").value(1))
+        .andExpect(jsonPath("$.estimatedEndDate").value("2026-11-20"));
   }
 
   @Test
@@ -186,5 +195,33 @@ class EnrollmentControllerTest {
         .andExpect(jsonPath("$[0].totalRequiredActivities").value(19))
         .andExpect(jsonPath("$[0].completedRequiredActivities").value(2))
         .andExpect(jsonPath("$[0].progressPercent").value(10.5));
+  }
+
+  @Test
+  @DisplayName("GET /api/v1/enrollments/{id}/schedule returns 200 with list of schedules")
+  void getSchedule_returnsOk() throws Exception {
+    UUID enrollmentId = UUID.randomUUID();
+    UUID lessonId = UUID.randomUUID();
+    LocalDate plannedDate = LocalDate.of(2026, 10, 26);
+
+    EnrollmentResponses.LessonScheduleResponse item =
+        new EnrollmentResponses.LessonScheduleResponse(
+            lessonId, "Bài 1: Làm quen", plannedDate, plannedDate, false, false);
+
+    when(enrollmentQueryService.getSchedule(eq(enrollmentId), eq(plannedDate), any()))
+        .thenReturn(List.of(item));
+
+    mockMvc
+        .perform(
+            get("/api/v1/enrollments/{enrollmentId}/schedule", enrollmentId)
+                .param("from", "2026-10-26")
+                .param("to", "2026-11-01"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].lessonId").value(lessonId.toString()))
+        .andExpect(jsonPath("$[0].lessonTitle").value("Bài 1: Làm quen"))
+        .andExpect(jsonPath("$[0].plannedDate").value("2026-10-26"))
+        .andExpect(jsonPath("$[0].originalDate").value("2026-10-26"))
+        .andExpect(jsonPath("$[0].isCompleted").value(false))
+        .andExpect(jsonPath("$[0].isOverdue").value(false));
   }
 }

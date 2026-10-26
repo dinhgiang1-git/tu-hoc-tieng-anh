@@ -31,7 +31,8 @@ public final class EnrollmentResponses {
       String timeZone,
       List<DayOfWeek> studyDays,
       int dailyTargetMinutes,
-      Long version) {}
+      Long version,
+      LocalDate estimatedEndDate) {}
 
   public record EnrollmentSummaryResponse(
       UUID id,
@@ -51,4 +52,12 @@ public final class EnrollmentResponses {
       int estimatedMinutes,
       LocalDate plannedDate,
       boolean isRequired) {}
+
+  public record LessonScheduleResponse(
+      UUID lessonId,
+      String lessonTitle,
+      LocalDate plannedDate,
+      LocalDate originalDate,
+      boolean isCompleted,
+      boolean isOverdue) {}
 }

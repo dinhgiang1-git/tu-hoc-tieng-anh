@@ -97,7 +97,7 @@ export async function ensureEnrolled(
 
   // Otherwise, enroll in pilot curriculum
   await page.goto("/curricula/pilot-curriculum");
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("domcontentloaded");
 
   const enrollBtn = page.locator('button:has-text("Đăng ký học")');
   await expect(enrollBtn).toBeVisible();

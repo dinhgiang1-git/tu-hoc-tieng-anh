@@ -749,6 +749,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/LessonScheduleResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
         '401':
           $ref: '#/components/responses/UnauthorizedProblem'
         '404':
@@ -1392,6 +1394,10 @@ components:
           type: integer
           format: int64
           example: 1
+        estimatedEndDate:
+          type: [string, "null"]
+          format: date
+          example: '2026-11-20'
 
     EnrollmentSummaryResponse:
       type: object
@@ -1796,7 +1802,7 @@ components:
     # --- Scheduling Models ---
     LessonScheduleResponse:
       type: object
-      required: [lessonId, lessonTitle, plannedDate, originalDate, isCompleted]
+      required: [lessonId, lessonTitle, plannedDate, originalDate, isCompleted, isOverdue]
       properties:
         lessonId:
           type: string
@@ -1810,6 +1816,8 @@ components:
           type: string
           format: date
         isCompleted:
+          type: boolean
+        isOverdue:
           type: boolean
 
     SchedulePreviewRequest:

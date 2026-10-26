@@ -6,6 +6,7 @@ import { PreferencesPage } from "@/features/preferences/pages/PreferencesPage";
 import { AppShell } from "./layouts/AppShell";
 import { CurriculaPage } from "@/features/curricula/pages/CurriculaPage";
 import { CurriculumDetailPage } from "@/features/curricula/pages/CurriculumDetailPage";
+import { SchedulePage } from "@/features/schedule/pages/SchedulePage";
 
 export const router = createBrowserRouter([
   {
@@ -36,14 +37,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "schedule",
-        element: (
-          <div className="space-y-4">
-            <h1 className="text-2xl font-bold">Lịch học Cá nhân</h1>
-            <p className="text-muted-foreground">
-              Tính năng điều chỉnh lịch học linh hoạt sẽ được triển khai trong Giai đoạn G4.
-            </p>
-          </div>
-        ),
+        element: <SchedulePage />,
       },
       {
         path: "preferences",

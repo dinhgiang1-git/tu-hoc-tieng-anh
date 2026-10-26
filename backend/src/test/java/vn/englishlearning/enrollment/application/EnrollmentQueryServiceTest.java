@@ -3,15 +3,18 @@ package vn.englishlearning.enrollment.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -39,6 +42,7 @@ import vn.englishlearning.enrollment.domain.Enrollment;
 import vn.englishlearning.enrollment.domain.EnrollmentStatus;
 import vn.englishlearning.enrollment.domain.LessonSchedule;
 import vn.englishlearning.enrollment.infrastructure.EnrollmentRepository;
+import vn.englishlearning.enrollment.infrastructure.LessonScheduleItemDto;
 import vn.englishlearning.enrollment.infrastructure.LessonScheduleRepository;
 import vn.englishlearning.learning.domain.ActivityStatus;
 import vn.englishlearning.learning.infrastructure.ActivityProgressDto;
@@ -56,6 +60,7 @@ class EnrollmentQueryServiceTest {
   private ActivityRepository activityRepository;
   private ActivityProgressRepository activityProgressRepository;
   private CurrentUser currentUser;
+  private Clock clock;
   private EnrollmentQueryService service;
 
   private final UUID userId = UUID.randomUUID();
@@ -76,6 +81,7 @@ class EnrollmentQueryServiceTest {
     activityRepository = mock(ActivityRepository.class);
     activityProgressRepository = mock(ActivityProgressRepository.class);
     currentUser = mock(CurrentUser.class);
+    clock = Clock.fixed(now, ZoneId.of("UTC"));
 
     when(currentUser.requireUserId()).thenReturn(userId);
 
@@ -103,7 +109,8 @@ class EnrollmentQueryServiceTest {
             lessonRepository,
             activityRepository,
             activityProgressRepository,
-            currentUser);
+            currentUser,
+            clock);
   }
 
   @Test
@@ -121,6 +128,8 @@ class EnrollmentQueryServiceTest {
             now);
 
     when(enrollmentRepository.findById(enrollmentId)).thenReturn(Optional.of(enrollment));
+    when(lessonScheduleRepository.findMaxPlannedDateByEnrollmentId(enrollmentId))
+        .thenReturn(Optional.of(LocalDate.of(2026, 11, 20)));
 
     EnrollmentResponses.EnrollmentDetailResponse response = service.getDetail(enrollmentId);
 
@@ -130,6 +139,7 @@ class EnrollmentQueryServiceTest {
     assertThat(response.studyDays())
         .containsExactly(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
     assertThat(response.dailyTargetMinutes()).isEqualTo(30);
+    assertThat(response.estimatedEndDate()).isEqualTo(LocalDate.of(2026, 11, 20));
   }
 
   @Test
@@ -371,5 +381,292 @@ class EnrollmentQueryServiceTest {
     verify(curriculumRevisionRepository, never()).findById(any());
     verify(lessonRepository, never()).findRequiredLessonsByRevisionIdOrdered(any());
     verify(activityRepository, never()).findByLessonWeekPhaseRevisionId(any());
+  }
+
+  @Test
+  @DisplayName(
+      "getSchedule with default range queries current week Monday to Sunday in enrollment timezone")
+  void getSchedule_defaultRange_queriesCurrentWeekMondayToSunday() {
+    // 2026-10-28 03:00 UTC = 2026-10-28 10:00 in Asia/Ho_Chi_Minh (Wednesday)
+    Clock wednesdayClock = Clock.fixed(Instant.parse("2026-10-28T03:00:00Z"), ZoneId.of("UTC"));
+    EnrollmentQueryService serviceWithClock =
+        new EnrollmentQueryService(
+            enrollmentRepository,
+            lessonScheduleRepository,
+            curriculumRevisionRepository,
+            lessonRepository,
+            activityRepository,
+            activityProgressRepository,
+            currentUser,
+            wednesdayClock);
+
+    Enrollment enrollment =
+        new Enrollment(
+            userId,
+            curriculumId,
+            revisionId,
+            LocalDate.of(2026, 10, 26),
+            "Asia/Ho_Chi_Minh",
+            List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY),
+            30,
+            now);
+    when(enrollmentRepository.findById(enrollmentId)).thenReturn(Optional.of(enrollment));
+
+    LocalDate expectedMon = LocalDate.of(2026, 10, 26);
+    LocalDate expectedSun = LocalDate.of(2026, 11, 1);
+
+    UUID lessonId = UUID.randomUUID();
+    when(lessonScheduleRepository.findScheduleItemsByEnrollmentIdAndRange(
+            enrollmentId, expectedMon, expectedSun))
+        .thenReturn(
+            List.of(new LessonScheduleItemDto(lessonId, "Bài 1", expectedMon, expectedMon, null)));
+
+    List<EnrollmentResponses.LessonScheduleResponse> result =
+        serviceWithClock.getSchedule(enrollmentId, null, null);
+
+    assertThat(result).hasSize(1);
+    assertThat(result.get(0).lessonId()).isEqualTo(lessonId);
+    assertThat(result.get(0).lessonTitle()).isEqualTo("Bài 1");
+    assertThat(result.get(0).plannedDate()).isEqualTo(expectedMon);
+    verify(lessonScheduleRepository)
+        .findScheduleItemsByEnrollmentIdAndRange(enrollmentId, expectedMon, expectedSun);
+  }
+
+  @Test
+  @DisplayName("getSchedule with only from provided computes to = from + 6 days")
+  void getSchedule_onlyFromProvided_toIsFromPlus6() {
+    Enrollment enrollment =
+        new Enrollment(
+            userId,
+            curriculumId,
+            revisionId,
+            LocalDate.of(2026, 10, 26),
+            "Asia/Ho_Chi_Minh",
+            List.of(DayOfWeek.MONDAY),
+            30,
+            now);
+    when(enrollmentRepository.findById(enrollmentId)).thenReturn(Optional.of(enrollment));
+
+    LocalDate from = LocalDate.of(2026, 11, 2);
+    LocalDate expectedTo = LocalDate.of(2026, 11, 8);
+
+    when(lessonScheduleRepository.findScheduleItemsByEnrollmentIdAndRange(
+            enrollmentId, from, expectedTo))
+        .thenReturn(List.of());
+
+    List<EnrollmentResponses.LessonScheduleResponse> result =
+        service.getSchedule(enrollmentId, from, null);
+
+    assertThat(result).isEmpty();
+    verify(lessonScheduleRepository)
+        .findScheduleItemsByEnrollmentIdAndRange(enrollmentId, from, expectedTo);
+  }
+
+  @Test
+  @DisplayName("getSchedule with only to provided computes from = to - 6 days")
+  void getSchedule_onlyToProvided_fromIsToMinus6() {
+    Enrollment enrollment =
+        new Enrollment(
+            userId,
+            curriculumId,
+            revisionId,
+            LocalDate.of(2026, 10, 26),
+            "Asia/Ho_Chi_Minh",
+            List.of(DayOfWeek.MONDAY),
+            30,
+            now);
+    when(enrollmentRepository.findById(enrollmentId)).thenReturn(Optional.of(enrollment));
+
+    LocalDate to = LocalDate.of(2026, 11, 8);
+    LocalDate expectedFrom = LocalDate.of(2026, 11, 2);
+
+    when(lessonScheduleRepository.findScheduleItemsByEnrollmentIdAndRange(
+            enrollmentId, expectedFrom, to))
+        .thenReturn(List.of());
+
+    List<EnrollmentResponses.LessonScheduleResponse> result =
+        service.getSchedule(enrollmentId, null, to);
+
+    assertThat(result).isEmpty();
+    verify(lessonScheduleRepository)
+        .findScheduleItemsByEnrollmentIdAndRange(enrollmentId, expectedFrom, to);
+  }
+
+  @Test
+  @DisplayName("getSchedule throws VALIDATION_FAILED when from is after to")
+  void getSchedule_fromAfterTo_throwsValidationFailed() {
+    Enrollment enrollment =
+        new Enrollment(
+            userId,
+            curriculumId,
+            revisionId,
+            LocalDate.of(2026, 10, 26),
+            "Asia/Ho_Chi_Minh",
+            List.of(DayOfWeek.MONDAY),
+            30,
+            now);
+    when(enrollmentRepository.findById(enrollmentId)).thenReturn(Optional.of(enrollment));
+
+    LocalDate from = LocalDate.of(2026, 11, 10);
+    LocalDate to = LocalDate.of(2026, 11, 1);
+
+    assertThatThrownBy(() -> service.getSchedule(enrollmentId, from, to))
+        .isInstanceOf(DomainException.class)
+        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.VALIDATION_FAILED);
+  }
+
+  @Test
+  @DisplayName("getSchedule throws VALIDATION_FAILED when range exceeds 366 days")
+  void getSchedule_rangeExceeds366Days_throwsValidationFailed() {
+    Enrollment enrollment =
+        new Enrollment(
+            userId,
+            curriculumId,
+            revisionId,
+            LocalDate.of(2026, 10, 26),
+            "Asia/Ho_Chi_Minh",
+            List.of(DayOfWeek.MONDAY),
+            30,
+            now);
+    when(enrollmentRepository.findById(enrollmentId)).thenReturn(Optional.of(enrollment));
+
+    LocalDate from = LocalDate.of(2026, 1, 1);
+    LocalDate to = LocalDate.of(2027, 1, 3); // 368 days
+
+    assertThatThrownBy(() -> service.getSchedule(enrollmentId, from, to))
+        .isInstanceOf(DomainException.class)
+        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.VALIDATION_FAILED);
+  }
+
+  @Test
+  @DisplayName("getSchedule throws RESOURCE_NOT_FOUND when requested by non-owner")
+  void getSchedule_otherUser_throwsNotFound() {
+    Enrollment enrollment =
+        new Enrollment(
+            otherUserId,
+            curriculumId,
+            revisionId,
+            LocalDate.of(2026, 10, 26),
+            "Asia/Ho_Chi_Minh",
+            List.of(DayOfWeek.MONDAY),
+            30,
+            now);
+    when(enrollmentRepository.findById(enrollmentId)).thenReturn(Optional.of(enrollment));
+
+    assertThatThrownBy(() -> service.getSchedule(enrollmentId, null, null))
+        .isInstanceOf(DomainException.class)
+        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.RESOURCE_NOT_FOUND);
+  }
+
+  @Test
+  @DisplayName("getSchedule calculates isOverdue correctly for ACTIVE enrollment")
+  void getSchedule_activeEnrollment_calculatesOverdueCorrectly() {
+    // 2026-10-28 03:00 UTC = 2026-10-28 in Asia/Ho_Chi_Minh (Wednesday)
+    Clock clock = Clock.fixed(Instant.parse("2026-10-28T03:00:00Z"), ZoneId.of("UTC"));
+    EnrollmentQueryService customService =
+        new EnrollmentQueryService(
+            enrollmentRepository,
+            lessonScheduleRepository,
+            curriculumRevisionRepository,
+            lessonRepository,
+            activityRepository,
+            activityProgressRepository,
+            currentUser,
+            clock);
+
+    Enrollment enrollment =
+        new Enrollment(
+            userId,
+            curriculumId,
+            revisionId,
+            LocalDate.of(2026, 10, 26),
+            "Asia/Ho_Chi_Minh",
+            List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY),
+            30,
+            now);
+    when(enrollmentRepository.findById(enrollmentId)).thenReturn(Optional.of(enrollment));
+
+    LocalDate past = LocalDate.of(2026, 10, 26);
+    LocalDate today = LocalDate.of(2026, 10, 28);
+    LocalDate future = LocalDate.of(2026, 10, 30);
+
+    UUID l1 = UUID.randomUUID();
+    UUID l2 = UUID.randomUUID();
+    UUID l3 = UUID.randomUUID();
+    UUID l4 = UUID.randomUUID();
+
+    when(lessonScheduleRepository.findScheduleItemsByEnrollmentIdAndRange(
+            eq(enrollmentId), any(), any()))
+        .thenReturn(
+            List.of(
+                // past and uncompleted -> OVERDUE
+                new LessonScheduleItemDto(l1, "Past Uncompleted", past, past, null),
+                // past and completed -> NOT overdue
+                new LessonScheduleItemDto(l2, "Past Completed", past, past, Instant.now()),
+                // today and uncompleted -> NOT overdue
+                new LessonScheduleItemDto(l3, "Today Uncompleted", today, today, null),
+                // future and uncompleted -> NOT overdue
+                new LessonScheduleItemDto(l4, "Future Uncompleted", future, future, null)));
+
+    List<EnrollmentResponses.LessonScheduleResponse> result =
+        customService.getSchedule(enrollmentId, past, future);
+
+    assertThat(result).hasSize(4);
+    // l1: past uncompleted
+    assertThat(result.get(0).isCompleted()).isFalse();
+    assertThat(result.get(0).isOverdue()).isTrue();
+    // l2: past completed
+    assertThat(result.get(1).isCompleted()).isTrue();
+    assertThat(result.get(1).isOverdue()).isFalse();
+    // l3: today uncompleted
+    assertThat(result.get(2).isCompleted()).isFalse();
+    assertThat(result.get(2).isOverdue()).isFalse();
+    // l4: future uncompleted
+    assertThat(result.get(3).isCompleted()).isFalse();
+    assertThat(result.get(3).isOverdue()).isFalse();
+  }
+
+  @Test
+  @DisplayName("getSchedule for PAUSED enrollment never flags lessons as overdue")
+  void getSchedule_pausedEnrollment_neverOverdue() {
+    Clock clock = Clock.fixed(Instant.parse("2026-10-28T03:00:00Z"), ZoneId.of("UTC"));
+    EnrollmentQueryService customService =
+        new EnrollmentQueryService(
+            enrollmentRepository,
+            lessonScheduleRepository,
+            curriculumRevisionRepository,
+            lessonRepository,
+            activityRepository,
+            activityProgressRepository,
+            currentUser,
+            clock);
+
+    Enrollment enrollment =
+        new Enrollment(
+            userId,
+            curriculumId,
+            revisionId,
+            LocalDate.of(2026, 10, 26),
+            "Asia/Ho_Chi_Minh",
+            List.of(DayOfWeek.MONDAY),
+            30,
+            now);
+    org.springframework.test.util.ReflectionTestUtils.setField(
+        enrollment, "status", EnrollmentStatus.PAUSED);
+    when(enrollmentRepository.findById(enrollmentId)).thenReturn(Optional.of(enrollment));
+
+    LocalDate past = LocalDate.of(2026, 10, 26);
+    UUID l1 = UUID.randomUUID();
+
+    when(lessonScheduleRepository.findScheduleItemsByEnrollmentIdAndRange(
+            eq(enrollmentId), any(), any()))
+        .thenReturn(List.of(new LessonScheduleItemDto(l1, "Past Uncompleted", past, past, null)));
+
+    List<EnrollmentResponses.LessonScheduleResponse> result =
+        customService.getSchedule(enrollmentId, past, past);
+
+    assertThat(result).hasSize(1);
+    assertThat(result.get(0).isCompleted()).isFalse();
+    assertThat(result.get(0).isOverdue()).isFalse();
   }
 }

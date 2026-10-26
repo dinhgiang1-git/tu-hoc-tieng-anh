@@ -1,6 +1,12 @@
 package vn.englishlearning.enrollment.application;
 
 import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,8 +23,10 @@ import vn.englishlearning.curriculum.infrastructure.LessonSummaryDto;
 import vn.englishlearning.curriculum.infrastructure.RevisionInfoDto;
 import vn.englishlearning.enrollment.api.EnrollmentResponses;
 import vn.englishlearning.enrollment.domain.Enrollment;
+import vn.englishlearning.enrollment.domain.EnrollmentStatus;
 import vn.englishlearning.enrollment.domain.LessonSchedule;
 import vn.englishlearning.enrollment.infrastructure.EnrollmentRepository;
+import vn.englishlearning.enrollment.infrastructure.LessonScheduleItemDto;
 import vn.englishlearning.enrollment.infrastructure.LessonScheduleRepository;
 import vn.englishlearning.learning.domain.ActivityStatus;
 import vn.englishlearning.learning.domain.ProgressPolicy;
@@ -39,6 +47,7 @@ public class EnrollmentQueryService {
   private final ActivityRepository activityRepository;
   private final ActivityProgressRepository activityProgressRepository;
   private final CurrentUser currentUser;
+  private final Clock clock;
 
   public EnrollmentQueryService(
       EnrollmentRepository enrollmentRepository,
@@ -47,7 +56,8 @@ public class EnrollmentQueryService {
       LessonRepository lessonRepository,
       ActivityRepository activityRepository,
       ActivityProgressRepository activityProgressRepository,
-      CurrentUser currentUser) {
+      CurrentUser currentUser,
+      Clock clock) {
     this.enrollmentRepository = enrollmentRepository;
     this.lessonScheduleRepository = lessonScheduleRepository;
     this.curriculumRevisionRepository = curriculumRevisionRepository;
@@ -55,6 +65,7 @@ public class EnrollmentQueryService {
     this.activityRepository = activityRepository;
     this.activityProgressRepository = activityProgressRepository;
     this.currentUser = currentUser;
+    this.clock = clock;
   }
 
   public EnrollmentResponses.EnrollmentDetailResponse getDetail(UUID enrollmentId) {
@@ -72,6 +83,9 @@ public class EnrollmentQueryService {
           ErrorCode.RESOURCE_NOT_FOUND, "Enrollment not found: " + enrollmentId);
     }
 
+    LocalDate estimatedEndDate =
+        lessonScheduleRepository.findMaxPlannedDateByEnrollmentId(enrollmentId).orElse(null);
+
     return new EnrollmentResponses.EnrollmentDetailResponse(
         enrollment.getId(),
         enrollment.getUserId(),
@@ -82,7 +96,80 @@ public class EnrollmentQueryService {
         enrollment.getTimeZone(),
         enrollment.getStudyDaysList(),
         enrollment.getDailyTargetMinutes(),
-        enrollment.getVersion());
+        enrollment.getVersion(),
+        estimatedEndDate);
+  }
+
+  public List<EnrollmentResponses.LessonScheduleResponse> getSchedule(
+      UUID enrollmentId, LocalDate from, LocalDate to) {
+    UUID currentUserId = currentUser.requireUserId();
+    Enrollment enrollment =
+        enrollmentRepository
+            .findById(enrollmentId)
+            .orElseThrow(
+                () ->
+                    new DomainException(
+                        ErrorCode.RESOURCE_NOT_FOUND, "Enrollment not found: " + enrollmentId));
+
+    if (!enrollment.getUserId().equals(currentUserId)) {
+      throw new DomainException(
+          ErrorCode.RESOURCE_NOT_FOUND, "Enrollment not found: " + enrollmentId);
+    }
+
+    ZoneId zoneId;
+    try {
+      zoneId = ZoneId.of(enrollment.getTimeZone());
+    } catch (Exception ex) {
+      zoneId = ZoneId.of("UTC");
+    }
+
+    LocalDate effectiveFrom = from;
+    LocalDate effectiveTo = to;
+
+    if (effectiveFrom == null && effectiveTo == null) {
+      LocalDate localToday = clock.instant().atZone(zoneId).toLocalDate();
+      effectiveFrom = localToday.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+      effectiveTo = localToday.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+    } else if (effectiveFrom == null) {
+      effectiveFrom = effectiveTo.minusDays(6);
+    } else if (effectiveTo == null) {
+      effectiveTo = effectiveFrom.plusDays(6);
+    }
+
+    if (effectiveFrom.isAfter(effectiveTo)) {
+      throw new DomainException(
+          ErrorCode.VALIDATION_FAILED,
+          "Khoảng ngày không hợp lệ: 'from' phải nhỏ hơn hoặc bằng 'to'.");
+    }
+
+    long daysBetween = ChronoUnit.DAYS.between(effectiveFrom, effectiveTo) + 1;
+    if (daysBetween > 366) {
+      throw new DomainException(
+          ErrorCode.VALIDATION_FAILED, "Khoảng ngày vượt quá giới hạn tối đa 366 ngày.");
+    }
+
+    List<LessonScheduleItemDto> items =
+        lessonScheduleRepository.findScheduleItemsByEnrollmentIdAndRange(
+            enrollmentId, effectiveFrom, effectiveTo);
+
+    LocalDate localToday = clock.instant().atZone(zoneId).toLocalDate();
+    boolean isEnrollmentActive = enrollment.getStatus() == EnrollmentStatus.ACTIVE;
+
+    return items.stream()
+        .map(
+            item -> {
+              boolean isCompleted = item.completedAt() != null;
+              boolean isOverdue =
+                  isEnrollmentActive && !isCompleted && item.plannedDate().isBefore(localToday);
+              return new EnrollmentResponses.LessonScheduleResponse(
+                  item.lessonId(),
+                  item.lessonTitle(),
+                  item.plannedDate(),
+                  item.originalDate(),
+                  isCompleted,
+                  isOverdue);
+            })
+        .toList();
   }
 
   public EnrollmentResponses.LessonSummaryResponse getLessonSummary(

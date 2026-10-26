@@ -118,6 +118,7 @@ class EnrollmentAndTodayIT {
   @SpyBean private LessonScheduleRepository lessonScheduleRepository;
   @Autowired private ActivityProgressRepository activityProgressRepository;
   @Autowired private Clock clock;
+  @Autowired private com.fasterxml.jackson.databind.ObjectMapper objectMapper;
 
   private UUID userAId;
   private UUID userBId;
@@ -1080,6 +1081,161 @@ class EnrollmentAndTodayIT {
       assertThat(lower)
           .as("Lesson summary query must not select user_response: " + q)
           .doesNotContain("user_response");
+    }
+  }
+
+  @Test
+  @DisplayName(
+      "G4-01: GET /enrollments/{id}/schedule respects range defaults, validation, ownership, and no-mutation")
+  void g4_01_scheduleEndpoint_comprehensiveIntegrationTest() throws Exception {
+    CsrfSession sessionA = login("usera", "Password123!");
+    CsrfSession sessionB = login("userb", "Password123!");
+
+    // 1. User A creates enrollment (Mon/Wed/Fri, starting 2026-10-26 which is Monday)
+    EnrollmentRequests.CreateEnrollmentRequest createReq =
+        new EnrollmentRequests.CreateEnrollmentRequest(
+            curriculumId,
+            revisionId,
+            LocalDate.of(2026, 10, 26),
+            List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY),
+            30,
+            "Asia/Ho_Chi_Minh");
+
+    HttpHeaders postHeaders = new HttpHeaders();
+    postHeaders.setContentType(MediaType.APPLICATION_JSON);
+    postHeaders.set(HttpHeaders.COOKIE, sessionA.sessionCookie());
+    postHeaders.set("X-CSRF-TOKEN", sessionA.csrfToken());
+    postHeaders.set("Idempotency-Key", UUID.randomUUID().toString());
+
+    ResponseEntity<EnrollmentResponses.EnrollmentResponse> createResp =
+        restTemplate.postForEntity(
+            baseUrl() + "/enrollments",
+            new HttpEntity<>(createReq, postHeaders),
+            EnrollmentResponses.EnrollmentResponse.class);
+
+    assertThat(createResp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    UUID enrollmentId = createResp.getBody().id();
+
+    // 2. Verify estimatedEndDate in GET /enrollments/{id}
+    HttpHeaders getHeadersA = new HttpHeaders();
+    getHeadersA.set(HttpHeaders.COOKIE, sessionA.sessionCookie());
+
+    ResponseEntity<EnrollmentResponses.EnrollmentDetailResponse> detailResp =
+        restTemplate.exchange(
+            baseUrl() + "/enrollments/" + enrollmentId,
+            HttpMethod.GET,
+            new HttpEntity<>(getHeadersA),
+            EnrollmentResponses.EnrollmentDetailResponse.class);
+
+    assertThat(detailResp.getStatusCode()).isEqualTo(HttpStatus.OK);
+    LocalDate estimatedEndDate = detailResp.getBody().estimatedEndDate();
+    assertThat(estimatedEndDate).isNotNull();
+
+    // Verify it matches DB MAX(planned_date)
+    LocalDate maxDbDate =
+        lessonScheduleRepository.findMaxPlannedDateByEnrollmentId(enrollmentId).orElseThrow();
+    assertThat(estimatedEndDate).isEqualTo(maxDbDate);
+
+    // 3. GET /enrollments/{id}/schedule without from/to: defaults to current week
+    ResponseEntity<EnrollmentResponses.LessonScheduleResponse[]> defaultScheduleResp =
+        restTemplate.exchange(
+            baseUrl() + "/enrollments/" + enrollmentId + "/schedule",
+            HttpMethod.GET,
+            new HttpEntity<>(getHeadersA),
+            EnrollmentResponses.LessonScheduleResponse[].class);
+
+    assertThat(defaultScheduleResp.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(defaultScheduleResp.getBody()).isNotNull();
+
+    // 4. GET /enrollments/{id}/schedule with explicit range covering full schedule
+    ResponseEntity<EnrollmentResponses.LessonScheduleResponse[]> fullScheduleResp =
+        restTemplate.exchange(
+            baseUrl()
+                + "/enrollments/"
+                + enrollmentId
+                + "/schedule?from=2026-10-26&to="
+                + estimatedEndDate,
+            HttpMethod.GET,
+            new HttpEntity<>(getHeadersA),
+            EnrollmentResponses.LessonScheduleResponse[].class);
+
+    assertThat(fullScheduleResp.getStatusCode()).isEqualTo(HttpStatus.OK);
+    EnrollmentResponses.LessonScheduleResponse[] items = fullScheduleResp.getBody();
+    assertThat(items).isNotEmpty();
+    assertThat(items[items.length - 1].plannedDate()).isEqualTo(estimatedEndDate);
+
+    // Pedagogical ordering check: plannedDate asc
+    for (int i = 0; i < items.length - 1; i++) {
+      assertThat(items[i].plannedDate()).isBeforeOrEqualTo(items[i + 1].plannedDate());
+    }
+
+    // 5. Ownership isolation: User B attempting to view User A's schedule -> 404
+    HttpHeaders getHeadersB = new HttpHeaders();
+    getHeadersB.set(HttpHeaders.COOKIE, sessionB.sessionCookie());
+
+    ResponseEntity<String> userBResp =
+        restTemplate.exchange(
+            baseUrl() + "/enrollments/" + enrollmentId + "/schedule",
+            HttpMethod.GET,
+            new HttpEntity<>(getHeadersB),
+            String.class);
+
+    assertThat(userBResp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+    // 6. Validation: from > to -> 400 ProblemDetails
+    ResponseEntity<String> invertedResp =
+        restTemplate.exchange(
+            baseUrl() + "/enrollments/" + enrollmentId + "/schedule?from=2026-11-10&to=2026-11-01",
+            HttpMethod.GET,
+            new HttpEntity<>(getHeadersA),
+            String.class);
+    assertThat(invertedResp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+    // 7. Validation: range > 366 days -> 400 ProblemDetails
+    ResponseEntity<String> tooWideResp =
+        restTemplate.exchange(
+            baseUrl() + "/enrollments/" + enrollmentId + "/schedule?from=2026-01-01&to=2027-01-05",
+            HttpMethod.GET,
+            new HttpEntity<>(getHeadersA),
+            String.class);
+    assertThat(tooWideResp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+    // 8. No-mutation assertion: version and updated_at on enrollment must remain unchanged
+    Enrollment enrollmentBefore = enrollmentRepository.findById(enrollmentId).orElseThrow();
+    long versionBefore = enrollmentBefore.getVersion();
+    Instant updatedAtBefore = enrollmentBefore.getUpdatedAt();
+
+    // Call schedule multiple times
+    restTemplate.exchange(
+        baseUrl() + "/enrollments/" + enrollmentId + "/schedule",
+        HttpMethod.GET,
+        new HttpEntity<>(getHeadersA),
+        EnrollmentResponses.LessonScheduleResponse[].class);
+
+    Enrollment enrollmentAfter = enrollmentRepository.findById(enrollmentId).orElseThrow();
+    assertThat(enrollmentAfter.getVersion()).isEqualTo(versionBefore);
+    assertThat(enrollmentAfter.getUpdatedAt()).isEqualTo(updatedAtBefore);
+
+    // 9. Query efficiency & projection test: assert no heavy columns loaded
+    SqlStatementInspector.startRecording();
+    restTemplate.exchange(
+        baseUrl() + "/enrollments/" + enrollmentId + "/schedule?from=2026-10-26&to=2026-11-01",
+        HttpMethod.GET,
+        new HttpEntity<>(getHeadersA),
+        EnrollmentResponses.LessonScheduleResponse[].class);
+    List<String> scheduleQueries = SqlStatementInspector.stopRecording();
+
+    for (String q : scheduleQueries) {
+      String lower = q.toLowerCase();
+      assertThat(lower)
+          .as("Schedule query must not select content_markdown: " + q)
+          .doesNotContain("content_markdown");
+      assertThat(lower)
+          .as("Schedule query must not select user_response: " + q)
+          .doesNotContain("user_response");
+      assertThat(lower)
+          .as("Schedule query must not select instructions: " + q)
+          .doesNotContain("instructions");
     }
   }
 }

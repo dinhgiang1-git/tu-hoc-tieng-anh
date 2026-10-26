@@ -366,7 +366,7 @@
 ## 5. Kế hoạch các Giai đoạn Tiếp theo (Tóm tắt G4–G7)
 
 - **G4 — Lịch cá nhân Linh hoạt & Đổi lịch (2–4 ngày):**
-  * G4-01: [ ] Đã chuẩn bị [G4-01_HANDOFF.md](G4-01_HANDOFF.md), chờ triển khai/nghiệm thu. Planner, ngày kết thúc, API đọc theo khoảng và trang Lịch desktop; baseline M1 `67c44c7`. Giữ DB dev cho E2E, mobile hoãn.
+  * G4-01: [x] Codex nghiệm thu luồng chính ngày 26/10/2026 theo quy trình nhanh: 31 BE unit liên quan + 10 FE schedule tests + 3 E2E thật đạt, build/lint qua; JUnit PostgreSQL IT vướng loopback môi trường, hoãn kiểm tra lại cuối G4. Chi tiết [G4-01_IMPLEMENTATION.md](../G4-01_IMPLEMENTATION.md). Tiếp theo G4-02.
   * G4-02: Quy trình Đổi lịch 2 bước (Preview & Commit) có kiểm tra version conflict.
   * G4-03: Tính năng Tạm dừng (Pause) và Tiếp tục (Resume) lộ trình trong 1 transaction.
 - **G5 — Quiz & Ôn tập Tối thiểu (3–5 ngày):**

@@ -3,12 +3,10 @@ package vn.englishlearning.enrollment.application;
 import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -167,17 +165,22 @@ public class CreateEnrollmentService {
             now);
     enrollment = enrollmentRepository.save(enrollment);
 
-    // 8. Generate initial lesson schedules
-    Set<DayOfWeek> studyDaysSet = Set.copyOf(normalizedDays);
-    LocalDate d = request.startDate();
-    List<LessonSchedule> schedules = new ArrayList<>();
-
-    for (Lesson lesson : requiredLessons) {
-      while (!studyDaysSet.contains(d.getDayOfWeek())) {
-        d = d.plusDays(1);
-      }
-      schedules.add(new LessonSchedule(enrollment.getId(), lesson.getId(), d, d, now));
-      d = d.plusDays(1);
+    // 8. Generate initial lesson schedules via pure domain SchedulePlanner
+    List<vn.englishlearning.scheduling.domain.SchedulableLesson> schedulableLessons =
+        requiredLessons.stream()
+            .map(
+                l ->
+                    new vn.englishlearning.scheduling.domain.SchedulableLesson(
+                        l.getId(), l.isRequired()))
+            .toList();
+    vn.englishlearning.scheduling.domain.SchedulePlan plan =
+        vn.englishlearning.scheduling.domain.SchedulePlanner.plan(
+            schedulableLessons, request.startDate(), normalizedDays);
+    List<LessonSchedule> schedules = new ArrayList<>(plan.plannedLessons().size());
+    for (var pl : plan.plannedLessons()) {
+      schedules.add(
+          new LessonSchedule(
+              enrollment.getId(), pl.lessonId(), pl.plannedDate(), pl.plannedDate(), now));
     }
     lessonScheduleRepository.saveAll(schedules);
 

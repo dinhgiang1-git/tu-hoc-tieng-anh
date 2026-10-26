@@ -18,7 +18,9 @@ INSERT INTO e2e_fixture_users VALUES
   ('e2e_learner_focus'),
   ('e2e_learner_blocker'),
   ('e2e_learner_ux'),
-  ('e2e_learner_race');
+  ('e2e_learner_race'),
+  ('e2e_learner_sched_a'),
+  ('e2e_learner_sched_b');
 
 -- =============================================================================
 -- E2E Fixture Seed & Reset Script for G3-04 (Dev Database Safe)
@@ -45,7 +47,9 @@ VALUES
   (gen_random_uuid(), 'e2e_learner_focus', '$2a$10$0LGLN.G1bnyjLtAcyC/Ene0wkfTutzPNZtsXEdKv5DOfWxSpPg2wW', 'Học viên E2E Focus', 'e2e_focus@example.com', 'LEARNER', true, NOW(), NOW()),
   (gen_random_uuid(), 'e2e_learner_blocker', '$2a$10$0LGLN.G1bnyjLtAcyC/Ene0wkfTutzPNZtsXEdKv5DOfWxSpPg2wW', 'Học viên E2E Blocker', 'e2e_blocker@example.com', 'LEARNER', true, NOW(), NOW()),
   (gen_random_uuid(), 'e2e_learner_ux', '$2a$10$0LGLN.G1bnyjLtAcyC/Ene0wkfTutzPNZtsXEdKv5DOfWxSpPg2wW', 'Học viên E2E UX', 'e2e_ux@example.com', 'LEARNER', true, NOW(), NOW()),
-  (gen_random_uuid(), 'e2e_learner_race', '$2a$10$0LGLN.G1bnyjLtAcyC/Ene0wkfTutzPNZtsXEdKv5DOfWxSpPg2wW', 'Học viên E2E Race', 'e2e_race@example.com', 'LEARNER', true, NOW(), NOW())
+  (gen_random_uuid(), 'e2e_learner_race', '$2a$10$0LGLN.G1bnyjLtAcyC/Ene0wkfTutzPNZtsXEdKv5DOfWxSpPg2wW', 'Học viên E2E Race', 'e2e_race@example.com', 'LEARNER', true, NOW(), NOW()),
+  (gen_random_uuid(), 'e2e_learner_sched_a', '$2a$10$0LGLN.G1bnyjLtAcyC/Ene0wkfTutzPNZtsXEdKv5DOfWxSpPg2wW', 'Học viên E2E Sched A', 'e2e_sched_a@example.com', 'LEARNER', true, NOW(), NOW()),
+  (gen_random_uuid(), 'e2e_learner_sched_b', '$2a$10$0LGLN.G1bnyjLtAcyC/Ene0wkfTutzPNZtsXEdKv5DOfWxSpPg2wW', 'Học viên E2E Sched B', 'e2e_sched_b@example.com', 'LEARNER', true, NOW(), NOW())
 ON CONFLICT (username) DO UPDATE SET password_hash = EXCLUDED.password_hash,
   display_name = EXCLUDED.display_name, email = EXCLUDED.email;
 
@@ -59,6 +63,7 @@ ON CONFLICT (user_id) DO NOTHING;
 -- 3. Reset any state created by previous E2E test runs (scoped exclusively to e2e_% users)
 DELETE FROM note WHERE user_id IN (SELECT id FROM app_user WHERE username IN (SELECT username FROM e2e_fixture_users));
 DELETE FROM activity_progress WHERE enrollment_id IN (SELECT id FROM enrollment WHERE user_id IN (SELECT id FROM app_user WHERE username IN (SELECT username FROM e2e_fixture_users)));
+DELETE FROM lesson_schedule WHERE enrollment_id IN (SELECT id FROM enrollment WHERE user_id IN (SELECT id FROM app_user WHERE username IN (SELECT username FROM e2e_fixture_users)));
 DELETE FROM learning_event WHERE user_id IN (SELECT id FROM app_user WHERE username IN (SELECT username FROM e2e_fixture_users));
 DELETE FROM idempotency_record WHERE user_id IN (SELECT id FROM app_user WHERE username IN (SELECT username FROM e2e_fixture_users));
 DELETE FROM enrollment WHERE user_id IN (SELECT id FROM app_user WHERE username IN (SELECT username FROM e2e_fixture_users));
