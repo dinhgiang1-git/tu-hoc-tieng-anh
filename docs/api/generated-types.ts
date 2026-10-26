@@ -881,6 +881,8 @@ export interface components {
              * @example 1
              */
             enrollmentVersion: number;
+            /** Format: uuid */
+            nextLessonId?: string | null;
             activities: components["schemas"]["ActivityWorkspaceDto"][];
         };
         ActivityWorkspaceDto: {
@@ -926,6 +928,8 @@ export interface components {
         };
         SaveResponseDraftRequest: {
             responseText: string;
+            /** Format: int64 */
+            expectedVersion: number;
         };
         SubmitResponseRequest: {
             responseText: string;
@@ -940,6 +944,11 @@ export interface components {
             responseText: string;
             /** Format: date-time */
             updatedAt: string;
+            /**
+             * Format: int64
+             * @example 2
+             */
+            enrollmentVersion: number;
         };
         ProgressSummaryResponse: {
             /** @example 2 */
@@ -971,6 +980,8 @@ export interface components {
         NoteResponse: {
             /** Format: uuid */
             id: string;
+            /** Format: uuid */
+            enrollmentId?: string | null;
             /** Format: uuid */
             lessonId?: string | null;
             /** Format: uuid */
@@ -1548,6 +1559,7 @@ export interface operations {
             401: components["responses"]["UnauthorizedProblem"];
             403: components["responses"]["ForbiddenProblem"];
             404: components["responses"]["NotFoundProblem"];
+            409: components["responses"]["ConflictProblem"];
         };
     };
     submitActivityResponse: {
@@ -1663,11 +1675,14 @@ export interface operations {
             400: components["responses"]["BadRequestProblem"];
             401: components["responses"]["UnauthorizedProblem"];
             403: components["responses"]["ForbiddenProblem"];
+            409: components["responses"]["ConflictProblem"];
         };
     };
     deleteNote: {
         parameters: {
-            query?: never;
+            query: {
+                expectedVersion: number;
+            };
             header: {
                 /** @description CSRF token lấy từ endpoint GET /auth/csrf */
                 "X-CSRF-TOKEN": components["parameters"]["CsrfHeader"];
@@ -1689,6 +1704,7 @@ export interface operations {
             401: components["responses"]["UnauthorizedProblem"];
             403: components["responses"]["ForbiddenProblem"];
             404: components["responses"]["NotFoundProblem"];
+            409: components["responses"]["ConflictProblem"];
         };
     };
     updateNote: {

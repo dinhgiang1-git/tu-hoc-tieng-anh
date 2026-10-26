@@ -16,4 +16,8 @@ public final class LearningProgressRequests {
           @Size(min = 1, max = 5000, message = "Nội dung phản hồi phải từ 1 đến 5000 ký tự")
           String responseText,
       @NotNull(message = "expectedVersion không được để trống") Long expectedVersion) {}
+
+  public record SaveResponseDraftRequest(
+      @Size(max = 5000, message = "Nội dung phản hồi tối đa 5000 ký tự") String responseText,
+      @NotNull(message = "expectedVersion không được để trống") Long expectedVersion) {}
 }

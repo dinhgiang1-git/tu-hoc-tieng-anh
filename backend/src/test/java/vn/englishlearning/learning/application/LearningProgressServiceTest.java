@@ -41,9 +41,12 @@ import vn.englishlearning.enrollment.domain.LessonSchedule;
 import vn.englishlearning.enrollment.infrastructure.EnrollmentRepository;
 import vn.englishlearning.enrollment.infrastructure.LessonScheduleRepository;
 import vn.englishlearning.identity.infrastructure.AppUserRepository;
+import vn.englishlearning.learning.api.LearningProgressRequests.SaveResponseDraftRequest;
 import vn.englishlearning.learning.api.LearningProgressRequests.SubmitResponseRequest;
 import vn.englishlearning.learning.api.LearningProgressRequests.UpdateProgressRequest;
+import vn.englishlearning.learning.api.LearningProgressResponses.ActivityResponseDto;
 import vn.englishlearning.learning.api.LearningProgressResponses.LessonActivitiesResponse;
+import vn.englishlearning.learning.api.LearningProgressResponses.LessonDetailResponse;
 import vn.englishlearning.learning.api.LearningProgressResponses.ProgressResponse;
 import vn.englishlearning.learning.api.LearningProgressResponses.ProgressSummaryResponse;
 import vn.englishlearning.learning.domain.ActivityProgress;
@@ -726,5 +729,161 @@ class LearningProgressServiceTest {
         .isInstanceOf(DomainException.class)
         .extracting(e -> ((DomainException) e).getErrorCode())
         .isEqualTo(ErrorCode.RESOURCE_NOT_FOUND);
+  }
+
+  @Test
+  @DisplayName(
+      "getLessonWorkspace: returns full lesson detail with Markdown, ordered activities, resources, and nextLessonId")
+  void getLessonWorkspace_success() {
+    when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(lesson));
+    when(activityRepository.findActivitiesWithResourcesByLessonId(lessonId))
+        .thenReturn(List.of(activity1, activity2));
+
+    ActivityProgress progress2 =
+        new ActivityProgress(
+            enrollmentId, activity2Id, ActivityStatus.IN_PROGRESS, "draft text", now);
+    when(activityProgressRepository.findByEnrollmentIdAndActivityIdIn(eq(enrollmentId), any()))
+        .thenReturn(List.of(progress2));
+
+    UUID nextLessonUUID = UUID.randomUUID();
+    UUID weekId = UUID.randomUUID();
+    LessonSummaryDto currentSummary =
+        new LessonSummaryDto(lessonId, revisionId, weekId, 1, "Buổi 1", 25, true);
+    LessonSummaryDto nextSummary =
+        new LessonSummaryDto(nextLessonUUID, revisionId, weekId, 2, "Buổi 2", 20, true);
+    when(lessonRepository.findLessonSummariesByRevisionId(revisionId))
+        .thenReturn(List.of(currentSummary, nextSummary));
+
+    LessonDetailResponse response = service.getLessonWorkspace(enrollmentId, lessonId);
+
+    assertThat(response.lessonId()).isEqualTo(lessonId);
+    assertThat(response.title()).isEqualTo("Buổi 1");
+    assertThat(response.markdownContent()).isEqualTo("Content");
+    assertThat(response.enrollmentVersion()).isEqualTo(1L);
+    assertThat(response.nextLessonId()).isEqualTo(nextLessonUUID);
+    assertThat(response.activities()).hasSize(2);
+    assertThat(response.activities().get(0).status()).isEqualTo(ActivityStatus.NOT_STARTED);
+    assertThat(response.activities().get(1).status()).isEqualTo(ActivityStatus.IN_PROGRESS);
+    assertThat(response.activities().get(1).userResponse()).isEqualTo("draft text");
+  }
+
+  @Test
+  @DisplayName("getLessonWorkspace: Non-owner throws RESOURCE_NOT_FOUND")
+  void getLessonWorkspace_wrongOwner_throwsResourceNotFound() {
+    when(currentUser.requireUserId()).thenReturn(otherUserId);
+
+    assertThatThrownBy(() -> service.getLessonWorkspace(enrollmentId, lessonId))
+        .isInstanceOf(DomainException.class)
+        .extracting(e -> ((DomainException) e).getErrorCode())
+        .isEqualTo(ErrorCode.RESOURCE_NOT_FOUND);
+  }
+
+  @Test
+  @DisplayName(
+      "saveResponseDraft: valid draft on PRACTICE moves to IN_PROGRESS and increments version")
+  void saveResponseDraft_validDraft_movesToInProgressAndIncrementsVersion() {
+    when(activityProgressRepository.findByEnrollmentIdAndActivityId(enrollmentId, activity2Id))
+        .thenReturn(Optional.empty());
+
+    ActivityProgress savedProgress =
+        new ActivityProgress(
+            enrollmentId, activity2Id, ActivityStatus.IN_PROGRESS, "My answer", now);
+    when(activityProgressRepository.save(any(ActivityProgress.class))).thenReturn(savedProgress);
+    when(enrollmentRepository.updateVersionAndState(
+            eq(enrollmentId), eq(1L), eq(2L), any(), any(), eq(now)))
+        .thenReturn(1);
+
+    SaveResponseDraftRequest request = new SaveResponseDraftRequest("My answer", 1L);
+    ActivityResponseDto response = service.saveResponseDraft(enrollmentId, activity2Id, request);
+
+    assertThat(response.activityId()).isEqualTo(activity2Id);
+    assertThat(response.responseText()).isEqualTo("My answer");
+    assertThat(response.enrollmentVersion()).isEqualTo(2L);
+    verify(enrollmentRepository)
+        .updateVersionAndState(eq(enrollmentId), eq(1L), eq(2L), any(), any(), eq(now));
+  }
+
+  @Test
+  @DisplayName("saveResponseDraft: identical text is no-op, does not increment version")
+  void saveResponseDraft_identicalText_noOp() {
+    ActivityProgress existingProgress =
+        new ActivityProgress(
+            enrollmentId, activity2Id, ActivityStatus.IN_PROGRESS, "Same answer", now);
+    when(activityProgressRepository.findByEnrollmentIdAndActivityId(enrollmentId, activity2Id))
+        .thenReturn(Optional.of(existingProgress));
+
+    SaveResponseDraftRequest request = new SaveResponseDraftRequest("Same answer", 1L);
+    ActivityResponseDto response = service.saveResponseDraft(enrollmentId, activity2Id, request);
+
+    assertThat(response.responseText()).isEqualTo("Same answer");
+    assertThat(response.enrollmentVersion()).isEqualTo(1L);
+    verify(enrollmentRepository, never())
+        .updateVersionAndState(any(), any(), any(), any(), any(), any());
+  }
+
+  @Test
+  @DisplayName("saveResponseDraft: empty draft is a no-op with a non-null response")
+  void saveResponseDraft_emptyUnstartedDraft_returnsEmptyStringWithoutWriting() {
+    when(activityProgressRepository.findByEnrollmentIdAndActivityId(enrollmentId, activity2Id))
+        .thenReturn(Optional.empty());
+    ActivityResponseDto response =
+        service.saveResponseDraft(enrollmentId, activity2Id, new SaveResponseDraftRequest("", 1L));
+    assertThat(response.responseText()).isEmpty();
+    assertThat(response.enrollmentVersion()).isEqualTo(1L);
+    verify(activityProgressRepository, never()).save(any(ActivityProgress.class));
+    verify(enrollmentRepository, never())
+        .updateVersionAndState(any(), any(), any(), any(), any(), any());
+  }
+
+  @Test
+  @DisplayName("saveResponseDraft: stale expectedVersion throws VERSION_CONFLICT")
+  void saveResponseDraft_staleVersion_throwsVersionConflict() {
+    SaveResponseDraftRequest request = new SaveResponseDraftRequest("New answer", 0L);
+
+    assertThatThrownBy(() -> service.saveResponseDraft(enrollmentId, activity2Id, request))
+        .isInstanceOf(DomainException.class)
+        .extracting(e -> ((DomainException) e).getErrorCode())
+        .isEqualTo(ErrorCode.VERSION_CONFLICT);
+  }
+
+  @Test
+  @DisplayName(
+      "saveResponseDraft: already COMPLETED activity with different text throws STATE_CONFLICT")
+  void saveResponseDraft_completedActivity_differentText_throwsStateConflict() {
+    ActivityProgress completedProgress =
+        new ActivityProgress(
+            enrollmentId, activity2Id, ActivityStatus.COMPLETED, "Submitted answer", now);
+    when(activityProgressRepository.findByEnrollmentIdAndActivityId(enrollmentId, activity2Id))
+        .thenReturn(Optional.of(completedProgress));
+
+    SaveResponseDraftRequest request = new SaveResponseDraftRequest("Different draft", 1L);
+
+    assertThatThrownBy(() -> service.saveResponseDraft(enrollmentId, activity2Id, request))
+        .isInstanceOf(DomainException.class)
+        .extracting(e -> ((DomainException) e).getErrorCode())
+        .isEqualTo(ErrorCode.STATE_CONFLICT);
+  }
+
+  @Test
+  @DisplayName("saveResponseDraft: PAUSED enrollment throws STATE_CONFLICT")
+  void saveResponseDraft_pausedEnrollment_throwsStateConflict() {
+    enrollment.setStatus(EnrollmentStatus.PAUSED);
+    SaveResponseDraftRequest request = new SaveResponseDraftRequest("Draft", 1L);
+
+    assertThatThrownBy(() -> service.saveResponseDraft(enrollmentId, activity2Id, request))
+        .isInstanceOf(DomainException.class)
+        .extracting(e -> ((DomainException) e).getErrorCode())
+        .isEqualTo(ErrorCode.STATE_CONFLICT);
+  }
+
+  @Test
+  @DisplayName("saveResponseDraft: unsupported activity type (READING) throws STATE_CONFLICT")
+  void saveResponseDraft_unsupportedActivity_throwsStateConflict() {
+    SaveResponseDraftRequest request = new SaveResponseDraftRequest("Draft", 1L);
+
+    assertThatThrownBy(() -> service.saveResponseDraft(enrollmentId, activity1Id, request))
+        .isInstanceOf(DomainException.class)
+        .extracting(e -> ((DomainException) e).getErrorCode())
+        .isEqualTo(ErrorCode.STATE_CONFLICT);
   }
 }

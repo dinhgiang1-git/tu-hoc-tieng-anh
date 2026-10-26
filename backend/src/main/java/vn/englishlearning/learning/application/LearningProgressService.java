@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -18,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import vn.englishlearning.curriculum.domain.Activity;
 import vn.englishlearning.curriculum.domain.ActivityType;
 import vn.englishlearning.curriculum.domain.CompletionPolicy;
+import vn.englishlearning.curriculum.domain.Lesson;
+import vn.englishlearning.curriculum.domain.Resource;
 import vn.englishlearning.curriculum.infrastructure.ActivityProjectionDto;
 import vn.englishlearning.curriculum.infrastructure.ActivityRepository;
 import vn.englishlearning.curriculum.infrastructure.ActivitySummaryDto;
@@ -29,12 +32,17 @@ import vn.englishlearning.enrollment.domain.LessonSchedule;
 import vn.englishlearning.enrollment.infrastructure.EnrollmentRepository;
 import vn.englishlearning.enrollment.infrastructure.LessonScheduleRepository;
 import vn.englishlearning.identity.infrastructure.AppUserRepository;
+import vn.englishlearning.learning.api.LearningProgressRequests.SaveResponseDraftRequest;
 import vn.englishlearning.learning.api.LearningProgressRequests.SubmitResponseRequest;
 import vn.englishlearning.learning.api.LearningProgressRequests.UpdateProgressRequest;
+import vn.englishlearning.learning.api.LearningProgressResponses.ActivityResponseDto;
+import vn.englishlearning.learning.api.LearningProgressResponses.ActivityWorkspaceDto;
 import vn.englishlearning.learning.api.LearningProgressResponses.LessonActivitiesResponse;
 import vn.englishlearning.learning.api.LearningProgressResponses.LessonActivityItemDto;
+import vn.englishlearning.learning.api.LearningProgressResponses.LessonDetailResponse;
 import vn.englishlearning.learning.api.LearningProgressResponses.ProgressResponse;
 import vn.englishlearning.learning.api.LearningProgressResponses.ProgressSummaryResponse;
+import vn.englishlearning.learning.api.LearningProgressResponses.ResourceDto;
 import vn.englishlearning.learning.domain.ActivityProgress;
 import vn.englishlearning.learning.domain.ActivityStatus;
 import vn.englishlearning.learning.domain.LearningEvent;
@@ -166,6 +174,105 @@ public class LearningProgressService {
             .toList();
 
     return new LessonActivitiesResponse(lessonId, enrollment.getVersion(), items);
+  }
+
+  @Transactional(readOnly = true)
+  public LessonDetailResponse getLessonWorkspace(UUID enrollmentId, UUID lessonId) {
+    UUID currentUserId = currentUser.requireUserId();
+    Enrollment enrollment =
+        enrollmentRepository
+            .findById(enrollmentId)
+            .orElseThrow(
+                () ->
+                    new DomainException(
+                        ErrorCode.RESOURCE_NOT_FOUND, "Enrollment not found: " + enrollmentId));
+
+    if (!enrollment.getUserId().equals(currentUserId)) {
+      throw new DomainException(
+          ErrorCode.RESOURCE_NOT_FOUND, "Enrollment not found: " + enrollmentId);
+    }
+
+    Lesson lesson =
+        lessonRepository
+            .findById(lessonId)
+            .orElseThrow(
+                () ->
+                    new DomainException(
+                        ErrorCode.RESOURCE_NOT_FOUND, "Lesson not found: " + lessonId));
+
+    if (!enrollment.getRevisionId().equals(lesson.getWeek().getPhase().getRevision().getId())) {
+      throw new DomainException(
+          ErrorCode.RESOURCE_NOT_FOUND,
+          "Lesson does not belong to enrollment revision: " + lessonId);
+    }
+
+    List<Activity> activities = activityRepository.findActivitiesWithResourcesByLessonId(lessonId);
+    List<UUID> activityIds = activities.stream().map(Activity::getId).toList();
+
+    Map<UUID, ActivityProgress> progressMap =
+        activityProgressRepository
+            .findByEnrollmentIdAndActivityIdIn(enrollmentId, activityIds)
+            .stream()
+            .collect(Collectors.toMap(ActivityProgress::getActivityId, p -> p, (p1, p2) -> p1));
+
+    List<ActivityWorkspaceDto> activityDtos =
+        activities.stream()
+            .map(
+                a -> {
+                  ActivityProgress p = progressMap.get(a.getId());
+                  ActivityStatus status = p != null ? p.getStatus() : ActivityStatus.NOT_STARTED;
+                  String userResponse = p != null ? p.getUserResponse() : null;
+
+                  List<ResourceDto> resources =
+                      a.getResources().stream()
+                          .sorted(
+                              Comparator.comparing(Resource::getTitle)
+                                  .thenComparing(Resource::getId))
+                          .map(
+                              r ->
+                                  new ResourceDto(
+                                      r.getId(),
+                                      r.getTitle(),
+                                      r.getUrl(),
+                                      r.getMediaType().name(),
+                                      r.getAttribution()))
+                          .toList();
+
+                  return new ActivityWorkspaceDto(
+                      a.getId(),
+                      a.getTitle(),
+                      a.getActivityType(),
+                      a.isRequired(),
+                      a.getCompletionPolicy(),
+                      a.getInstructions(),
+                      status,
+                      userResponse,
+                      resources);
+                })
+            .toList();
+
+    // Compute nextLessonId in revision order
+    List<LessonSummaryDto> summaries =
+        lessonRepository.findLessonSummariesByRevisionId(enrollment.getRevisionId());
+    UUID nextLessonId = null;
+    for (int i = 0; i < summaries.size(); i++) {
+      if (summaries.get(i).id().equals(lessonId)) {
+        if (i + 1 < summaries.size()) {
+          nextLessonId = summaries.get(i + 1).id();
+        }
+        break;
+      }
+    }
+
+    return new LessonDetailResponse(
+        lessonId,
+        lesson.getTitle(),
+        lesson.getEstimatedMinutes(),
+        lesson.isRequired(),
+        lesson.getContentMarkdown(),
+        enrollment.getVersion(),
+        nextLessonId,
+        activityDtos);
   }
 
   @Transactional
@@ -560,6 +667,141 @@ public class LearningProgressService {
         stats.completedRequired(),
         stats.totalRequired(),
         stats.progressPercent());
+  }
+
+  @Transactional
+  public ActivityResponseDto saveResponseDraft(
+      UUID enrollmentId, UUID activityId, SaveResponseDraftRequest request) {
+    if (request == null || request.expectedVersion() == null) {
+      throw new DomainException(ErrorCode.VALIDATION_FAILED, "Dữ liệu yêu cầu không hợp lệ.");
+    }
+    if (request.expectedVersion() < 0) {
+      throw new DomainException(ErrorCode.VALIDATION_FAILED, "expectedVersion phải không âm.");
+    }
+
+    UUID currentUserId = currentUser.requireUserId();
+    Enrollment enrollment =
+        enrollmentRepository
+            .findById(enrollmentId)
+            .orElseThrow(
+                () ->
+                    new DomainException(
+                        ErrorCode.RESOURCE_NOT_FOUND, "Enrollment not found: " + enrollmentId));
+
+    if (!enrollment.getUserId().equals(currentUserId)) {
+      throw new DomainException(
+          ErrorCode.RESOURCE_NOT_FOUND, "Enrollment not found: " + enrollmentId);
+    }
+
+    if (enrollment.getStatus() == EnrollmentStatus.PAUSED
+        || enrollment.getStatus() == EnrollmentStatus.ABANDONED) {
+      throw new DomainException(
+          ErrorCode.STATE_CONFLICT, "Lộ trình đang tạm dừng hoặc đã hủy, không thể lưu nháp.");
+    }
+
+    Activity activity =
+        activityRepository
+            .findById(activityId)
+            .orElseThrow(
+                () ->
+                    new DomainException(
+                        ErrorCode.RESOURCE_NOT_FOUND, "Activity not found: " + activityId));
+
+    if (!enrollment
+        .getRevisionId()
+        .equals(activity.getLesson().getWeek().getPhase().getRevision().getId())) {
+      throw new DomainException(
+          ErrorCode.RESOURCE_NOT_FOUND,
+          "Activity does not belong to enrollment revision: " + activityId);
+    }
+
+    boolean isSupported =
+        (activity.getActivityType() == ActivityType.PRACTICE
+                || activity.getActivityType() == ActivityType.REFLECTION)
+            && (activity.getCompletionPolicy() == CompletionPolicy.MANUAL_CHECK_WITH_RESPONSE
+                || activity.getCompletionPolicy() == CompletionPolicy.RESPONSE_SUBMIT);
+
+    if (!isSupported) {
+      throw new DomainException(
+          ErrorCode.STATE_CONFLICT, "Nhiệm vụ này không hỗ trợ lưu nháp câu trả lời.");
+    }
+
+    ActivityProgress progress =
+        activityProgressRepository
+            .findByEnrollmentIdAndActivityId(enrollmentId, activityId)
+            .orElse(null);
+
+    String newText = request.responseText() != null ? request.responseText() : "";
+
+    if (progress != null && progress.getStatus() == ActivityStatus.COMPLETED) {
+      if (!Objects.equals(progress.getUserResponse(), newText)) {
+        throw new DomainException(
+            ErrorCode.STATE_CONFLICT,
+            "Nhiệm vụ đã hoàn thành. Hãy hoàn tác trước khi lưu nháp mới.");
+      }
+    }
+
+    // Check expectedVersion against enrollment version before any no-op check
+    if (!Objects.equals(enrollment.getVersion(), request.expectedVersion())) {
+      throw new DomainException(
+          ErrorCode.VERSION_CONFLICT, "Dữ liệu đã thay đổi. Hãy tải lại trước khi lưu.");
+    }
+
+    String currentText = progress != null ? progress.getUserResponse() : null;
+    boolean currentBlank = (currentText == null || currentText.isEmpty());
+    boolean newBlank = newText.isEmpty();
+
+    // No-op check: both blank or identical text
+    if ((progress == null && newBlank)
+        || (progress != null && currentBlank && newBlank)
+        || (progress != null && Objects.equals(currentText, newText))) {
+      Instant updatedAt = progress != null ? progress.getUpdatedAt() : Instant.now(clock);
+      UUID progressId = progress != null ? progress.getId() : UUID.randomUUID();
+      return new ActivityResponseDto(
+          progressId,
+          activityId,
+          currentText == null ? "" : currentText,
+          updatedAt,
+          enrollment.getVersion());
+    }
+
+    Instant now = Instant.now(clock);
+
+    if (progress == null) {
+      ActivityStatus status = newBlank ? ActivityStatus.NOT_STARTED : ActivityStatus.IN_PROGRESS;
+      progress = new ActivityProgress(enrollmentId, activityId, status, newText, now);
+    } else {
+      if (progress.getStatus() == ActivityStatus.NOT_STARTED && !newBlank) {
+        progress.setStatus(ActivityStatus.IN_PROGRESS, now);
+      }
+      progress.setUserResponse(newText, now);
+    }
+    progress = activityProgressRepository.save(progress);
+
+    Long newVersion = request.expectedVersion() + 1;
+    entityManager.detach(enrollment);
+    int updatedRows =
+        enrollmentRepository.updateVersionAndState(
+            enrollment.getId(),
+            request.expectedVersion(),
+            newVersion,
+            enrollment.getStatus(),
+            enrollment.getCompletedAt(),
+            now);
+
+    if (updatedRows == 0) {
+      throw new DomainException(
+          ErrorCode.VERSION_CONFLICT, "Dữ liệu đã thay đổi. Hãy tải lại trước khi lưu.");
+    }
+
+    enrollment.setVersion(newVersion);
+
+    return new ActivityResponseDto(
+        progress.getId(),
+        activityId,
+        progress.getUserResponse(),
+        progress.getUpdatedAt(),
+        newVersion);
   }
 
   private void updateLessonScheduleCompletion(Enrollment enrollment, UUID lessonId, Instant now) {

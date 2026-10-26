@@ -495,6 +495,8 @@ paths:
           $ref: '#/components/responses/ForbiddenProblem'
         '404':
           $ref: '#/components/responses/NotFoundProblem'
+        '409':
+          $ref: '#/components/responses/ConflictProblem'
 
   /enrollments/{enrollmentId}/activities/{activityId}/response/submit:
     post:
@@ -639,6 +641,8 @@ paths:
           $ref: '#/components/responses/UnauthorizedProblem'
         '403':
           $ref: '#/components/responses/ForbiddenProblem'
+        '409':
+          $ref: '#/components/responses/ConflictProblem'
 
   /notes/{id}:
     patch:
@@ -687,6 +691,13 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: expectedVersion
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+            description: Version hiện tại của ghi chú để kiểm tra xung đột
         - $ref: '#/components/parameters/CsrfHeader'
       responses:
         '204':
@@ -697,6 +708,8 @@ paths:
           $ref: '#/components/responses/ForbiddenProblem'
         '404':
           $ref: '#/components/responses/NotFoundProblem'
+        '409':
+          $ref: '#/components/responses/ConflictProblem'
 
   # ===========================================================================
   # 5. SCHEDULING & RESCHEDULING
@@ -1576,6 +1589,9 @@ components:
           type: integer
           format: int64
           example: 1
+        nextLessonId:
+          type: [string, "null"]
+          format: uuid
         activities:
           type: array
           items:
@@ -1658,11 +1674,15 @@ components:
 
     SaveResponseDraftRequest:
       type: object
-      required: [responseText]
+      required: [responseText, expectedVersion]
       properties:
         responseText:
           type: string
           maxLength: 5000
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
 
     SubmitResponseRequest:
       type: object
@@ -1678,7 +1698,7 @@ components:
 
     ActivityResponseDto:
       type: object
-      required: [id, activityId, responseText, updatedAt]
+      required: [id, activityId, responseText, updatedAt, enrollmentVersion]
       properties:
         id:
           type: string
@@ -1691,6 +1711,10 @@ components:
         updatedAt:
           type: string
           format: date-time
+        enrollmentVersion:
+          type: integer
+          format: int64
+          example: 2
 
     ProgressSummaryResponse:
       type: object
@@ -1735,11 +1759,11 @@ components:
       properties:
         content:
           type: string
-          minLength: 1
           maxLength: 10000
         expectedVersion:
           type: integer
           format: int64
+          minimum: 0
 
     NoteResponse:
       type: object
@@ -1747,6 +1771,9 @@ components:
       properties:
         id:
           type: string
+          format: uuid
+        enrollmentId:
+          type: [string, "null"]
           format: uuid
         lessonId:
           type: [string, "null"]

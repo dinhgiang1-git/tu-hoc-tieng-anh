@@ -35,4 +35,35 @@ public final class LearningProgressResponses {
       CompletionPolicy completionPolicy,
       ActivityStatus status,
       String responseText) {}
+
+  public record ActivityResponseDto(
+      UUID id,
+      UUID activityId,
+      String responseText,
+      java.time.Instant updatedAt,
+      Long enrollmentVersion) {}
+
+  public record ResourceDto(
+      UUID id, String title, String url, String mediaType, String attribution) {}
+
+  public record ActivityWorkspaceDto(
+      UUID activityId,
+      String title,
+      ActivityType type,
+      boolean required,
+      CompletionPolicy completionPolicy,
+      String instructions,
+      ActivityStatus status,
+      String userResponse,
+      List<ResourceDto> resources) {}
+
+  public record LessonDetailResponse(
+      UUID lessonId,
+      String title,
+      int estimatedMinutes,
+      boolean required,
+      String markdownContent,
+      Long enrollmentVersion,
+      UUID nextLessonId,
+      List<ActivityWorkspaceDto> activities) {}
 }

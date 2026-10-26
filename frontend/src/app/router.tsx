@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { LoginPage } from "@/features/auth/pages/LoginPage";
 import { TodayPage } from "@/features/learning/pages/TodayPage";
-import { LessonSummaryPage } from "@/features/learning/pages/LessonSummaryPage";
+import { LessonWorkspacePage } from "@/features/learning/pages/LessonWorkspacePage";
 import { PreferencesPage } from "@/features/preferences/pages/PreferencesPage";
 import { AppShell } from "./layouts/AppShell";
 import { CurriculaPage } from "@/features/curricula/pages/CurriculaPage";
@@ -32,7 +32,7 @@ export const router = createBrowserRouter([
       { path: "curricula/:slug", element: <CurriculumDetailPage /> },
       {
         path: "enrollments/:enrollmentId/lessons/:lessonId",
-        element: <LessonSummaryPage />,
+        element: <LessonWorkspacePage />,
       },
       {
         path: "schedule",

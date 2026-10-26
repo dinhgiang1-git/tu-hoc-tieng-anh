@@ -52,4 +52,14 @@ public interface ActivityRepository extends JpaRepository<Activity, UUID> {
       """)
   List<ActivityProjectionDto> findActivityProjectionsByLessonId(
       @org.springframework.data.repository.query.Param("lessonId") UUID lessonId);
+
+  @org.springframework.data.jpa.repository.Query(
+      """
+      SELECT DISTINCT a FROM Activity a
+      LEFT JOIN FETCH a.resources r
+      WHERE a.lesson.id = :lessonId
+      ORDER BY a.orderIndex ASC, a.id ASC
+      """)
+  List<Activity> findActivitiesWithResourcesByLessonId(
+      @org.springframework.data.repository.query.Param("lessonId") UUID lessonId);
 }

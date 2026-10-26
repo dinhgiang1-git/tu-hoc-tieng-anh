@@ -306,26 +306,47 @@
 ---
 
 ### Task G3-03: Không gian Học tập (Learning Workspace), Trình đọc Markdown & Ghi chú Tự lưu
-- **Trạng thái:** [ ] Đã chuẩn bị [G3-03_HANDOFF.md](G3-03_HANDOFF.md), chờ AI công nhân triển khai và Codex nghiệm thu. Baseline G3-02: `6c784b4`.
-- **Quyết định triển khai:** Handoff chốt contract draft có enrollment expectedVersion, note version riêng, một note cấp lesson/enrollment cho workspace, autosave serialize 700ms và giữ/chặn rời trang khi còn bản nháp chưa lưu. Dùng handoff để cụ thể hóa phạm vi bên dưới.
+- **Trạng thái:** [x] Codex nghiệm thu ngày 26/10/2026 sau 2 lượt sửa và tự xử lý phần còn lại: 143 unit + 48 PostgreSQL integration + 98 frontend tests đạt; xem [G3-03_ACCEPTANCE.md](../G3-03_ACCEPTANCE.md). Tiếp theo G3-04; chưa thay cho E2E/visual QA. Baseline: `6c784b4`.
 - **Mục tiêu:** Màn hình học bài chi tiết tập trung, đọc Markdown an toàn, chuyển đổi giữa các nhiệm vụ, nhập câu trả lời thực hành (lưu nháp và nộp) và ghi chú tự lưu (autosave).
-- **Đầu vào:** `wireframes.md` (Mục 4), `FE_CODE_CONVENTION.md` (Mục 8), `openapi.yaml`.
-- **Phạm vi:**
-  * Backend:
-    * `GET /api/v1/enrollments/{id}/lessons/{lessonId}`: trả về nội dung Markdown, danh sách nhiệm vụ, trạng thái học của người dùng, câu trả lời đã lưu và `enrollmentVersion`.
-    * `PUT /api/v1/enrollments/{id}/activities/{activityId}/response`: lưu nháp câu trả lời bài thực hành/phản tư (không làm thay đổi trạng thái hoàn thành).
-    * Module Notes: API CRUD ghi chú (`/api/v1/notes`, `PATCH /notes/{id}` với `expectedVersion`).
-  * Frontend:
-    * Trang Không gian học (`/enrollments/:enrollmentId/lessons/:lessonId`).
-    * Trình hiển thị nội dung Markdown an toàn (sanitize raw HTML, hỗ trợ ký tự IPA rõ nét).
-    * Bộ hiển thị nhiệm vụ đa năng (`ActivityRenderer`): hỗ trợ `READING`, `EXTERNAL_RESOURCE` (link mở tab mới kèm `noopener`), `PRACTICE` (text input kèm nút lưu nháp), `REFLECTION` (nút "Lưu nháp" và nút "Nộp & Hoàn thành").
-    * Panel ghi chú cá nhân với hook `useAutosaveNote` (debounce 700ms, xếp hàng request, nhãn Đang lưu/Đã lưu/Lỗi lưu).
-    * Chế độ tập trung (Focus Mode): ẩn thanh sidebar điều hướng, chỉ giữ lại bài học.
-- **Tiêu chí nghiệm thu (DoD):**
-  1. Hiển thị mượt mà bài học Buổi 1 của Pilot Curriculum với đầy đủ bảng IPA và ký hiệu ngữ âm.
-  2. Gõ ghi chú cá nhân $\rightarrow$ sau 700ms tự lưu lên server $\rightarrow$ tải lại trang ghi chú vẫn còn nguyên.
-  3. Gặp sự cố mất mạng khi đang lưu ghi chú: hiển thị nhãn `"Chưa lưu được"` và nút `"Thử lại"`, không báo đã lưu giả.
-  4. Hoàn thành nhiệm vụ cuối cùng trong buổi $\rightarrow$ buổi học tự động chuyển sang `COMPLETED` và giao diện gợi ý chuyển sang buổi tiếp theo.
+- **Khắc phục Toàn diện Review R1–R3 (Lượt 2/2 Final):**
+  * **R1 (Generation Guard, Khóa Autosave khi 409 & Loại bỏ Fallback Đoán Version):**
+    - `useAutosaveNote.ts`:
+      * **Repro A (Scope & Generation Guard):** Bổ sung `generationRef = useRef(0)`. Mỗi khi thay đổi scope (`enrollmentId`, `lessonId`, `initialNote?.id`) hoặc unmount, `generationRef.current += 1`. Mọi request in-flight từ scope cũ trước đó khi hoàn tất (hoặc reject) đều kiểm tra `if (generationRef.current !== requestGen) return;`, bị hủy continuation hoàn toàn và không được phép ghi đè state, refs, resolvers, queue, callbacks của scope mới.
+      * **Repro B (Khóa Autosave khi 409):** Khi gặp 409 `VERSION_CONFLICT`, hủy ngay timer debounce, xóa hàng đợi, chốt cờ `isConflictLatchedRef.current = true` và khóa đường autosave. Khi người học gõ thêm, hook cập nhật text cục bộ nhưng **không lập timer mới**, không tự động gửi PATCH. Autosave chỉ mở lại khi người học chủ động chọn "Tải lại phiên bản mới" (`reloadNote`) hoặc "Ghi đè bằng bản này" (`overwriteConflict`).
+    - `NoteEditor.tsx`:
+      * **Loại bỏ Fallback Đoán Version:** Xóa bỏ hoàn toàn logic `currentNote.version + 1` khi đọc note mới bị lỗi hoặc không thấy note. Nếu đọc bản mới thất bại, giữ nguyên draft và hiển thị thông báo lỗi yêu cầu thử lại sau, tuyệt đối không gửi request PATCH.
+      * **Bảo vệ Trạng thái Tải:** Tiếp nhận `isLoading`, `isLoadError` và `onRetryLoad` từ `notesQuery`. Hiển thị Skeleton loading khi đang tải và banner lỗi khi tải thất bại, ngăn chặn việc người học gõ vào editor khi chưa khởi tạo xong gây POST tạo trùng note. Gọi `notesApi.getNotes` với `size: 100` để bảo đảm lấy đủ note cấp bài học trong 1 trang duy nhất.
+  * **R2 (Bảo toàn Text Response khi Lưu/Lỗi, Phục hồi Xung đột & Unified Navigation Blocker):**
+    - `ActivityRenderer.tsx`:
+      * **Repro C (Bảo toàn Text Draft):** Tách rời hoàn toàn `responseText` khỏi các chuyển đổi của `draftStatus`. Xóa bỏ điều kiện `draftStatus !== "dirty"` gây reset textarea về snapshot cũ khi nhấn "Lưu nháp" (chuyển sang `saving`). `responseText` được giữ nguyên vẹn xuyên suốt các trạng thái `saving`, `error`, và `saved`.
+      * **Phân biệt 409 Conflict & Phục hồi:** Phân biệt rõ `VERSION_CONFLICT` vs `STATE_CONFLICT`. Khi gặp `VERSION_CONFLICT`, giữ nguyên draft và hiển thị nút "Đồng bộ tiến độ" (`onRefreshWorkspace`) để nạp lại version mới từ server mà không mất nội dung đã nhập.
+      * **Generation Guard Activity:** Bổ sung `activityGenRef` bảo vệ callbacks mutation, ngăn chặn stale response ghi đè vào activity/workspace mới khi chuyển bài.
+    - `LessonWorkspacePage.tsx`:
+      * **Reconciliation & Mutating Synchronization:** Trong `handleVersionUpdate`, giữ `isMutating = true` qua toàn bộ chu trình `await Promise.all(...)` invalidation (bao gồm `learningWorkspaceKeys.lesson`), chỉ gỡ temporary overrides sau khi dữ liệu server mới đã về đến cache.
+      * **Unified Navigation Blocker:** Gom tất cả thay đổi chưa lưu (note dirty/saving/conflict, activity drafts, mutations) vào một guard duy nhất tại root workspace, gọi `useBlocker` đúng 1 lần (loại bỏ hoàn toàn lỗi "A router only supports one blocker at a time"). Hỗ trợ đầy đủ hành động "Lưu rồi rời" (Save and Proceed), "Ở lại trang", và "Rời khỏi không lưu".
+  * **R3 (Ma trận Chính sách & Chặn Thao tác Thủ công trên RECORDING/DICTATION):**
+    - `ActivityRenderer.tsx`: Nhận diện `isUnsupportedType = activity.type === "RECORDING" || activity.type === "DICTATION"`. Ép buộc `isManualCheck = false` và `hasResponse = false`, không hiển thị nút "Hoàn thành" thủ công (tránh bị backend từ chối với 400/422). Hiển thị badge thông báo loại hoạt động chưa hỗ trợ thao tác trên web.
+  * **Bộ Test Suite Reviewer Repros Hoàn chỉnh:**
+    - [frontend/src/features/learning/__tests__/G303Round1Review.test.tsx](file:///d:/WorkSpace/tu-hoc-tieng-anh/frontend/src/features/learning/__tests__/G303Round1Review.test.tsx): **3/3 tests passed** (Repro A, Repro B, Repro C).
+    - [frontend/src/features/learning/__tests__/G303Review.test.tsx](file:///d:/WorkSpace/tu-hoc-tieng-anh/frontend/src/features/learning/__tests__/G303Review.test.tsx): **5/5 tests passed** (5 repros từ Round 1).
+    - [frontend/src/features/learning/__tests__/G303RecheckVerification.test.tsx](file:///d:/WorkSpace/tu-hoc-tieng-anh/frontend/src/features/learning/__tests__/G303RecheckVerification.test.tsx): **5/5 tests passed** (Chính sách unsupported types, 409 recovery, overwrite safety không đoán version, Data Router Unified Navigation Blocker thực tế).
+- **Tiêu chí nghiệm thu (DoD) & Bằng chứng kiểm thử thực tế:**
+  1. *Backend Spotless:* `.\mvnw.cmd spotless:check` đạt **128/128 files clean**.
+  2. *Backend Unit Tests:* `.\mvnw.cmd test "-Dtest=!*IT"` đạt **142/142 tests passed** (0 failures, 0 errors, bao gồm 12 tests `NoteServiceTest`, 7 tests `NoteControllerTest`, 32 tests `LearningProgressServiceTest`, 10 tests `LearningProgressControllerTest`).
+  3. *Backend Integration Tests (PostgreSQL 16 Testcontainers):*
+     - `.\mvnw.cmd verify "-Dapi.version=1.44"` đạt trọn vẹn **142 unit tests + 48 integration tests** (tổng cộng 190 tests passed, 0 failures, 0 errors, 0 skipped) chạy trên container PostgreSQL 16.15-alpine biệt lập:
+       * `LearningWorkspaceAndNotesIT.java`: **6/6 tests passed** (gồm workspace detail, draft lifecycle & locking, notes CRUD, concurrent draft vs submit, concurrent note create race, fixed clock no-op version stability).
+       * `LearningProgressIT.java`: **11/11 tests passed**.
+       * `EnrollmentAndTodayIT.java`: **10/10 tests passed**.
+       * `CurriculumCatalogIT.java`: **5/5 tests passed**.
+       * `CurriculumImportPublishIT.java`: **5/5 tests passed**.
+       * `AuthAndIdentityIT.java`: **10/10 tests passed**.
+       * `EnglishLearningApplicationIT.java`: **1/1 test passed**.
+  4. *Frontend Unit Tests:* `npm test` đạt **93/93 tests passed** trên 16 test suites.
+  5. *Frontend Typecheck:* `npm run typecheck` đạt (**0 errors**).
+  6. *Frontend Lint:* `npm run lint` đạt (**0 errors**, 2 warnings thông tin React Compiler).
+  7. *Frontend Build:* `npm run build` đạt (Vite production bundle thành công trong 818ms, bundle 683 KB, 207 KB gzip).
+  8. *Ràng buộc an toàn:* Không sửa `V001`–`V006` (dùng `V007`), không chạm dev DB `localhost:5432`, không sửa `.env`, không commit/push Git, không mở sang G3-04. Dừng chờ Codex nghiệm thu.
 
 ---
 

@@ -9,9 +9,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vn.englishlearning.learning.api.LearningProgressRequests.SaveResponseDraftRequest;
 import vn.englishlearning.learning.api.LearningProgressRequests.SubmitResponseRequest;
 import vn.englishlearning.learning.api.LearningProgressRequests.UpdateProgressRequest;
+import vn.englishlearning.learning.api.LearningProgressResponses.ActivityResponseDto;
 import vn.englishlearning.learning.api.LearningProgressResponses.LessonActivitiesResponse;
+import vn.englishlearning.learning.api.LearningProgressResponses.LessonDetailResponse;
 import vn.englishlearning.learning.api.LearningProgressResponses.ProgressResponse;
 import vn.englishlearning.learning.api.LearningProgressResponses.ProgressSummaryResponse;
 import vn.englishlearning.learning.application.LearningProgressService;
@@ -31,6 +34,12 @@ public class LearningProgressController {
     return learningProgressService.getSummary(enrollmentId);
   }
 
+  @GetMapping("/{enrollmentId}/lessons/{lessonId}")
+  public LessonDetailResponse getLessonWorkspace(
+      @PathVariable UUID enrollmentId, @PathVariable UUID lessonId) {
+    return learningProgressService.getLessonWorkspace(enrollmentId, lessonId);
+  }
+
   @GetMapping("/{enrollmentId}/lessons/{lessonId}/activities")
   public LessonActivitiesResponse getLessonActivities(
       @PathVariable UUID enrollmentId, @PathVariable UUID lessonId) {
@@ -43,6 +52,14 @@ public class LearningProgressController {
       @PathVariable UUID activityId,
       @Valid @RequestBody UpdateProgressRequest request) {
     return learningProgressService.updateProgress(enrollmentId, activityId, request);
+  }
+
+  @PutMapping("/{enrollmentId}/activities/{activityId}/response")
+  public ActivityResponseDto saveResponseDraft(
+      @PathVariable UUID enrollmentId,
+      @PathVariable UUID activityId,
+      @Valid @RequestBody SaveResponseDraftRequest request) {
+    return learningProgressService.saveResponseDraft(enrollmentId, activityId, request);
   }
 
   @PostMapping("/{enrollmentId}/activities/{activityId}/response/submit")
