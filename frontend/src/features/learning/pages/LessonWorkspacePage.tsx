@@ -64,6 +64,7 @@ function LessonWorkspaceContent() {
   const [blockerSaveError, setBlockerSaveError] = useState<string | null>(null);
 
   const noteSaveRef = useRef<(() => Promise<NoteResponse | null>) | null>(null);
+  const blockerDialogRef = useRef<HTMLDivElement>(null);
   const hasUnsavedActivityDraft = Object.values(activityDrafts).some(Boolean);
 
   // 1. Fetch Lesson Workspace details
@@ -125,6 +126,36 @@ function LessonWorkspaceContent() {
       hasPendingUnsavedWork &&
       currentLocation.pathname !== nextLocation.pathname,
   );
+
+  const resetBlockedNavigation = blocker?.state === "blocked" ? blocker.reset : undefined;
+  useEffect(() => {
+    const dialog = blockerDialogRef.current;
+    if (!resetBlockedNavigation || !dialog) return;
+    const previousFocus = document.activeElement;
+    const buttons = () => Array.from(dialog.querySelectorAll<HTMLButtonElement>("button:not(:disabled)"));
+    buttons()[0]?.focus();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const controls = buttons();
+      if (event.key === "Escape" && controls.length > 0) {
+        event.preventDefault();
+        resetBlockedNavigation();
+      } else if (event.key === "Tab") {
+        const first = controls[0];
+        const last = controls[controls.length - 1];
+        if (!first) { event.preventDefault(); return; }
+        if (!dialog.contains(document.activeElement) || (event.shiftKey && document.activeElement === first)) {
+          event.preventDefault(); (event.shiftKey ? last : first)?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault(); first.focus();
+        }
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus();
+    };
+  }, [resetBlockedNavigation]);
 
   // Handle "Lưu rồi rời" (save and proceed)
   const handleSaveAndProceed = async () => {
@@ -508,12 +539,16 @@ function LessonWorkspaceContent() {
       {blocker?.state === "blocked" && (
         <div
           data-testid="workspace-navigation-blocker-modal"
+          ref={blockerDialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="blocker-dialog-title"
           className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4"
         >
           <div className="w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-lg space-y-4">
             <div className="flex items-center gap-3 text-amber-600 dark:text-amber-400">
               <AlertTriangle className="h-6 w-6 shrink-0" />
-              <h3 className="text-base font-semibold text-foreground">
+              <h3 id="blocker-dialog-title" className="text-base font-semibold text-foreground">
                 Bạn có thay đổi chưa lưu!
               </h3>
             </div>

@@ -56,11 +56,40 @@ Frontend proxy `/api` và `/actuator` tới `http://localhost:8080`. Nếu đổ
 
 ## 4. Phạm vi hiện tại và dừng ứng dụng
 
-Hiện có giao diện shell, đăng nhập/đăng xuất, danh mục/chi tiết lộ trình, đăng ký lộ trình, lịch ban đầu, trang Hôm nay và tóm tắt bài chỉ đọc. Chưa có toàn bộ chức năng học theo lộ trình. Không cần import/publish nội dung để xem giao diện. G2-01 đã qua kiểm tra bất biến nội dung và integration trên PostgreSQL biệt lập; G3-01 đã nghiệm thu; lộ trình chỉ xuất hiện khi có revision được publish. Chức năng hoàn thành/hoàn tác/nộp phản tư thuộc G3-02 và không gian học đầy đủ thuộc G3-03.
+Đã hoàn thành các chức năng:
+- **G3-01 / G3-02**: Danh mục/chi tiết lộ trình, đăng ký lộ trình, trang Hôm nay (tính lịch, gợi ý bài kế, rest day, overdue, upcoming, hoàn thành lộ trình), chuyển đổi lộ trình ưu tiên, đánh dấu hoàn thành/undo hoạt động bắt buộc, lưu nháp câu trả lời phản tư, kiểm tra phân tách revision và mẫu số tiến độ.
+- **G3-03**: Không gian học tập buổi học (`LessonWorkspacePage`), render nội dung Markdown bài học, panel danh sách hoạt động kèm tài liệu tham khảo nguồn mở, trình soạn thảo ghi chú bài học (`NoteEditor`) có autosave (700ms debounce) và giải quyết xung đột phiên bản (CAS conflict với lựa chọn Tải lại hoặc Ghi đè), Chế độ tập trung (Focus Mode, Esc để thoát), và Unified Navigation Blocker bảo vệ thay đổi chưa lưu khi rời trang.
 
 Dừng backend/frontend bằng `Ctrl+C` trong từng terminal. Không cần dừng PostgreSQL nếu ứng dụng khác đang dùng chung container.
 
-## 5. Lỗi thường gặp
+## 5. Chạy bộ kiểm thử E2E Playwright (G3-04)
+
+Cài dependency bằng `npm ci` trong frontend; lần đầu cài Chromium bằng `npx playwright install chromium`. Mở FE/BE development trước khi chạy runner. Runner mặc định dùng container `postgresql-postgres-1`, không tự tạo/xóa container.
+
+Bộ E2E tự động xác thực toàn bộ vòng lặp học tập M1 và các luồng đa tài khoản/đa tab/điều hướng trên trình duyệt Chromium thật:
+
+```powershell
+# Chạy toàn bộ 14 test E2E (tự động seed fixture an toàn và chạy Playwright)
+cd D:\WorkSpace\tu-hoc-tieng-anh
+powershell -ExecutionPolicy Bypass -File scripts/run-e2e.ps1
+
+# Chạy riêng từng suite
+powershell -ExecutionPolicy Bypass -File scripts/run-e2e.ps1 -TestFilter e2e/m1-core-loop.e2e.ts
+powershell -ExecutionPolicy Bypass -File scripts/run-e2e.ps1 -TestFilter e2e/multi-account-and-sync.e2e.ts
+powershell -ExecutionPolicy Bypass -File scripts/run-e2e.ps1 -TestFilter e2e/navigation-and-desktop-ux.e2e.ts
+
+# Hoặc lọc theo regex tên test; mặc định reset đúng các tài khoản E2E
+powershell -ExecutionPolicy Bypass -File scripts/run-e2e.ps1 -TestFilter '5\.2|5\.3|M1-5'
+# Tái dùng trạng thái test hiện có (chỉ dùng khi case phù hợp)
+powershell -ExecutionPolicy Bypass -File scripts/run-e2e.ps1 -SkipSeed -TestFilter '5\.4 Desktop'
+# Container khác tên mặc định: thêm -ContainerName TEN_CONTAINER_THUC_TE
+```
+
+*Lưu ý an toàn:*
+- Script tận dụng trực tiếp Backend (`localhost:8080`), Frontend (`localhost:5173`) và Database phát triển (`english_learning_db`).
+- Seed/reset chỉ tác động allowlist 17 tài khoản `e2e_*` trong scripts/seed-e2e.sql; không reset các tài khoản cá nhân. SQL lỗi rollback transaction và dừng trước test. Không tắt trigger/ràng buộc, không xóa curriculum published để reset fixture.
+
+## 6. Lỗi thường gặp
 
 - Docker named pipe không tồn tại: Docker Engine chưa chạy hoặc chọn sai context.
 - `Connection refused`: kiểm tra container, host và cổng publish.
