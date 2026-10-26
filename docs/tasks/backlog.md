@@ -351,7 +351,7 @@
 ---
 
 ### Task G3-04: Kiểm thử E2E Vòng học Cốt lõi & Hoàn thiện Mốc M1
-- **Trạng thái:** [ ] Đã chuẩn bị [G3-04_HANDOFF.md](G3-04_HANDOFF.md), chờ công nhân triển khai và Codex nghiệm thu. Baseline G3-03: `e44edc0`.
+- **Trạng thái:** [ ] Codex review ngày 26/10/2026: chưa nghiệm thu; cần sửa R1–R3 lượt 1/2 theo [G3-04_REVIEW.md](../G3-04_REVIEW.md). Regression 143 unit + 48 PostgreSQL integration + 98 FE tests đạt; Playwright discovery nhận 13 tests, chưa có bằng chứng chạy E2E thành công. Baseline G3-03: `e44edc0`.
 - **Ưu tiên đã chốt ngày 26/10/2026:** Chỉ web desktop đợt này; mobile hoãn, không chặn nghiệm thu M1 desktop.
 - **Mục tiêu:** Kiểm chứng toàn diện hành trình người học từ Đăng nhập $\rightarrow$ Đăng ký $\rightarrow$ Học bài $\rightarrow$ Ghi chú $\rightarrow$ Hoàn thành $\rightarrow$ Hôm nay cập nhật đúng.
 - **Đầu vào:** Toàn bộ code G1–G3.
