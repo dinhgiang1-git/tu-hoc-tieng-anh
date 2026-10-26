@@ -351,12 +351,14 @@
 ---
 
 ### Task G3-04: Kiểm thử E2E Vòng học Cốt lõi & Hoàn thiện Mốc M1
+- **Trạng thái:** [ ] Đã chuẩn bị [G3-04_HANDOFF.md](G3-04_HANDOFF.md), chờ công nhân triển khai và Codex nghiệm thu. Baseline G3-03: `e44edc0`.
+- **Ưu tiên đã chốt ngày 26/10/2026:** Chỉ web desktop đợt này; mobile hoãn, không chặn nghiệm thu M1 desktop.
 - **Mục tiêu:** Kiểm chứng toàn diện hành trình người học từ Đăng nhập $\rightarrow$ Đăng ký $\rightarrow$ Học bài $\rightarrow$ Ghi chú $\rightarrow$ Hoàn thành $\rightarrow$ Hôm nay cập nhật đúng.
 - **Đầu vào:** Toàn bộ code G1–G3.
 - **Tiêu chí nghiệm thu (DoD):**
   1. Vượt qua toàn bộ 6 tiêu chí nghiệm thu bắt buộc của mốc M1 được quy định trong `KE_HOACH_DU_AN.md` (Mục 11 - G3).
   2. Không có lỗi rò rỉ dữ liệu giữa 2 tài khoản.
-  3. Giao diện hiển thị chuẩn xác trên cả màn hình Desktop (1440px) và Mobile (375px).
+  3. Giao diện và thao tác đúng trên desktop 1440×900, thêm smoke 1280×800. Mobile 375px hoãn theo yêu cầu người dùng, chưa nghiệm thu trong G3-04.
 
 ---
 
