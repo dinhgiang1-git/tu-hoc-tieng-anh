@@ -7,25 +7,22 @@ Ngày 26/10/2026 (Asia/Ho_Chi_Minh). Phạm vi **web desktop**, mobile vẫn ho�
 - Backend `mvnw.cmd -o -B -ntp verify`: **143 unit + 48 PostgreSQL integration tests**, không failures/errors/skips, BUILD SUCCESS, Spotless đạt. Log local `backend/target/review-g304.log`.
 - FE `npm test`: **98/98 tests**; lint không error (warning form.watch đã biết), build/TypeScript đạt. Log `frontend/review-g304-unit.log`.
 - `npx --no-install playwright test --list`: nhận diện **13 tests trong 3 files**. Đây chỉ là discovery, **không phải 13 tests đã chạy/đạt**.
-- Không chạy `scripts/run-e2e.ps1` hiện tại vì chưa xác minh được ownership tài nguyên mà script tự xóa, và còn khả năng reuse nhầm server đang chạy. Không chỉnh DB dev hoặc code sản phẩm trong lượt review.
+- Không chạy `scripts/run-e2e.ps1` hiện tại vì chưa xác minh được ownership tài nguyên mà script tự xóa, và còn khả năng reuse nhầm server đang chạy. Lượt review trước chưa chỉnh DB dev hoặc code sản phẩm; từ quyết định mới bên dưới, E2E được phép ghi dữ liệu test trực tiếp vào DB dev.
 - Chưa có `docs/G3-04_IMPLEMENTATION.md`; tài liệu chạy và backlog chưa được cập nhật cho G3-04. Không có bằng chứng đủ để chốt M1.
 
-## R1 — P1: harness chưa bảo đảm biệt lập và cleanup đúng tài nguyên
+## R1 — Đã thay đổi yêu cầu: dùng trực tiếp DB dev, không dựng môi trường riêng
 
-`scripts/run-e2e.ps1` đặt tên container cố định `english-learning-e2e-postgres`, chạy `docker rm -f` tên đó ngay từ đầu, rồi cleanup cũng xóa theo tên. Chưa kiểm tra ID/label/run identity trước xóa, có thể xóa phiên E2E khác hoặc container trùng tên không do lần chạy này tạo. Đồng thời chưa kiểm tra cổng 15432/8088/5174 trước launch; health 200/UP không chứng minh server do chính harness tạo. Vite thiếu strictPort có thể đổi cổng trong khi script probe server cũ.
+**Quyết định mới của người dùng ngày 26/10/2026:** chấp nhận dùng trực tiếp database development để tăng tốc. Bỏ yêu cầu dựng container/profile/cổng E2E riêng, runId ownership cho container, guard cấm DB dev và negative tests phục vụ môi trường biệt lập. Không dùng các yêu cầu cũ này để chặn nghiệm thu.
 
-Environment cũ như SERVER_PORT/E2E_DB_*/SPRING_DATASOURCE_URL có thể làm app đi khác cổng/DB mà harness nghĩ. Script chỉ cấp Vite env, không truyền cấu hình backend E2E cố định theo container mới. Không restore env sau chạy; readiness PostgreSQL nằm ngoài try/finally chính nên exception có thể để container sót. Dùng `-NoNewWindow` thay yêu cầu khởi chạy helper ẩn của handoff.
+Thay R1 bằng đường chạy đơn giản:
 
-`E2EDataBootstrapRunner.verifySafetyCheck` chỉ blacklist một port/DB name, không xác minh đúng database/container dành riêng lần chạy. Quan trọng: kiểm tra ở CommandLineRunner là **sau Flyway và bootstrap khác**, quá muộn để ngăn mutation vào DB sai. Profile `e2e` đơn thuần không bảo đảm target an toàn.
+- Tái dùng app dev và DB hiện có, health-check đúng baseURL; seed tài khoản/dữ liệu test tiền tố `e2e_` bằng script gọi rõ ràng.
+- Bỏ tạo/xóa container khỏi harness mặc định; không chạy `docker rm -f` tên cố định. Không cần startup/shutdown một bộ FE/BE/DB mới mỗi lượt.
+- Mỗi case tự setup và ghi manifest IDs; cleanup/reset chỉ dữ liệu test do case/run tạo. Không truncate/drop DB, xóa dữ liệu đang học, đổi tài khoản cá nhân hoặc sửa migration cũ.
+- Không in secrets, không public seed/reset endpoint, không bỏ auth/CSRF. Tái dùng .env local, không commit credentials.
+- Không kill app người dùng; nếu harness có launch helper thì chỉ cleanup tiến trình con của mình. Backend regression JUnit giữ Testcontainers hiện có, không cần viết lại.
 
-**DoD R1:**
-
-- Tên/label runId duy nhất, giữ container ID trả về, cleanup chỉ ID thuộc đúng run. Không pre-delete tài nguyên không do run sở hữu.
-- Kiểm tra cổng riêng hoặc cấp cổng động; strictPort; không reuse server dev/cũ; readiness kết hợp process ownership và xác nhận đúng fixture/profile sau startup.
-- Cấp rõ backend DB URL/user/password/profile/port cho container mới, loại bỏ ảnh hưởng env kế thừa và .env dev; restore env sau run. Guard target trước mọi Flyway/seed/write; không chỉ check trong runner sau startup. Missing/mismatch config phải fail closed.
-- try/finally bao toàn bộ tài nguyên từ lúc tạo; lỗi startup/test/interrupt phải cleanup scoped. Helpers Windows khởi chạy ẩn, chỉ kill cây tiến trình do harness tạo. Exit code lỗi phải đúng, log riêng cho backend/frontend/test.
-- Không endpoint reset/seed public hoặc production auth bypass. Nếu giữ fixture bootstrap trong main sources phải chứng minh nó không chạy được với profile dev/prod và target sai không bị migration/seed; ưu tiên test-only harness khi phù hợp.
-- Có negative checks cho cổng bận, cấu hình DB sai và container cùng tên không thuộc run: dừng an toàn, không kill/xóa dịch vụ khác.
+Đây là **đơn giản hóa yêu cầu theo ủy quyền mới**, không phải lỗi cần công nhân đầu tư thêm hạ tầng. Handoff mục 3 mới là nguồn chuẩn. R2/R3 về test đúng và bằng chứng thật vẫn cần hoàn tất.
 
 ## R2 — P1: E2E không khớp UI và phụ thuộc thứ tự test
 
@@ -51,7 +48,7 @@ Các gaps đã nằm trong handoff, không phải yêu cầu mở rộng:
 - Context A/B có một phần owner/CSRF nhưng cần chứng minh không đọc/sửa progress/draft/note của A, cache A/B và return A vẫn đúng bằng state thật. Logout helper fallback POST không có CSRF, không kiểm tra kết quả; không được coi goto login là logout thành công.
 - Desktop test mới check overflow/links; chưa có screenshots các màn chính, keyboard/modal focus hay report. Hiện còn `waitForTimeout(300)`; thay bằng điều kiện layout ổn định. Không blanket-ignore console/page exception.
 
-**DoD R3:** hoàn thiện assertions theo 6 tiêu chí M1 và các case đã giao, tạo `docs/G3-04_IMPLEMENTATION.md` có mapping criterion → spec → lệnh/kết quả/artifact. Cập nhật `docs/HUONG_DAN_CHAY.md` và hướng dẫn harness chạy lặp lại. Chạy full E2E trên môi trường biệt lập an toàn, sau đó nhóm race/network/autosave/navigation thêm một lượt; báo failures/retries thật. Không lấy list/discovery hay 98 Vitest để thay bằng chứng E2E.
+**DoD R3:** hoàn thiện assertions theo 6 tiêu chí M1 và các case đã giao, tạo `docs/G3-04_IMPLEMENTATION.md` có mapping criterion → spec → lệnh/kết quả/artifact. Cập nhật `docs/HUONG_DAN_CHAY.md` và hướng dẫn harness chạy lặp lại. Chạy full E2E trên app/DB development với dữ liệu test riêng, sau đó nhóm race/network/autosave/navigation thêm một lượt; báo failures/retries thật. Không lấy list/discovery hay 98 Vitest để thay bằng chứng E2E.
 
 ## Điểm dừng / prompt sửa
 
@@ -59,13 +56,14 @@ Các gaps đã nằm trong handoff, không phải yêu cầu mở rộng:
 
 ```text
 Sửa G3-04 theo docs/G3-04_REVIEW.md, lượt 1/2.
-Ưu tiên R1: harness sở hữu tài nguyên theo runId, không pre-delete/reuse nhầm,
-cấu hình E2E fail closed trước migration/seed, cleanup và ports an toàn.
+R1 đã thay đổi theo người dùng: tái dùng trực tiếp FE/BE/DB dev, bỏ dựng/xóa
+container riêng. Chỉ seed/reset dữ liệu test e2e_, không xóa dữ liệu cá nhân.
 Sửa R2: E2E dùng selectors UI thật và mỗi test tự setup độc lập, chạy riêng được.
 Sửa R3: kiểm chứng đúng cross-revision ID tồn tại, count/progress/undo,
 autosave A in-flight/B, conflict/recovery và evidence theo handoff desktop.
 Chạy regression + full E2E thật + nhóm race/network lần hai, cập nhật
 docs/G3-04_IMPLEMENTATION.md, hướng dẫn chạy và backlog chờ Codex nghiệm thu.
-Không sửa secrets, DB/compose dev, migration cũ; không commit/push, không G4.
+Được dùng DB dev cho dữ liệu test; không xóa dữ liệu thật, sửa secrets/compose
+chung hoặc migration cũ; không commit/push, không G4.
 Tối đa 2 lượt sửa cùng finding, sau đó Codex tự xử lý.
 ```
