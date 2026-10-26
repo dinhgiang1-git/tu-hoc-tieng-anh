@@ -77,26 +77,20 @@ Triển khai endpoint đã có trong OpenAPI:
 - Khi complete/undo/submit từ workspace rồi quay lại lịch, trạng thái lịch phải cập nhật. Extend invalidation hiện có đúng key; bảo toàn sync/error/draft guard của G3-03, không copy thêm cơ chế mutation yếu hơn.
 - Kiểm tra desktop 1440×900 và 1280×800, bàn phím select/nút/link, focus rõ và không overflow ngang toàn trang. Mobile vẫn deferred.
 
-## 6. Tests và nghiệm thu
+## 6. Kiểm chứng gọn — ưu tiên tốc độ theo yêu cầu mới
 
-### Backend
+Áp dụng AGENTS.md. Mục này thay danh sách test bắt buộc dài của bản handoff trước; các quy tắc chức năng vẫn giữ nguyên. Không yêu cầu triển khai thêm hàng chục case riêng trước khi demo được lịch.
 
-1. Planner: Mon/Wed/Fri; một ngày/tuần; bắt đầu ngày nghỉ; qua tháng/năm/năm nhuận; optional không chiếm slot; thứ tự bài; empty lessons/endDate null; empty/null days reject; dailyTarget không làm đổi số lesson/ngày.
-2. Create enrollment giữ ngày/lịch/idempotency/owner-lock và rollback như trước; existing regression G3-01 còn đạt. Không sinh lịch cho optional.
-3. HTTP schedule: owner A/B, 401/404, from/to defaults/inclusive/boundary/>366/invalid date, empty range, thứ tự ổn định. Clock fixed tại ranh giới UTC/local date, London DST và Ho_Chi_Minh để xác minh overdue ngày thực.
-4. PAUSED/ABANDONED/COMPLETED/archived revision đọc được đúng scope, không phát cảnh báo overdue sai. Complete/undo làm schedule isCompleted đổi, endDate/planned/original không đổi.
-5. GET không mutation: kiểm tra version/timestamps/events trước/sau không đổi. EndDate lấy toàn enrollment ngay khi query lịch một tuần rỗng.
-6. Query/projection: fixture nhiều lessons/resources không N+1, không select Markdown/user_response. Chỉ thêm index khi query mới cần.
+**Bộ tối thiểu cho G4-01:**
 
-### Frontend / browser thật
+1. Planner: gom vài case trong test tham số để kiểm tra đúng thứ tự/ngày được chọn, bắt đầu ngày nghỉ, bỏ optional và reject studyDays rỗng. Một case qua ranh giới tháng là đủ cho lượt đầu; không mở ma trận ngày vô hạn.
+2. API đọc: owner A/B, range inclusive/invalid, isCompleted/overdue và estimatedEndDate theo lịch persisted; xác nhận GET không đổi version/lịch. Có một PostgreSQL integration cho luồng chính; tái dùng fixture hiện có.
+3. FE: build (đã gồm typecheck) + lint; test mới cho chuyển enrollment/range nếu có xử lý state dễ sai. Không viết test riêng cho từng label/nút/CSS.
+4. Browser thật: một luồng lịch → mở bài → complete/undo → quay lại lịch; kiểm tra reload và ngày hiển thị đúng. Thêm một smoke luồng học cũ bị tác động, không chạy mặc định cả 14 E2E M1. Desktop chính 1440×900; không cần sinh lại bộ ảnh mọi trang.
 
-7. Loading/error/retry/empty, select enrollment, chuyển tuần, Hôm nay, ngày nghỉ và endDate. Deferred reads/range change không hiển thị dữ liệu enrollment cũ.
-8. Browser E2E trên app/DB dev: login → enroll với lịch 3 ngày/tuần → mở Lịch → kiểm tra ngày và link workspace → complete → quay lại/reload lịch có completed → undo → lịch cập nhật, planned/original/endDate giữ nguyên. Optional không xuất hiện như buổi bắt buộc.
-9. Account B không xem lịch A khi thay UUID; desktop screenshots hai viewport, keyboard. Giữ 14 E2E M1 đang có, nhất là notes/conflict/navigation và modal focus.
+Trong khi sửa chỉ chạy nhóm liên quan một lần. Không chạy đồng thời Maven verify, full Vitest và full Playwright cho mọi lượt review. Full regression rộng chạy khi chốt G4 hoặc khi phát hiện thay đổi shared/auth/schema có rủi ro lan rộng; integration mới liên quan transaction/SQL vẫn phải chạy.
 
-Dùng dữ liệu test có IDs/names xác định trong DB dev; không truncate/reset dữ liệu cá nhân, không tắt trigger/ràng buộc hoặc xóa curriculum published. Có thể mở rộng allowlist fixture script nếu tạo account mới; không đổi mật khẩu/tiến độ `admin`/`dinhgiang1`. Backend integration vẫn dùng Testcontainers hiện có.
-
-Chạy Maven verify, FE tests/typecheck/lint/build; E2E lịch mới và regression M1. Với thay đổi nhỏ không liên quan một case, tránh lặp mọi suite nhiều lần vô ích; báo lệnh và số tests thực chạy, không thay discovery thành pass.
+E2E dùng DB dev và tài khoản test đã định danh; không đụng dữ liệu cá nhân/trigger/published revision. Backend integration tái dùng Testcontainers. Báo ngắn lệnh thực chạy và phần chưa kiểm chứng, không chép số tests cũ như kết quả mới.
 
 ## 7. Tài liệu / bàn giao
 
@@ -115,7 +109,8 @@ owner/range/timezone đúng, estimatedEndDate theo lịch persisted và trang
 Lịch học desktop thật. Không regenerate lịch cũ, không phá progress/note.
 Chưa làm preview/commit đổi lịch, pause/resume, calendar kéo thả hoặc mobile.
 Tái dùng app/DB dev cho E2E với dữ liệu test; JUnit giữ Testcontainers hiện có.
-Chạy checks, cập nhật contract/generated types, docs/G4-01_IMPLEMENTATION.md
+Áp dụng quy trình nhanh AGENTS.md và bộ kiểm chứng tối thiểu ở mục 6; không
+chạy full suites lặp lại. Cập nhật contract/generated types, docs/G4-01_IMPLEMENTATION.md
 và backlog chờ Codex review rồi dừng. Không sửa secrets, dữ liệu cá nhân,
 compose dùng chung, migration cũ; không commit/push. Tối đa 2 lượt sửa cùng
 finding, còn lại Codex tự xử lý. Không bắt đầu G4-02 trước nghiệm thu.
