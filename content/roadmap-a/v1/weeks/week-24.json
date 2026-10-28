@@ -1,0 +1,239 @@
+{
+  "key": "roadmap-a.w24",
+  "title": "Tuần 24: Tranh luận & Bày tỏ Quan điểm kiểu British",
+  "weekNumber": 24,
+  "orderIndex": 24,
+  "description": "Cách mở đầu ý kiến lịch sự ('In my view...'), đồng ý một phần, phản bác nhã nhặn và mô hình lập luận Point-Explanation-Example.",
+  "lessons": [
+    {
+      "key": "roadmap-a.w24.l01",
+      "title": "Buổi 1: Mẫu câu mở đầu: 'In my view...', 'From my perspective...'",
+      "orderIndex": 1,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w24-l01-stating-opinions.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w24.l01.a01",
+          "title": "Lý thuyết & Kiến thức: Mẫu câu mở đầu: 'In my view...', 'From my perspective...'",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w24.l01.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w24.l01.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w24.l02",
+      "title": "Buổi 2: Cách đồng ý và đồng ý một phần ('I see your point, but...')",
+      "orderIndex": 2,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w24-l02-agreeing-partially.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w24.l02.a01",
+          "title": "Lý thuyết & Kiến thức: Cách đồng ý và đồng ý một phần ('I see your point, but...')",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w24.l02.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w24.l02.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w24.l03",
+      "title": "Buổi 3: Phản bác nhã nhặn ('I'm afraid I have to disagree...')",
+      "orderIndex": 3,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w24-l03-polite-disagreement.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w24.l03.a01",
+          "title": "Lý thuyết & Kiến thức: Phản bác nhã nhặn ('I'm afraid I have to disagree...')",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w24.l03.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w24.l03.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w24.l04",
+      "title": "Buổi 4: Cấu trúc lập luận P-E-E (Point - Explanation - Example)",
+      "orderIndex": 4,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w24-l04-pee-argument-framework.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w24.l04.a01",
+          "title": "Lý thuyết & Kiến thức: Cấu trúc lập luận P-E-E (Point - Explanation - Example)",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w24.l04.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w24.l04.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w24.l05",
+      "title": "Buổi 5: Mô phỏng một phiên tranh luận ngắn về làm việc từ xa",
+      "orderIndex": 5,
+      "estimatedMinutes": 30,
+      "required": true,
+      "contentFile": "lessons/w24-l05-debate-simulation.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w24.l05.a01",
+          "title": "Lý thuyết & Kiến thức: Mô phỏng một phiên tranh luận ngắn về làm việc từ xa",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w24.l05.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w24.l05.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    }
+  ]
+}

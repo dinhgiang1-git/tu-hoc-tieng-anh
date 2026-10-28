@@ -1,0 +1,106 @@
+{
+  "curriculumKey": "roadmap-a",
+  "version": "1.0.0",
+  "resources": [
+    {
+      "key": "res.bbc.vowels-i-long-short",
+      "title": "BBC Learning English: The Sounds of English - /iː/ and /ɪ/",
+      "url": "https://www.youtube.com/watch?v=3g5Y4fP3E7w",
+      "mediaType": "VIDEO",
+      "targetLocale": "en-GB",
+      "attribution": "BBC Learning English",
+      "license": "Public Educational Link",
+      "verificationStatus": "UNVERIFIED_DRAFT"
+    },
+    {
+      "key": "res.bbc.consonants-p-b",
+      "title": "BBC Learning English: The Sounds of English - /p/ and /b/",
+      "url": "https://www.youtube.com/watch?v=k1tU_F8bW6U",
+      "mediaType": "VIDEO",
+      "targetLocale": "en-GB",
+      "attribution": "BBC Learning English",
+      "license": "Public Educational Link",
+      "verificationStatus": "UNVERIFIED_DRAFT"
+    },
+    {
+      "key": "res.oxford.phonetics-guide",
+      "title": "Oxford Learner's Dictionaries: Pronunciation Guide and Phonetic Symbols",
+      "url": "https://www.oxfordlearnersdictionaries.com/about/english-language/pronunciation-guide",
+      "mediaType": "ARTICLE",
+      "targetLocale": "en-GB",
+      "attribution": "Oxford University Press",
+      "license": "Public Educational Link",
+      "verificationStatus": "UNVERIFIED_DRAFT"
+    },
+    {
+      "key": "res.britishcouncil.word-stress",
+      "title": "British Council: How to Master Word Stress in English",
+      "url": "https://learnenglish.britishcouncil.org/grammar/b1-b2-grammar/word-stress",
+      "mediaType": "ARTICLE",
+      "targetLocale": "en-GB",
+      "attribution": "British Council LearnEnglish",
+      "license": "Public Educational Link",
+      "verificationStatus": "UNVERIFIED_DRAFT"
+    },
+    {
+      "key": "res.bbc.schwa-vowel",
+      "title": "BBC Learning English: The Sounds of English - The Schwa /ə/",
+      "url": "https://www.youtube.com/watch?v=f252G6d3Xb4",
+      "mediaType": "VIDEO",
+      "targetLocale": "en-GB",
+      "attribution": "BBC Learning English",
+      "license": "Public Educational Link",
+      "verificationStatus": "UNVERIFIED_DRAFT"
+    },
+    {
+      "key": "res.bbc.present-simple-grammar",
+      "title": "BBC Learning English: Basic Grammar - Present Simple",
+      "url": "https://www.bbc.co.uk/learningenglish/english/course/towards-advanced/unit-1/session-1",
+      "mediaType": "ARTICLE",
+      "targetLocale": "en-GB",
+      "attribution": "BBC Learning English",
+      "license": "Public Educational Link",
+      "verificationStatus": "UNVERIFIED_DRAFT"
+    },
+    {
+      "key": "res.cambridge.past-simple",
+      "title": "Cambridge Dictionary Grammar: Past Simple Regular and Irregular Verbs",
+      "url": "https://dictionary.cambridge.org/grammar/british-grammar/past-simple",
+      "mediaType": "ARTICLE",
+      "targetLocale": "en-GB",
+      "attribution": "Cambridge University Press",
+      "license": "Public Educational Link",
+      "verificationStatus": "UNVERIFIED_DRAFT"
+    },
+    {
+      "key": "res.britishcouncil.travel-english",
+      "title": "British Council: Travelling by Train in the UK",
+      "url": "https://learnenglish.britishcouncil.org/skills/speaking/b1-speaking/travelling-train",
+      "mediaType": "ARTICLE",
+      "targetLocale": "en-GB",
+      "attribution": "British Council",
+      "license": "Public Educational Link",
+      "verificationStatus": "UNVERIFIED_DRAFT"
+    },
+    {
+      "key": "res.bbc.eating-out-phrases",
+      "title": "BBC Learning English: English at Restaurant - Ordering Food",
+      "url": "https://www.bbc.co.uk/learningenglish/english/features/english-at-work/05-ordering-food",
+      "mediaType": "ARTICLE",
+      "targetLocale": "en-GB",
+      "attribution": "BBC Learning English",
+      "license": "Public Educational Link",
+      "verificationStatus": "UNVERIFIED_DRAFT"
+    },
+    {
+      "key": "res.oxford.formal-emails",
+      "title": "Oxford Professional English: Writing Clear and Polite Business Emails",
+      "url": "https://www.oxfordlearnersdictionaries.com/words/writing-emails",
+      "mediaType": "ARTICLE",
+      "targetLocale": "en-GB",
+      "attribution": "Oxford University Press",
+      "license": "Public Educational Link",
+      "verificationStatus": "UNVERIFIED_DRAFT"
+    }
+  ]
+}

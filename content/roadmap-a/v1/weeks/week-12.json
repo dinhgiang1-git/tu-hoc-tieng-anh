@@ -1,0 +1,239 @@
+{
+  "key": "roadmap-a.w12",
+  "title": "Tuần 12: Hiện tại hoàn thành (Present Perfect) & Giới từ In, On, At",
+  "weekNumber": 12,
+  "orderIndex": 12,
+  "description": "Nắm vững thì Hiện tại hoàn thành với Already/Yet/Just, For/Since và mô hình tam giác giới từ In/On/At.",
+  "lessons": [
+    {
+      "key": "roadmap-a.w12.l01",
+      "title": "Buổi 1: Cấu trúc và bản chất thì Hiện tại hoàn thành",
+      "orderIndex": 1,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w12-l01-present-perfect-concept.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w12.l01.a01",
+          "title": "Lý thuyết & Kiến thức: Cấu trúc và bản chất thì Hiện tại hoàn thành",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w12.l01.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w12.l01.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w12.l02",
+      "title": "Buổi 2: Dấu hiệu nhận biết: Already, Yet, Just, Ever, Never",
+      "orderIndex": 2,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w12-l02-already-yet-just.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w12.l02.a01",
+          "title": "Lý thuyết & Kiến thức: Dấu hiệu nhận biết: Already, Yet, Just, Ever, Never",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w12.l02.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w12.l02.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w12.l03",
+      "title": "Buổi 3: For (khoảng thời gian) vs Since (mốc thời gian)",
+      "orderIndex": 3,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w12-l03-for-since.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w12.l03.a01",
+          "title": "Lý thuyết & Kiến thức: For (khoảng thời gian) vs Since (mốc thời gian)",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w12.l03.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w12.l03.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w12.l04",
+      "title": "Buổi 4: Mô hình tam giác giới từ In / On / At thời gian và nơi chốn",
+      "orderIndex": 4,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w12-l04-prepositions-in-on-at.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w12.l04.a01",
+          "title": "Lý thuyết & Kiến thức: Mô hình tam giác giới từ In / On / At thời gian và nơi chốn",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w12.l04.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w12.l04.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w12.l05",
+      "title": "Buổi 5: Kể về những trải nghiệm cuộc đời ('Have you ever...?')",
+      "orderIndex": 5,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w12-l05-life-experience-talk.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w12.l05.a01",
+          "title": "Lý thuyết & Kiến thức: Kể về những trải nghiệm cuộc đời ('Have you ever...?')",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w12.l05.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w12.l05.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    }
+  ]
+}

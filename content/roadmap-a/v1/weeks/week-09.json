@@ -1,0 +1,269 @@
+{
+  "key": "roadmap-a.w09",
+  "title": "Tuần 9: Mạo từ A, An, The & Zero Article",
+  "weekNumber": 9,
+  "orderIndex": 9,
+  "description": "Quy tắc dùng A/An dựa trên phiên âm, các trường hợp dùng The và những trường hợp không dùng mạo từ (Zero Article).",
+  "lessons": [
+    {
+      "key": "roadmap-a.w09.l01",
+      "title": "Buổi 1: Mạo từ bất định A / An và quy tắc phiên âm",
+      "orderIndex": 1,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w09-l01-indefinite-a-an.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w09.l01.a01",
+          "title": "Lý thuyết & Kiến thức: Mạo từ bất định A / An và quy tắc phiên âm",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w09.l01.a02",
+          "title": "Học liệu tham khảo bổ trợ",
+          "type": "EXTERNAL_RESOURCE",
+          "required": false,
+          "completionPolicy": "MANUAL_CHECK",
+          "resourceKeys": [
+            "res.oxford.phonetics-guide"
+          ],
+          "instructions": "Mở tài liệu tham khảo chính thống từ BBC Learning English / British Council / Oxford để quan sát thêm ngữ cảnh thực tế.",
+          "skillTags": [
+            "listening",
+            "reference"
+          ]
+        },
+        {
+          "key": "roadmap-a.w09.l01.a03",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w09.l01.a04",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w09.l02",
+      "title": "Buổi 2: Mạo từ xác định The trong đời sống",
+      "orderIndex": 2,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w09-l02-definite-the.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w09.l02.a01",
+          "title": "Lý thuyết & Kiến thức: Mạo từ xác định The trong đời sống",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w09.l02.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w09.l02.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w09.l03",
+      "title": "Buổi 3: Các trường hợp không dùng mạo từ (Zero Article)",
+      "orderIndex": 3,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w09-l03-zero-article.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w09.l03.a01",
+          "title": "Lý thuyết & Kiến thức: Các trường hợp không dùng mạo từ (Zero Article)",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w09.l03.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w09.l03.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w09.l04",
+      "title": "Buổi 4: Phát âm từ The trước nguyên âm (/ðiː/) và phụ âm (/ðə/)",
+      "orderIndex": 4,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w09-l04-pronunciation-the.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w09.l04.a01",
+          "title": "Lý thuyết & Kiến thức: Phát âm từ The trước nguyên âm (/ðiː/) và phụ âm (/ðə/)",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w09.l04.a02",
+          "title": "Học liệu tham khảo bổ trợ",
+          "type": "EXTERNAL_RESOURCE",
+          "required": false,
+          "completionPolicy": "MANUAL_CHECK",
+          "resourceKeys": [
+            "res.oxford.phonetics-guide"
+          ],
+          "instructions": "Mở tài liệu tham khảo chính thống từ BBC Learning English / British Council / Oxford để quan sát thêm ngữ cảnh thực tế.",
+          "skillTags": [
+            "listening",
+            "reference"
+          ]
+        },
+        {
+          "key": "roadmap-a.w09.l04.a03",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w09.l04.a04",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w09.l05",
+      "title": "Buổi 5: Điền mạo từ vào bài đọc miêu tả Luân Đôn",
+      "orderIndex": 5,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w09-l05-article-context.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w09.l05.a01",
+          "title": "Lý thuyết & Kiến thức: Điền mạo từ vào bài đọc miêu tả Luân Đôn",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w09.l05.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w09.l05.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    }
+  ]
+}

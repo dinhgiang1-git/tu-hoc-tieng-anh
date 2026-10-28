@@ -1,0 +1,349 @@
+{
+  "key": "roadmap-a.w13",
+  "title": "Tuần 13: Tổng ôn tập Giai đoạn 2 & Đánh giá Năng lực Ngữ pháp",
+  "weekNumber": 13,
+  "orderIndex": 13,
+  "description": "Tổng kết toàn bộ ngữ pháp nền tảng, 15 cụm động từ (Phrasal Verbs) cốt lõi và bài trắc nghiệm kết thúc Giai đoạn 2.",
+  "lessons": [
+    {
+      "key": "roadmap-a.w13.l01",
+      "title": "Buổi 1: Hệ thống hóa toàn bộ ngữ pháp Giai đoạn 2",
+      "orderIndex": 1,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w13-l01-stage2-grammar-summary.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w13.l01.a01",
+          "title": "Lý thuyết & Kiến thức: Hệ thống hóa toàn bộ ngữ pháp Giai đoạn 2",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w13.l01.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w13.l01.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w13.l02",
+      "title": "Buổi 2: So sánh chuyên sâu Present Perfect vs Past Simple",
+      "orderIndex": 2,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w13-l02-present-perfect-vs-past.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w13.l02.a01",
+          "title": "Lý thuyết & Kiến thức: So sánh chuyên sâu Present Perfect vs Past Simple",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w13.l02.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w13.l02.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w13.l03",
+      "title": "Buổi 3: 15 cụm động từ (Phrasal Verbs) thiết yếu nhất",
+      "orderIndex": 3,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w13-l03-essential-phrasal-verbs.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w13.l03.a01",
+          "title": "Lý thuyết & Kiến thức: 15 cụm động từ (Phrasal Verbs) thiết yếu nhất",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w13.l03.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w13.l03.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w13.l04",
+      "title": "Buổi 4: Chiến thuật đọc hiểu và nắm bắt ý chính đoạn văn",
+      "orderIndex": 4,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w13-l04-reading-comprehension.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w13.l04.a01",
+          "title": "Lý thuyết & Kiến thức: Chiến thuật đọc hiểu và nắm bắt ý chính đoạn văn",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w13.l04.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w13.l04.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w13.l05",
+      "title": "Buổi 5: Bài kiểm tra Đánh giá Tổng thể Giai đoạn 2",
+      "orderIndex": 5,
+      "estimatedMinutes": 35,
+      "required": true,
+      "contentFile": "lessons/w13-l05-stage2-comprehensive-quiz.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w13.l05.a01",
+          "title": "Lý thuyết & Kiến thức: Bài kiểm tra Đánh giá Tổng thể Giai đoạn 2",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w13.l05.a02",
+          "title": "Bài kiểm tra Đánh giá Toàn diện Giai đoạn 2",
+          "type": "QUIZ",
+          "required": true,
+          "completionPolicy": "ON_SUBMIT",
+          "instructions": "Hoàn thành tất cả các câu hỏi trắc nghiệm bên dưới. Đọc kỹ câu hỏi và chọn đáp án chính xác nhất. Sau khi nộp bài, bạn có thể xem lại đáp án và lời giải thích chi tiết.",
+          "skillTags": [
+            "quiz",
+            "assessment"
+          ],
+          "quizQuestions": [
+            {
+              "orderIndex": 1,
+              "prompt": "Chọn câu chính xác phân biệt Present Perfect và Past Simple:",
+              "explanation": "Khi có mốc thời gian xác định trong quá khứ 'yesterday', ta phải dùng thì Quá khứ đơn.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "I have seen that movie yesterday.",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "I saw that movie yesterday.",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "I have saw that movie yesterday.",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "I see that movie yesterday.",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 2,
+              "prompt": "Chọn giới từ đúng: 'Our flight departs ______ 7:30 PM ______ Monday.'",
+              "explanation": "Giờ giấc cụ thể dùng 'at' (at 7:30 PM), các thứ trong tuần dùng 'on' (on Monday).",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "in / on",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "at / on",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "at / in",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "on / at",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 3,
+              "prompt": "Cụm động từ 'give up' trong câu 'Never give up your dreams' có nghĩa là gì?",
+              "explanation": "'Give up' là phrasal verb phổ biến mang nghĩa từ bỏ hoặc ngừng cố gắng.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Từ bỏ, đầu hàng",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Tiếp tục thực hiện",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Tặng cho ai đó",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Bắt đầu làm",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 4,
+              "prompt": "Cấu trúc so sánh hơn đúng của tính từ 'good':",
+              "explanation": "'Good' là tính từ bất quy tắc, dạng so sánh hơn là 'better'.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "gooder",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "more good",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "better",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "best",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "roadmap-a.w13.l05.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    }
+  ]
+}

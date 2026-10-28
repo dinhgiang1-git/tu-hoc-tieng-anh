@@ -1,0 +1,146 @@
+{
+  "schemaVersion": "1.0.0",
+  "curriculumKey": "roadmap-a",
+  "version": "1.0.0",
+  "title": "Lộ trình A: Tiếng Anh Toàn Diện 6 Tháng (Chuẩn Anh-Anh)",
+  "description": "Lộ trình tự học 26 tuần chuẩn hóa từ nền tảng phát âm IPA, ngữ pháp cốt lõi đến phản xạ giao tiếp tự tin chuẩn Anh-Anh (General British / Modern RP).",
+  "targetLocale": "en-GB",
+  "authors": [
+    "Dự án Tự học Tiếng Anh",
+    "Ban Cố vấn Sư phạm Anh ngữ"
+  ],
+  "provenance": {
+    "sourceName": "Khung mục tiêu Lộ trình tiếng Anh tham khảo 6 tháng",
+    "sourceUrl": "https://docs.google.com/spreadsheets/d/1Yim4AAiIfHMmNTrPsTXQtGfAkhsMcsBc_6-eURCgFEU/edit#gid=0",
+    "sourceLicense": "Educational Fair Use / Pedagogical Framework Reference",
+    "authorCompiled": true,
+    "verificationStatus": "UNVERIFIED_DRAFT"
+  },
+  "phases": [
+    {
+      "key": "roadmap-a.phase01",
+      "title": "Giai đoạn 1: Chuẩn hóa Ngữ âm IPA Anh-Anh Cốt lõi",
+      "orderIndex": 1,
+      "weeks": [
+        {
+          "key": "roadmap-a.w01",
+          "path": "weeks/week-01.json"
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.phase02",
+      "title": "Giai đoạn 2: Tích lũy Ngữ pháp & Kỹ năng Nghe hiểu",
+      "orderIndex": 2,
+      "weeks": [
+        {
+          "key": "roadmap-a.w02",
+          "path": "weeks/week-02.json"
+        },
+        {
+          "key": "roadmap-a.w03",
+          "path": "weeks/week-03.json"
+        },
+        {
+          "key": "roadmap-a.w04",
+          "path": "weeks/week-04.json"
+        },
+        {
+          "key": "roadmap-a.w05",
+          "path": "weeks/week-05.json"
+        },
+        {
+          "key": "roadmap-a.w06",
+          "path": "weeks/week-06.json"
+        },
+        {
+          "key": "roadmap-a.w07",
+          "path": "weeks/week-07.json"
+        },
+        {
+          "key": "roadmap-a.w08",
+          "path": "weeks/week-08.json"
+        },
+        {
+          "key": "roadmap-a.w09",
+          "path": "weeks/week-09.json"
+        },
+        {
+          "key": "roadmap-a.w10",
+          "path": "weeks/week-10.json"
+        },
+        {
+          "key": "roadmap-a.w11",
+          "path": "weeks/week-11.json"
+        },
+        {
+          "key": "roadmap-a.w12",
+          "path": "weeks/week-12.json"
+        },
+        {
+          "key": "roadmap-a.w13",
+          "path": "weeks/week-13.json"
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.phase03",
+      "title": "Giai đoạn 3: Phản xạ Giao tiếp & Ứng dụng Thực tế",
+      "orderIndex": 3,
+      "weeks": [
+        {
+          "key": "roadmap-a.w14",
+          "path": "weeks/week-14.json"
+        },
+        {
+          "key": "roadmap-a.w15",
+          "path": "weeks/week-15.json"
+        },
+        {
+          "key": "roadmap-a.w16",
+          "path": "weeks/week-16.json"
+        },
+        {
+          "key": "roadmap-a.w17",
+          "path": "weeks/week-17.json"
+        },
+        {
+          "key": "roadmap-a.w18",
+          "path": "weeks/week-18.json"
+        },
+        {
+          "key": "roadmap-a.w19",
+          "path": "weeks/week-19.json"
+        },
+        {
+          "key": "roadmap-a.w20",
+          "path": "weeks/week-20.json"
+        },
+        {
+          "key": "roadmap-a.w21",
+          "path": "weeks/week-21.json"
+        },
+        {
+          "key": "roadmap-a.w22",
+          "path": "weeks/week-22.json"
+        },
+        {
+          "key": "roadmap-a.w23",
+          "path": "weeks/week-23.json"
+        },
+        {
+          "key": "roadmap-a.w24",
+          "path": "weeks/week-24.json"
+        },
+        {
+          "key": "roadmap-a.w25",
+          "path": "weeks/week-25.json"
+        },
+        {
+          "key": "roadmap-a.w26",
+          "path": "weeks/week-26.json"
+        }
+      ]
+    }
+  ]
+}

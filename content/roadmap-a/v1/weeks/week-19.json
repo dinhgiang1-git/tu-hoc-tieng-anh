@@ -1,0 +1,239 @@
+{
+  "key": "roadmap-a.w19",
+  "title": "Tuần 19: Small Talk & Thời tiết: Nghệ thuật bắt chuyện kiểu Anh",
+  "weekNumber": 19,
+  "orderIndex": 19,
+  "description": "Hiểu vì sao người Anh thích nói về thời tiết, học các mẫu câu bắt chuyện tự nhiên và cách duy trì đối thoại.",
+  "lessons": [
+    {
+      "key": "roadmap-a.w19.l01",
+      "title": "Buổi 1: Vì sao người Anh nói về thời tiết? Từ vựng thời tiết phong phú",
+      "orderIndex": 1,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w19-l01-weather-small-talk.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w19.l01.a01",
+          "title": "Lý thuyết & Kiến thức: Vì sao người Anh nói về thời tiết? Từ vựng thời tiết phong phú",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w19.l01.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w19.l01.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w19.l02",
+      "title": "Buổi 2: Mẫu câu phá vỡ sự im lặng (Ice-breakers) khi chờ xe buýt",
+      "orderIndex": 2,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w19-l02-ice-breakers.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w19.l02.a01",
+          "title": "Lý thuyết & Kiến thức: Mẫu câu phá vỡ sự im lặng (Ice-breakers) khi chờ xe buýt",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w19.l02.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w19.l02.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w19.l03",
+      "title": "Buổi 3: Tín hiệu lắng nghe tích cực và cách giữ nhịp đối thoại",
+      "orderIndex": 3,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w19-l03-active-listening.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w19.l03.a01",
+          "title": "Lý thuyết & Kiến thức: Tín hiệu lắng nghe tích cực và cách giữ nhịp đối thoại",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w19.l03.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w19.l03.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w19.l04",
+      "title": "Buổi 4: Các chủ đề tế nhị nên tránh trong văn hóa phương Tây",
+      "orderIndex": 4,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w19-l04-topics-to-avoid.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w19.l04.a01",
+          "title": "Lý thuyết & Kiến thức: Các chủ đề tế nhị nên tránh trong văn hóa phương Tây",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w19.l04.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w19.l04.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w19.l05",
+      "title": "Buổi 5: Thực hành độc thoại 2 phút về thời tiết hôm nay",
+      "orderIndex": 5,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w19-l05-weather-monologue.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w19.l05.a01",
+          "title": "Lý thuyết & Kiến thức: Thực hành độc thoại 2 phút về thời tiết hôm nay",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w19.l05.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w19.l05.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    }
+  ]
+}

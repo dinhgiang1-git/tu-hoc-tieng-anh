@@ -1,0 +1,239 @@
+{
+  "key": "roadmap-a.w21",
+  "title": "Tuần 21: Điện ảnh & Giải trí: Bình luận phim & Cảm xúc",
+  "weekNumber": 21,
+  "orderIndex": 21,
+  "description": "Từ vựng thể loại phim, tóm tắt cốt truyện không làm lộ nội dung (no spoilers) và diễn đạt cảm xúc khen/chê.",
+  "lessons": [
+    {
+      "key": "roadmap-a.w21.l01",
+      "title": "Buổi 1: Các thể loại phim (Sci-fi, Thriller, Rom-com, Drama)",
+      "orderIndex": 1,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w21-l01-movie-genres.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w21.l01.a01",
+          "title": "Lý thuyết & Kiến thức: Các thể loại phim (Sci-fi, Thriller, Rom-com, Drama)",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w21.l01.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w21.l01.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w21.l02",
+      "title": "Buổi 2: Miêu tả cốt truyện hấp dẫn không lộ kết phim",
+      "orderIndex": 2,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w21-l02-plot-summary-no-spoilers.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w21.l02.a01",
+          "title": "Lý thuyết & Kiến thức: Miêu tả cốt truyện hấp dẫn không lộ kết phim",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w21.l02.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w21.l02.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w21.l03",
+      "title": "Buổi 3: Từ vựng biểu đạt cảm xúc khen ngợi và phê bình",
+      "orderIndex": 3,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w21-l03-expressing-reactions.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w21.l03.a01",
+          "title": "Lý thuyết & Kiến thức: Từ vựng biểu đạt cảm xúc khen ngợi và phê bình",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w21.l03.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w21.l03.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w21.l04",
+      "title": "Buổi 4: Mua vé rạp chiếu phim và chọn vị trí ghế ngồi",
+      "orderIndex": 4,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w21-l04-cinema-tickets.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w21.l04.a01",
+          "title": "Lý thuyết & Kiến thức: Mua vé rạp chiếu phim và chọn vị trí ghế ngồi",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w21.l04.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w21.l04.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w21.l05",
+      "title": "Buổi 5: Viết bài đánh giá ngắn một bộ phim bạn yêu thích",
+      "orderIndex": 5,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w21-l05-movie-review.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w21.l05.a01",
+          "title": "Lý thuyết & Kiến thức: Viết bài đánh giá ngắn một bộ phim bạn yêu thích",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w21.l05.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w21.l05.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,254 @@
+{
+  "key": "roadmap-a.w03",
+  "title": "Tuần 3: Hiện tại tiếp diễn (Present Continuous) & Động từ trạng thái",
+  "weekNumber": 3,
+  "orderIndex": 3,
+  "description": "Phân biệt hành động đang diễn ra và thói quen thường nhật, nhận diện động từ chỉ trạng thái (Stative Verbs) không chia tiếp diễn.",
+  "lessons": [
+    {
+      "key": "roadmap-a.w03.l01",
+      "title": "Buổi 1: Cấu trúc và cách dùng thì Hiện tại tiếp diễn",
+      "orderIndex": 1,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w03-l01-present-continuous.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w03.l01.a01",
+          "title": "Lý thuyết & Kiến thức: Cấu trúc và cách dùng thì Hiện tại tiếp diễn",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w03.l01.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w03.l01.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w03.l02",
+      "title": "Buổi 2: Phân biệt Hiện tại đơn vs Hiện tại tiếp diễn",
+      "orderIndex": 2,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w03-l02-simple-vs-continuous.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w03.l02.a01",
+          "title": "Lý thuyết & Kiến thức: Phân biệt Hiện tại đơn vs Hiện tại tiếp diễn",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w03.l02.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w03.l02.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w03.l03",
+      "title": "Buổi 3: Động từ trạng thái (Stative Verbs: like, love, know)",
+      "orderIndex": 3,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w03-l03-stative-verbs.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w03.l03.a01",
+          "title": "Lý thuyết & Kiến thức: Động từ trạng thái (Stative Verbs: like, love, know)",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w03.l03.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w03.l03.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w03.l04",
+      "title": "Buổi 4: Quy tắc thêm -ing và phát âm âm mũi /ŋ/",
+      "orderIndex": 4,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w03-l04-ing-spelling-sound.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w03.l04.a01",
+          "title": "Lý thuyết & Kiến thức: Quy tắc thêm -ing và phát âm âm mũi /ŋ/",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w03.l04.a02",
+          "title": "Học liệu tham khảo bổ trợ",
+          "type": "EXTERNAL_RESOURCE",
+          "required": false,
+          "completionPolicy": "MANUAL_CHECK",
+          "resourceKeys": [
+            "res.oxford.phonetics-guide"
+          ],
+          "instructions": "Mở tài liệu tham khảo chính thống từ BBC Learning English / British Council / Oxford để quan sát thêm ngữ cảnh thực tế.",
+          "skillTags": [
+            "listening",
+            "reference"
+          ]
+        },
+        {
+          "key": "roadmap-a.w03.l04.a03",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w03.l04.a04",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w03.l05",
+      "title": "Buổi 5: Luyện miêu tả tranh ảnh và hoạt động đang xảy ra",
+      "orderIndex": 5,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w03-l05-picture-description.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w03.l05.a01",
+          "title": "Lý thuyết & Kiến thức: Luyện miêu tả tranh ảnh và hoạt động đang xảy ra",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w03.l05.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w03.l05.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    }
+  ]
+}

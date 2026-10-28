@@ -1,0 +1,254 @@
+{
+  "key": "roadmap-a.w14",
+  "title": "Tuần 14: Giao tiếp Du lịch: Sân bay, Hải quan & Tàu xe",
+  "weekNumber": 14,
+  "orderIndex": 14,
+  "description": "Mẫu câu thủ tục sân bay, làm việc với nhân viên hải quan và mua vé tàu ngầm London Underground.",
+  "lessons": [
+    {
+      "key": "roadmap-a.w14.l01",
+      "title": "Buổi 1: Thủ tục Check-in và gửi hành lý tại sân bay",
+      "orderIndex": 1,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w14-l01-airport-check-in.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w14.l01.a01",
+          "title": "Lý thuyết & Kiến thức: Thủ tục Check-in và gửi hành lý tại sân bay",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w14.l01.a02",
+          "title": "Học liệu tham khảo bổ trợ",
+          "type": "EXTERNAL_RESOURCE",
+          "required": false,
+          "completionPolicy": "MANUAL_CHECK",
+          "resourceKeys": [
+            "res.britishcouncil.travel-english"
+          ],
+          "instructions": "Mở tài liệu tham khảo chính thống từ BBC Learning English / British Council / Oxford để quan sát thêm ngữ cảnh thực tế.",
+          "skillTags": [
+            "listening",
+            "reference"
+          ]
+        },
+        {
+          "key": "roadmap-a.w14.l01.a03",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w14.l01.a04",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w14.l02",
+      "title": "Buổi 2: Giao tiếp qua cửa khẩu Hải quan & Nhận hành lý",
+      "orderIndex": 2,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w14-l02-customs-immigration.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w14.l02.a01",
+          "title": "Lý thuyết & Kiến thức: Giao tiếp qua cửa khẩu Hải quan & Nhận hành lý",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w14.l02.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w14.l02.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w14.l03",
+      "title": "Buổi 3: Mua vé tàu ngầm (London Underground / Tube) và hỏi đường",
+      "orderIndex": 3,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w14-l03-london-underground.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w14.l03.a01",
+          "title": "Lý thuyết & Kiến thức: Mua vé tàu ngầm (London Underground / Tube) và hỏi đường",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w14.l03.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w14.l03.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w14.l04",
+      "title": "Buổi 4: Luyện nghe thông báo nhà ga chuẩn British accent",
+      "orderIndex": 4,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w14-l04-station-announcements.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w14.l04.a01",
+          "title": "Lý thuyết & Kiến thức: Luyện nghe thông báo nhà ga chuẩn British accent",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w14.l04.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w14.l04.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w14.l05",
+      "title": "Buổi 5: Xử lý tình huống lỡ chuyến và thất lạc hành lý",
+      "orderIndex": 5,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w14-l05-travel-troubleshooting.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w14.l05.a01",
+          "title": "Lý thuyết & Kiến thức: Xử lý tình huống lỡ chuyến và thất lạc hành lý",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w14.l05.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w14.l05.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    }
+  ]
+}

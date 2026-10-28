@@ -1,0 +1,349 @@
+{
+  "key": "roadmap-a.w26",
+  "title": "Tuần 26: Tổng kết Lộ trình: Đánh giá Cuối khóa & Tự học Tiếp diễn",
+  "weekNumber": 26,
+  "orderIndex": 26,
+  "description": "Nhìn lại thành quả 26 tuần, kế hoạch duy trì thói quen tự học suốt đời và hoàn thành bài kiểm tra Đánh giá Cuối khóa 30 câu.",
+  "lessons": [
+    {
+      "key": "roadmap-a.w26.l01",
+      "title": "Buổi 1: Nhìn lại hành trình 26 tuần và những tiến bộ vượt bậc",
+      "orderIndex": 1,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w26-l01-reflection-milestones.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w26.l01.a01",
+          "title": "Lý thuyết & Kiến thức: Nhìn lại hành trình 26 tuần và những tiến bộ vượt bậc",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w26.l01.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w26.l01.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w26.l02",
+      "title": "Buổi 2: Phương pháp duy trì phản xạ tiếng Anh sau khi hoàn thành lộ trình",
+      "orderIndex": 2,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w26-l02-lifelong-learning-routine.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w26.l02.a01",
+          "title": "Lý thuyết & Kiến thức: Phương pháp duy trì phản xạ tiếng Anh sau khi hoàn thành lộ trình",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w26.l02.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w26.l02.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w26.l03",
+      "title": "Buổi 3: Xây dựng kho tài nguyên tự học suốt đời (Podcasts, Books, YouTube)",
+      "orderIndex": 3,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w26-l03-curated-resources-library.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w26.l03.a01",
+          "title": "Lý thuyết & Kiến thức: Xây dựng kho tài nguyên tự học suốt đời (Podcasts, Books, YouTube)",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w26.l03.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w26.l03.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w26.l04",
+      "title": "Buổi 4: Hướng dẫn kỹ năng tự học qua Shadowing và Dictation độc lập",
+      "orderIndex": 4,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w26-l04-independent-shadowing-dictation.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w26.l04.a01",
+          "title": "Lý thuyết & Kiến thức: Hướng dẫn kỹ năng tự học qua Shadowing và Dictation độc lập",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w26.l04.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w26.l04.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w26.l05",
+      "title": "Buổi 5: Bài kiểm tra Đánh giá Tổng thể Cuối khóa Lộ trình A",
+      "orderIndex": 5,
+      "estimatedMinutes": 45,
+      "required": true,
+      "contentFile": "lessons/w26-l05-final-graduation-assessment.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w26.l05.a01",
+          "title": "Lý thuyết & Kiến thức: Bài kiểm tra Đánh giá Tổng thể Cuối khóa Lộ trình A",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "communication"
+          ]
+        },
+        {
+          "key": "roadmap-a.w26.l05.a02",
+          "title": "Bài kiểm tra Đánh giá Tổng thể Cuối khóa Lộ trình A (Final Exam)",
+          "type": "QUIZ",
+          "required": true,
+          "completionPolicy": "ON_SUBMIT",
+          "instructions": "Hoàn thành tất cả các câu hỏi trắc nghiệm bên dưới. Đọc kỹ câu hỏi và chọn đáp án chính xác nhất. Sau khi nộp bài, bạn có thể xem lại đáp án và lời giải thích chi tiết.",
+          "skillTags": [
+            "quiz",
+            "assessment"
+          ],
+          "quizQuestions": [
+            {
+              "orderIndex": 1,
+              "prompt": "Cách bắt chuyện về thời tiết tự nhiên và lịch thiệp nhất ở Anh:",
+              "explanation": "'Lovely weather today, isn't it?' là mẫu câu Small Talk điển hình của người Anh với câu hỏi đuôi ngữ điệu xuống.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Lovely weather today, isn't it?",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Tell me about your salary immediately.",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Why are you standing here?",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "What is your political opinion?",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 2,
+              "prompt": "Cách xin hóa đơn thanh toán tại nhà hàng theo văn phong chuẩn British:",
+              "explanation": "'Could I have the bill, please?' là cách nói chuẩn mực tại Anh ('bill' thay vì 'check' của American English).",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Give me the check right now.",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Could I have the bill, please?",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "I want money back.",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Bring food again.",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 3,
+              "prompt": "Cấu trúc nào thể hiện sự phản bác lịch sự trong tranh luận kiểu Anh?",
+              "explanation": "'I'm afraid I have to disagree with you on this point.' là cách diễn đạt trang nhã, tránh gây xung đột trực diện.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "You are totally wrong.",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "I'm afraid I have to disagree with you on this point.",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "That is nonsense.",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Stop talking.",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 4,
+              "prompt": "Từ viết tắt GP trong hệ thống y tế Vương quốc Anh (NHS) có nghĩa là gì?",
+              "explanation": "GP là viết tắt của 'General Practitioner' (Bác sĩ gia đình / bác sĩ đa khoa).",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "General Practitioner (Bác sĩ đa khoa / gia đình)",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Great Pharmacy",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Government Patient",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Global Prescription",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "roadmap-a.w26.l05.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    }
+  ]
+}

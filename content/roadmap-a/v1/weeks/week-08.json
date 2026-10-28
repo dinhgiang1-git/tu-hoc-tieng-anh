@@ -1,0 +1,349 @@
+{
+  "key": "roadmap-a.w08",
+  "title": "Tuần 8: Ôn tập giữa kỳ Ngữ pháp & Trắc nghiệm tổng hợp",
+  "weekNumber": 8,
+  "orderIndex": 8,
+  "description": "Hệ thống hóa toàn bộ các thì cơ bản và danh từ, hoàn thành bài kiểm tra giữa kỳ 15 câu có chấm điểm và giải thích.",
+  "lessons": [
+    {
+      "key": "roadmap-a.w08.l01",
+      "title": "Buổi 1: Hệ thống hóa 4 thì cơ bản đã học",
+      "orderIndex": 1,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w08-l01-tenses-review.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w08.l01.a01",
+          "title": "Lý thuyết & Kiến thức: Hệ thống hóa 4 thì cơ bản đã học",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w08.l01.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w08.l01.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w08.l02",
+      "title": "Buổi 2: Phân tích các lỗi sai ngữ pháp người Việt hay gặp",
+      "orderIndex": 2,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w08-l02-error-analysis.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w08.l02.a01",
+          "title": "Lý thuyết & Kiến thức: Phân tích các lỗi sai ngữ pháp người Việt hay gặp",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w08.l02.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w08.l02.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w08.l03",
+      "title": "Buổi 3: Luyện cấu trúc câu và trật tự từ nâng cao",
+      "orderIndex": 3,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w08-l03-sentence-building.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w08.l03.a01",
+          "title": "Lý thuyết & Kiến thức: Luyện cấu trúc câu và trật tự từ nâng cao",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w08.l03.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w08.l03.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w08.l04",
+      "title": "Buổi 4: Shadowing hội thoại tổng hợp các thì",
+      "orderIndex": 4,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w08-l04-shadowing-dialogue.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w08.l04.a01",
+          "title": "Lý thuyết & Kiến thức: Shadowing hội thoại tổng hợp các thì",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w08.l04.a02",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w08.l04.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w08.l05",
+      "title": "Buổi 5: Bài kiểm tra Đánh giá Giữa kỳ Giai đoạn 2",
+      "orderIndex": 5,
+      "estimatedMinutes": 30,
+      "required": true,
+      "contentFile": "lessons/w08-l05-midterm-assessment.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w08.l05.a01",
+          "title": "Lý thuyết & Kiến thức: Bài kiểm tra Đánh giá Giữa kỳ Giai đoạn 2",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "grammar"
+          ]
+        },
+        {
+          "key": "roadmap-a.w08.l05.a02",
+          "title": "Bài kiểm tra Giữa kỳ Ngữ pháp cơ bản (Mid-term Quiz)",
+          "type": "QUIZ",
+          "required": true,
+          "completionPolicy": "ON_SUBMIT",
+          "instructions": "Hoàn thành tất cả các câu hỏi trắc nghiệm bên dưới. Đọc kỹ câu hỏi và chọn đáp án chính xác nhất. Sau khi nộp bài, bạn có thể xem lại đáp án và lời giải thích chi tiết.",
+          "skillTags": [
+            "quiz",
+            "assessment"
+          ],
+          "quizQuestions": [
+            {
+              "orderIndex": 1,
+              "prompt": "Chọn câu đúng thì Hiện tại đơn diễn tả thói quen:",
+              "explanation": "Với chủ ngữ ngôi thứ ba số ít 'She', động từ thường thêm -s/-es. 'goes' là đáp án đúng.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "She go to work by bus every day.",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "She goes to work by bus every day.",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "She is going to work by bus every day.",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "She went to work by bus every day now.",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 2,
+              "prompt": "Động từ 'worked' có đuôi -ed được phát âm là gì?",
+              "explanation": "Từ 'work' kết thúc bằng âm vô thanh /k/, nên đuôi -ed được phát âm là /t/ theo quy tắc ngữ âm.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "/t/",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "/d/",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "/ɪd/",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "/ed/",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 3,
+              "prompt": "Điền lượng từ phù hợp: 'I don't have ______ money left in my wallet.'",
+              "explanation": "'Money' là danh từ không đếm được, trong câu phủ định dùng 'much'.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "many",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "much",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "a few",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "few",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 4,
+              "prompt": "Chọn câu đúng khi diễn tả một quyết định tức thì vừa đưa ra:",
+              "explanation": "Quyết định tức thì tại thời điểm nói sử dụng 'will': 'I will answer the phone.'",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "The phone is ringing. I am going to answer it.",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "The phone is ringing. I will answer it.",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "The phone is ringing. I answered it.",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "The phone is ringing. I answer it.",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "roadmap-a.w08.l05.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,409 @@
+{
+  "key": "roadmap-a.w01",
+  "title": "Tuần 1: Chuẩn hóa Ngữ âm IPA Anh-Anh cốt lõi",
+  "weekNumber": 1,
+  "orderIndex": 1,
+  "description": "Nắm vững khẩu hình cặp nguyên âm /iː/ và /ɪ/, cặp phụ âm /p/ và /b/, âm lướt Schwa /ə/, và quy tắc trọng âm từ 2 âm tiết chuẩn Received Pronunciation (RP).",
+  "lessons": [
+    {
+      "key": "roadmap-a.w01.l01",
+      "title": "Buổi 1: Cặp nguyên âm đơn /iː/ và /ɪ/",
+      "orderIndex": 1,
+      "estimatedMinutes": 25,
+      "required": true,
+      "contentFile": "lessons/w01-l01-vowels.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w01.l01.a01",
+          "title": "Lý thuyết & Kiến thức: Cặp nguyên âm đơn /iː/ và /ɪ/",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "pronunciation"
+          ]
+        },
+        {
+          "key": "roadmap-a.w01.l01.a02",
+          "title": "Học liệu tham khảo bổ trợ",
+          "type": "EXTERNAL_RESOURCE",
+          "required": false,
+          "completionPolicy": "MANUAL_CHECK",
+          "resourceKeys": [
+            "res.bbc.vowels-i-long-short"
+          ],
+          "instructions": "Mở tài liệu tham khảo chính thống từ BBC Learning English / British Council / Oxford để quan sát thêm ngữ cảnh thực tế.",
+          "skillTags": [
+            "listening",
+            "reference"
+          ]
+        },
+        {
+          "key": "roadmap-a.w01.l01.a03",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w01.l01.a04",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w01.l02",
+      "title": "Buổi 2: Cặp phụ âm /p/ bật hơi và /b/ hữu thanh",
+      "orderIndex": 2,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w01-l02-consonants.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w01.l02.a01",
+          "title": "Lý thuyết & Kiến thức: Cặp phụ âm /p/ bật hơi và /b/ hữu thanh",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "pronunciation"
+          ]
+        },
+        {
+          "key": "roadmap-a.w01.l02.a02",
+          "title": "Học liệu tham khảo bổ trợ",
+          "type": "EXTERNAL_RESOURCE",
+          "required": false,
+          "completionPolicy": "MANUAL_CHECK",
+          "resourceKeys": [
+            "res.bbc.consonants-p-b"
+          ],
+          "instructions": "Mở tài liệu tham khảo chính thống từ BBC Learning English / British Council / Oxford để quan sát thêm ngữ cảnh thực tế.",
+          "skillTags": [
+            "listening",
+            "reference"
+          ]
+        },
+        {
+          "key": "roadmap-a.w01.l02.a03",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w01.l02.a04",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w01.l03",
+      "title": "Buổi 3: Quy tắc trọng âm từ 2 âm tiết",
+      "orderIndex": 3,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w01-l03-word-stress.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w01.l03.a01",
+          "title": "Lý thuyết & Kiến thức: Quy tắc trọng âm từ 2 âm tiết",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "pronunciation"
+          ]
+        },
+        {
+          "key": "roadmap-a.w01.l03.a02",
+          "title": "Học liệu tham khảo bổ trợ",
+          "type": "EXTERNAL_RESOURCE",
+          "required": false,
+          "completionPolicy": "MANUAL_CHECK",
+          "resourceKeys": [
+            "res.britishcouncil.word-stress"
+          ],
+          "instructions": "Mở tài liệu tham khảo chính thống từ BBC Learning English / British Council / Oxford để quan sát thêm ngữ cảnh thực tế.",
+          "skillTags": [
+            "listening",
+            "reference"
+          ]
+        },
+        {
+          "key": "roadmap-a.w01.l03.a03",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w01.l03.a04",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w01.l04",
+      "title": "Buổi 4: Âm lướt Schwa /ə/ trong âm tiết không nhấn",
+      "orderIndex": 4,
+      "estimatedMinutes": 20,
+      "required": true,
+      "contentFile": "lessons/w01-l04-schwa.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w01.l04.a01",
+          "title": "Lý thuyết & Kiến thức: Âm lướt Schwa /ə/ trong âm tiết không nhấn",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "pronunciation"
+          ]
+        },
+        {
+          "key": "roadmap-a.w01.l04.a02",
+          "title": "Học liệu tham khảo bổ trợ",
+          "type": "EXTERNAL_RESOURCE",
+          "required": false,
+          "completionPolicy": "MANUAL_CHECK",
+          "resourceKeys": [
+            "res.bbc.schwa-vowel"
+          ],
+          "instructions": "Mở tài liệu tham khảo chính thống từ BBC Learning English / British Council / Oxford để quan sát thêm ngữ cảnh thực tế.",
+          "skillTags": [
+            "listening",
+            "reference"
+          ]
+        },
+        {
+          "key": "roadmap-a.w01.l04.a03",
+          "title": "Luyện tập thực hành & Ứng dụng",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Vận dụng cấu trúc và từ vựng vừa học để nhập câu trả lời hoặc đoạn văn thực hành vào ô phản hồi bên dưới.",
+          "skillTags": [
+            "practice",
+            "writing"
+          ]
+        },
+        {
+          "key": "roadmap-a.w01.l04.a04",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "roadmap-a.w01.l05",
+      "title": "Buổi 5: Tổng ôn tuần 1 & Trắc nghiệm Ngữ âm cốt lõi",
+      "orderIndex": 5,
+      "estimatedMinutes": 30,
+      "required": true,
+      "contentFile": "lessons/w01-l05-week1-review.md",
+      "activities": [
+        {
+          "key": "roadmap-a.w01.l05.a01",
+          "title": "Lý thuyết & Kiến thức: Tổng ôn tuần 1 & Trắc nghiệm Ngữ âm cốt lõi",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc kỹ phần giải thích, phiên âm IPA Anh-Anh chuẩn và các ví dụ hội thoại trong bài đọc.",
+          "skillTags": [
+            "reading",
+            "theory",
+            "pronunciation"
+          ]
+        },
+        {
+          "key": "roadmap-a.w01.l05.a02",
+          "title": "Bài kiểm tra Đánh giá Ngữ âm Tuần 1",
+          "type": "QUIZ",
+          "required": true,
+          "completionPolicy": "ON_SUBMIT",
+          "instructions": "Hoàn thành tất cả các câu hỏi trắc nghiệm bên dưới. Đọc kỹ câu hỏi và chọn đáp án chính xác nhất. Sau khi nộp bài, bạn có thể xem lại đáp án và lời giải thích chi tiết.",
+          "skillTags": [
+            "quiz",
+            "assessment"
+          ],
+          "quizQuestions": [
+            {
+              "orderIndex": 1,
+              "prompt": "Từ nào sau đây chứa nguyên âm ngắn /ɪ/ chuẩn Anh-Anh?",
+              "explanation": "Từ 'ship' phát âm là /ʃɪp/ chứa nguyên âm ngắn /ɪ/. Các từ 'sheep' (/ʃiːp/), 'beat' (/biːt/), 'seat' (/siːt/) đều chứa nguyên âm dài /iː/.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "sheep",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "ship",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "beat",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "seat",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 2,
+              "prompt": "Hiện tượng bật hơi (Aspiration) xuất hiện mạnh nhất ở phụ âm nào khi đứng đầu âm tiết nhấn?",
+              "explanation": "Âm /p/ là phụ âm vô thanh bật hơi (voiceless aspirated plosive), tạo luồng khí mạnh khi phát âm ở đầu âm tiết nhấn. Âm /b/ là âm hữu thanh không bật hơi.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "/p/",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "/b/",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "/m/",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "/w/",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 3,
+              "prompt": "Quy tắc trọng âm phổ biến nhất cho danh từ 2 âm tiết trong tiếng Anh là gì?",
+              "explanation": "Đa số (>80%) danh từ và tính từ 2 âm tiết trong tiếng Anh có trọng âm rơi vào âm tiết thứ nhất (ví dụ: 'table', 'present', 'export').",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Nhấn vào âm tiết thứ nhất",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Nhấn vào âm tiết thứ hai",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Đọc đều cả hai âm tiết",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Luôn nhấn vào âm tiết chứa âm Schwa",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 4,
+              "prompt": "Âm Schwa /ə/ có đặc điểm gì nổi bật?",
+              "explanation": "Âm Schwa /ə/ là âm lướt nhẹ, thả lỏng toàn bộ cơ môi lưỡi, và chỉ xuất hiện ở các âm tiết KHÔNG mang trọng âm.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Chỉ xuất hiện ở âm tiết không mang trọng âm và cơ miệng thả lỏng",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Luôn mang trọng âm chính của từ",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Phải căng cơ môi như âm /iː/",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Chỉ xuất hiện ở đầu câu",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "roadmap-a.w01.l05.a03",
+          "title": "Phản tư cuối buổi học",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "RESPONSE_SUBMIT",
+          "instructions": "Ghi lại 1 điểm quan trọng nhất bạn tâm đắc hoặc một từ vựng / mẫu câu mới bạn sẽ áp dụng ngay hôm nay.",
+          "skillTags": [
+            "reflection"
+          ]
+        }
+      ]
+    }
+  ]
+}
