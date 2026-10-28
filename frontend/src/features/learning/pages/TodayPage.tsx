@@ -26,7 +26,6 @@ import { ApiError } from "@/lib/api/api-error";
 import { authApi, authKeys } from "@/features/auth";
 import { enrollmentApi, enrollmentKeys } from "@/features/enrollment/api/enrollment.api";
 import { todayApi, todayKeys } from "../api/today.api";
-import { PronounceButton } from "@/components/shared/PronounceButton";
 import { IpaSoundboardModal } from "../components/IpaSoundboardModal";
 
 function formatTodayDate(dateStr?: string | null): string {
@@ -168,14 +167,14 @@ export function TodayPage() {
             title="Tra cứu & nghe 44 âm ngữ âm IPA"
           >
             <Headphones className="h-4 w-4 text-primary" />
-            <span>Bảng âm IPA (RP)</span>
+            <span>Bảng IPA</span>
           </Button>
 
-          {enrollments.length >= 1 && (
+          {enrollments.length > 1 && (
             <div className="flex items-center gap-2">
               <label
                 htmlFor="enrollment-switcher"
-                className="text-xs font-medium text-muted-foreground whitespace-nowrap"
+                className="sr-only"
               >
                 Lộ trình:
               </label>
@@ -184,7 +183,7 @@ export function TodayPage() {
                 value={today.enrollmentId ?? focusedEnrollmentId ?? ""}
                 onChange={handleEnrollmentChange}
                 disabled={switchEnrollmentMutation.isPending}
-                className="rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground shadow-xs focus:outline-none focus:ring-2 focus:ring-primary"
+                className="max-w-[min(100%,24rem)] rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 {!today.enrollmentId && !focusedEnrollmentId && (
                   <option value="" disabled>
@@ -212,16 +211,13 @@ export function TodayPage() {
       {today.state === "NO_ENROLLMENT" ? (
         <div className="space-y-6">
           <div className="rounded-2xl border border-border bg-card p-6 md:p-8 shadow-xs space-y-5">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary text-primary px-3 py-1 text-xs font-semibold">
-              Bắt đầu lộ trình của bạn
-            </span>
 
             <div className="space-y-2 max-w-2xl">
               <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
                 Bạn chưa đăng ký lộ trình học nào
               </h2>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Đăng ký một lộ trình học để hệ thống tự động cá nhân hoá lịch học theo từng ngày cho bạn.
+                Chọn lộ trình để bắt đầu.
               </p>
             </div>
 
@@ -233,53 +229,6 @@ export function TodayPage() {
                 <BookOpen className="h-4 w-4" />
                 Khám phá danh mục lộ trình
               </Link>
-              <Button
-                variant="outline"
-                onClick={() => setIpaModalOpen(true)}
-                className="gap-2 text-xs border-border bg-card text-foreground hover:bg-muted"
-              >
-                <Headphones className="h-4 w-4 text-primary" />
-                Bảng 44 âm ngữ âm IPA
-              </Button>
-            </div>
-          </div>
-
-          {/* Daily Quick Phonetic Warm-up */}
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs font-bold text-foreground uppercase tracking-wider">
-                <Sparkles className="h-4 w-4 text-primary" />
-                <span>Khởi động phát âm nhanh hôm nay (Daily Warm-up)</span>
-              </div>
-              <span className="text-[11px] text-muted-foreground hidden sm:inline">
-                Bấm loa để nghe từ ví dụ
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-              {[
-                { pair: "Âm /iː/ vs /ɪ/", w1: "sheep", ipa1: "/ʃiːp/", w2: "ship", ipa2: "/ʃɪp/" },
-                { pair: "Âm /e/ vs /æ/", w1: "bed", ipa1: "/bed/", w2: "bad", ipa2: "/bæd/" },
-                { pair: "Âm /uː/ vs /ʊ/", w1: "fool", ipa1: "/fuːl/", w2: "full", ipa2: "/fʊl/" },
-              ].map((item, idx) => (
-                <div key={idx} className="rounded-xl border border-border bg-background p-3 space-y-2">
-                  <div className="text-[11px] font-semibold text-primary">{item.pair}</div>
-                  <div className="flex items-center justify-between gap-1 text-xs">
-                    <div className="flex items-center gap-1.5">
-                      <PronounceButton text={item.w1} size="icon" className="h-6 w-6" />
-                      <span className="font-semibold text-foreground">{item.w1}</span>
-                      <span className="text-muted-foreground font-mono text-[11px]">{item.ipa1}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between gap-1 text-xs">
-                    <div className="flex items-center gap-1.5">
-                      <PronounceButton text={item.w2} size="icon" className="h-6 w-6" />
-                      <span className="font-semibold text-foreground">{item.w2}</span>
-                      <span className="text-muted-foreground font-mono text-[11px]">{item.ipa2}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
 
@@ -290,7 +239,7 @@ export function TodayPage() {
                   Lộ trình bạn đã đăng ký
                 </h3>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Chọn một lộ trình để kích hoạt và bắt đầu học ngay hôm nay:
+                  Chọn lộ trình muốn học.
                 </p>
               </div>
               <div className="divide-y divide-border border-t border-border pt-2 space-y-3">
@@ -342,7 +291,7 @@ export function TodayPage() {
                     Lộ trình học đang tạm dừng
                   </h2>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Lộ trình này hiện đang ở trạng thái tạm dừng. Tiến độ học của bạn được bảo lưu nguyên vẹn và hệ thống tạm dừng tính bài quá hạn. Bạn có thể tiếp tục học và xếp lại lịch bất cứ lúc nào sẵn sàng.
+                    Tiến độ đã được giữ lại.
                   </p>
                 </div>
 
@@ -371,9 +320,6 @@ export function TodayPage() {
                   <h2 className="text-2xl font-bold text-foreground">
                     {today.primaryAction.lessonTitle || "Bài học đang dở"}
                   </h2>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {today.primaryAction.message}
-                  </p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground pt-1">
@@ -419,9 +365,6 @@ export function TodayPage() {
                   <h2 className="text-2xl font-bold text-foreground">
                     {today.primaryAction.lessonTitle || "Bài học hôm nay"}
                   </h2>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {today.primaryAction.message}
-                  </p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground pt-1">
@@ -555,8 +498,7 @@ export function TodayPage() {
                     Hôm nay là ngày nghỉ theo lịch
                   </h2>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Bạn không có bài học nào đến hạn hôm nay. Hãy nghỉ ngơi để nạp năng
-                    lượng, hoặc bạn có thể học trước bài tiếp theo bên dưới.
+                    Bạn có thể học trước nếu muốn.
                   </p>
                 </div>
 
@@ -569,9 +511,6 @@ export function TodayPage() {
                       <h3 className="text-lg font-bold text-foreground">
                         {today.primaryAction.lessonTitle}
                       </h3>
-                      <p className="text-xs text-muted-foreground">
-                        {today.primaryAction.message}
-                      </p>
                     </div>
 
                     {today.enrollmentId && (
@@ -639,8 +578,7 @@ export function TodayPage() {
                     Chúc mừng! Bạn đã hoàn thành toàn bộ lộ trình học!
                   </h2>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Bạn đã hoàn thành xuất sắc tất cả các bài học và hoạt động bắt buộc trong lộ
-                    trình này. Hãy tiếp tục khám phá các lộ trình mới để nâng cao kỹ năng!
+                    Các nhiệm vụ bắt buộc đã hoàn thành.
                   </p>
                 </div>
 
@@ -656,18 +594,6 @@ export function TodayPage() {
               </article>
             )}
 
-            {/* Support / Rhythm Guidance Card */}
-            <div className="rounded-2xl border border-border bg-card p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <h3 className="text-sm font-bold text-foreground">Học theo nhịp của bạn</h3>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Bạn có thể quay lại xem bài cũ và điều chỉnh ngày học bất kỳ lúc nào.
-                </p>
-              </div>
-              <span className="text-xs text-muted-foreground font-medium shrink-0">
-                Học liệu và từ ví dụ trong bài
-              </span>
-            </div>
           </div>
 
           {/* Right Rail: Course Summary & Progress */}
@@ -678,9 +604,11 @@ export function TodayPage() {
                   <p className="text-[11px] font-semibold text-primary uppercase tracking-wider">
                     Lộ trình của bạn
                   </p>
-                  <h3 className="text-base font-bold text-foreground mt-1 line-clamp-2">
-                    {today.curriculumTitle}
-                  </h3>
+                  {enrollments.length <= 1 && (
+                    <h3 className="text-base font-semibold text-foreground mt-1">
+                      {today.curriculumTitle}
+                    </h3>
+                  )}
                 </div>
 
                 {today.progress && (
@@ -711,32 +639,9 @@ export function TodayPage() {
                     Xem lộ trình học →
                   </Link>
                 </div>
-
-                <p className="text-[11px] text-muted-foreground pt-1 border-t border-border/50 leading-relaxed">
-                  Tiến độ ghi nhận việc đã làm, không thay cho đánh giá năng lực.
-                </p>
               </section>
             )}
 
-            {/* Quick Phonetic Practice Mini Card */}
-            <section className="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-foreground">Tra cứu phát âm</span>
-                <span className="text-[10px] text-primary font-medium">44 âm IPA</span>
-              </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Nghe từ ví dụ và tra cứu vị trí phát âm của các nguyên âm và phụ âm chuẩn Anh-Anh.
-              </p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIpaModalOpen(true)}
-                className="w-full text-xs gap-1.5 border-border bg-background hover:bg-muted font-medium"
-              >
-                <Headphones className="h-3.5 w-3.5 text-primary" />
-                <span>Mở bảng ngữ âm IPA</span>
-              </Button>
-            </section>
           </aside>
         </div>
       )}

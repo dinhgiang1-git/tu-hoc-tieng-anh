@@ -129,7 +129,7 @@ describe("TodayPage", () => {
         screen.getByText("Lộ trình học đang tạm dừng"),
       ).toBeInTheDocument();
       expect(
-        screen.getByText(/Lộ trình này hiện đang ở trạng thái tạm dừng/i),
+        screen.getByText("Tiến độ đã được giữ lại."),
       ).toBeInTheDocument();
       expect(screen.getByTestId("today-resume-cta-button")).toBeInTheDocument();
     });

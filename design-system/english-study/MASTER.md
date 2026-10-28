@@ -65,6 +65,10 @@ Success dùng icon check + chữ; warning dùng chữ và icon, không chỉ mà
 
 ## 4. Ngôn ngữ và hành động
 
+**Điều chỉnh theo phản hồi người dùng 29/10: giảm chữ và giảm khối phụ.** Quy tắc này ưu tiên hơn những ví dụ nhiều lời giải thích ở bản mẫu ban đầu. Mỗi màn ưu tiên tên bài/việc hiện tại, thông tin cần quyết định và một CTA. Bỏ card lời khuyên chung, slogan, badge lặp và đoạn chỉ nhắc lại title/CTA. Công cụ IPA giữ một điểm mở; một enrollment không cần selector. Với nhiều enrollment, selector đã nêu tên thì rail không nhắc lại tên dài. Topbar không lặp lời chào/tên và nhãn Anh-Anh đã có ở sidebar.
+
+Hướng dẫn chỉ xuất hiện khi cần thực hiện bài tập hoặc xử lý lỗi/quyền/lưu dữ liệu. Không xóa đề bài, nguồn và giới hạn âm mẫu, lỗi chưa lưu, trạng thái read-only hay xác nhận thao tác có hậu quả. Không dùng chữ bé hơn để tạo cảm giác ít chữ; rút copy hoặc chuyển nội dung phụ sang disclosure có nhãn.
+
 - Một nút primary chính trong một vùng quyết định: Hôm nay là “Tiếp tục học”/“Bắt đầu học”; activity là thao tác hợp lệ theo completionPolicy.
 - “Bài tiếp theo” là điều hướng, không phải hoàn thành. Trước khi buổi xong, dùng secondary; không tự tăng tiến độ khi chuyển bước.
 - Dịch nhãn UI: ACTIVE → Đang học; READING → Đọc bài; PRACTICE → Thực hành; QUIZ → Kiểm tra; REFLECTION → Ghi lại điều đã học. Không đổi enum gửi API.

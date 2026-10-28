@@ -103,6 +103,8 @@ Nếu vẫn tính local estimate để hiển thị: gắn nhãn dự kiến; đ
 
 ## 5. UI-02 — không gian học
 
+**Cập nhật theo phản hồi người dùng:** ưu tiên tinh gọn hơn bản mẫu đầu. Header chỉ tên bài, thời lượng và công cụ cần thiết; mỗi bước có đề/nội dung hiện tại và một action chính. Không thêm card động viên, giải thích cách dùng app dưới mỗi nút, badge type/required/status lặp hoặc thuật ngữ kỹ thuật. Ghi chú mặc định đóng, trạng thái lưu gọn. Vẫn giữ đầy đủ đề bài, hướng dẫn thực hành cụ thể, lỗi, cảnh báo mất dữ liệu và quyền thao tác. Đọc phần cập nhật mục 4 trong MASTER; không phục hồi những khối phụ vừa bị bỏ khỏi Hôm nay.
+
 ### Luồng và bố cục
 
 ```text

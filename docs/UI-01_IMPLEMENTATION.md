@@ -2,6 +2,8 @@
 
 ## Codex nghiệm thu — 29/10/2026
 
+Cập nhật sau phản hồi người dùng: đã giảm chữ và khối phụ trên Hôm nay/topbar, bỏ warm-up dài, card lời khuyên và card IPA trùng; chỉ giữ một điểm mở IPA, selector khi có nhiều lộ trình và tên lộ trình không lặp trong rail. Giữ thông tin tiến độ, trạng thái, CTA và lỗi. Đã xem bản thật 1280×720; 17 tests TodayPage/AppSidebar, build và lint đạt (một warning cũ). MASTER và UI-02 handoff đã bổ sung ưu tiên tinh gọn; workspace đang làm không bị ghi đè.
+
 **Đạt UI-01 sau khi Codex sửa trực tiếp các lỗi nhỏ; chuyển UI-02 theo mục 5 của UI_REFRESH_HANDOFF.md.** Phần bên dưới là báo cáo của công nhân, không thay cho phạm vi kiểm tra thực tế tại mục này.
 
 - Đã sửa lỗi supporting queries trên Hôm nay: lỗi preferences/enrollments có retry, không bị che bởi spinner hoặc biến thành danh sách rỗng. Tỷ lệ tiến độ null không tự hiện 0%.
