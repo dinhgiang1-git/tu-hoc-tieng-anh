@@ -45,10 +45,16 @@ scratch/
 .cache/
 *.pyc
 __pycache__/
+# Test artifacts and screenshots
 test-results/
 playwright-report/
 blob-report/
 e2e-screenshots/
+
+# Database backups
+backups/
+*.dump
+*.dump.sha256
 
 # Local AI coordinator state, prompts and logs
 tools/agent-desk/.data/
