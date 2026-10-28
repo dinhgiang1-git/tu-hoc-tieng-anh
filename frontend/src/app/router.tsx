@@ -7,6 +7,7 @@ import { AppShell } from "./layouts/AppShell";
 import { CurriculaPage } from "@/features/curricula/pages/CurriculaPage";
 import { CurriculumDetailPage } from "@/features/curricula/pages/CurriculumDetailPage";
 import { SchedulePage } from "@/features/schedule/pages/SchedulePage";
+import { ReviewPage } from "@/features/review/pages/ReviewPage";
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
       {
         path: "schedule",
         element: <SchedulePage />,
+      },
+      {
+        path: "review",
+        element: <ReviewPage />,
       },
       {
         path: "preferences",

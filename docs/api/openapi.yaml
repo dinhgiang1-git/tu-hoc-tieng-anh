@@ -651,6 +651,133 @@ paths:
           $ref: '#/components/responses/NotFoundProblem'
 
   # ===========================================================================
+  # REVIEW & BOOKMARKS (G5-02)
+  # ===========================================================================
+  /enrollments/{enrollmentId}/review:
+    get:
+      summary: Lấy tổng hợp danh sách câu sai và bài học đã đánh dấu ôn tập
+      description: >
+        Trả về danh sách câu hỏi làm sai từ các bài kiểm tra trắc nghiệm gần nhất
+        và danh sách bài học/nhiệm vụ đã được người học đánh dấu (bookmark).
+      operationId: getReviewSummary
+      tags: [Review]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Danh sách câu sai và bài đánh dấu ôn tập
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewSummaryResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
+  /review-bookmarks:
+    post:
+      summary: Đánh dấu bài học hoặc nhiệm vụ để ôn tập
+      operationId: createBookmark
+      tags: [Review]
+      parameters:
+        - $ref: '#/components/parameters/CsrfHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBookmarkRequest'
+      responses:
+        '201':
+          description: Đã tạo bookmark thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookmarkResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
+  /review-bookmarks/{id}:
+    delete:
+      summary: Xóa đánh dấu ôn tập
+      operationId: deleteBookmark
+      tags: [Review]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/CsrfHeader'
+      responses:
+        '204':
+          description: Đã xóa bookmark thành công
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
+  /enrollments/{enrollmentId}/review/questions/{questionId}/checks:
+    post:
+      summary: Làm lại và kiểm tra câu hỏi sai trong màn hình ôn tập
+      description: >
+        Kiểm tra câu trả lời của người học cho một câu hỏi sai.
+        Nếu đúng, ghi nhận resolution và chuyển câu hỏi sang trạng thái resolved.
+        Không thay đổi điểm số của bài quiz gốc.
+      operationId: checkMistakeQuestion
+      tags: [Review]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: questionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/CsrfHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckQuestionRequest'
+      responses:
+        '200':
+          description: Kết quả kiểm tra câu hỏi ôn tập
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionCheckResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
+  # ===========================================================================
   # 4. NOTES (GHI CHÚ HỌC TẬP)
   # ===========================================================================
   /me/notes:
@@ -2116,6 +2243,125 @@ components:
           type: boolean
         explanation:
           type: [string, "null"]
+
+    # --- Review & Mistakes (G5-02) ---
+    CreateBookmarkRequest:
+      type: object
+      required: [enrollmentId, lessonId]
+      properties:
+        enrollmentId:
+          type: string
+          format: uuid
+        lessonId:
+          type: string
+          format: uuid
+        activityId:
+          type: [string, "null"]
+          format: uuid
+        note:
+          type: [string, "null"]
+          maxLength: 500
+
+    BookmarkResponse:
+      type: object
+      required: [id, enrollmentId, lessonId, lessonTitle, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        enrollmentId:
+          type: string
+          format: uuid
+        lessonId:
+          type: string
+          format: uuid
+        lessonTitle:
+          type: string
+        activityId:
+          type: [string, "null"]
+          format: uuid
+        activityTitle:
+          type: [string, "null"]
+        activityType:
+          type: [string, "null"]
+        note:
+          type: [string, "null"]
+        createdAt:
+          type: string
+          format: date-time
+
+    MistakeItemResponse:
+      type: object
+      required: [questionId, prompt, options, resolved, lastAttemptedAt]
+      properties:
+        questionId:
+          type: string
+          format: uuid
+        prompt:
+          type: string
+        lessonId:
+          type: [string, "null"]
+          format: uuid
+        lessonTitle:
+          type: [string, "null"]
+        activityId:
+          type: [string, "null"]
+          format: uuid
+        activityTitle:
+          type: [string, "null"]
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizOptionDto'
+        resolved:
+          type: boolean
+        lastAttemptedAt:
+          type: string
+          format: date-time
+
+    ReviewSummaryResponse:
+      type: object
+      required: [enrollmentId, bookmarkedItems, mistakes]
+      properties:
+        enrollmentId:
+          type: string
+          format: uuid
+        bookmarkedItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookmarkResponse'
+        mistakes:
+          type: array
+          items:
+            $ref: '#/components/schemas/MistakeItemResponse'
+
+    CheckQuestionRequest:
+      type: object
+      required: [selectedOptionId]
+      properties:
+        selectedOptionId:
+          type: string
+          format: uuid
+
+    QuestionCheckResponse:
+      type: object
+      required: [questionId, selectedOptionId, correctOptionId, isCorrect, resolved]
+      properties:
+        questionId:
+          type: string
+          format: uuid
+        selectedOptionId:
+          type: string
+          format: uuid
+        correctOptionId:
+          type: string
+          format: uuid
+        isCorrect:
+          type: boolean
+        explanation:
+          type: [string, "null"]
+        resolved:
+          type: boolean
 
     # --- Enums ---
     ActivityStatus:

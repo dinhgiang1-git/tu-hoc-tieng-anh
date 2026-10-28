@@ -22,11 +22,13 @@ import type {
 import { learningWorkspaceApi } from "../api/learning-workspace.api";
 import { learningProgressApi } from "../api/learning-progress.api";
 import { QuizActivityView } from "./QuizActivityView";
+import { BookmarkButton } from "@/features/review/components/BookmarkButton";
 
 interface ActivityRendererProps {
   activity: ActivityWorkspaceDto;
   index: number;
   enrollmentId: string;
+  lessonId?: string;
   enrollmentVersion: number;
   onVersionUpdate: (newVersion: number) => void | Promise<void>;
   onRecoveryRequired?: () => void;
@@ -42,6 +44,7 @@ export function ActivityRenderer({
   activity,
   index,
   enrollmentId,
+  lessonId,
   enrollmentVersion,
   onVersionUpdate,
   onActivityUpdated,
@@ -455,67 +458,78 @@ export function ActivityRenderer({
           </h3>
         </div>
 
-        {/* Manual completion toggle for manual check activities */}
-        {isManualCheck && !isQuiz && (
-          <div className="flex items-center gap-2">
-            {isCompleted ? (
+        {/* Activity Actions / Status */}
+        <div className="flex flex-wrap items-center gap-2">
+          {lessonId && (
+            <BookmarkButton
+              enrollmentId={enrollmentId}
+              lessonId={lessonId}
+              activityId={activity.activityId}
+            />
+          )}
+
+          {/* Manual completion toggle for manual check activities */}
+          {isManualCheck && !isQuiz && (
+            <div className="flex items-center gap-2">
+              {isCompleted ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  data-testid={`undo-button-${activity.activityId}`}
+                  disabled={isLocked}
+                  onClick={() => handleToggleManualComplete("NOT_STARTED")}
+                  className="text-xs flex items-center gap-1.5"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  Hoàn tác
+                </Button>
+              ) : (
+                <Button
+                  variant="default"
+                  size="sm"
+                  data-testid={`complete-button-${activity.activityId}`}
+                  disabled={isLocked}
+                  onClick={() => handleToggleManualComplete("COMPLETED")}
+                  className="text-xs flex items-center gap-1.5"
+                >
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  Hoàn thành
+                </Button>
+              )}
+            </div>
+          )}
+
+          {/* For pure RESPONSE_SUBMIT activities that are completed, show undo in header */}
+          {hasResponse && !isManualCheck && isCompleted && (
+            <div className="flex items-center gap-2">
               <Button
                 variant="outline"
                 size="sm"
                 data-testid={`undo-button-${activity.activityId}`}
                 disabled={isLocked}
-                onClick={() => handleToggleManualComplete("NOT_STARTED")}
+                onClick={handleUndoResponse}
                 className="text-xs flex items-center gap-1.5"
               >
                 <RotateCcw className="h-3.5 w-3.5" />
                 Hoàn tác
               </Button>
-            ) : (
-              <Button
-                variant="default"
-                size="sm"
-                data-testid={`complete-button-${activity.activityId}`}
-                disabled={isLocked}
-                onClick={() => handleToggleManualComplete("COMPLETED")}
-                className="text-xs flex items-center gap-1.5"
-              >
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                Hoàn thành
-              </Button>
-            )}
-          </div>
-        )}
+            </div>
+          )}
 
-        {/* For pure RESPONSE_SUBMIT activities that are completed, show undo in header */}
-        {hasResponse && !isManualCheck && isCompleted && (
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              data-testid={`undo-button-${activity.activityId}`}
-              disabled={isLocked}
-              onClick={handleUndoResponse}
-              className="text-xs flex items-center gap-1.5"
-            >
-              <RotateCcw className="h-3.5 w-3.5" />
-              Hoàn tác
-            </Button>
-          </div>
-        )}
+          {/* Notice for unsupported activity types */}
+          {isUnsupportedType && (
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/60 px-3 py-1.5 rounded-lg border border-border">
+              <span>Hoạt động dạng {activity.type} chưa hỗ trợ thao tác trên web.</span>
+            </div>
+          )}
 
-        {/* Notice for unsupported activity types */}
-        {isUnsupportedType && (
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/60 px-3 py-1.5 rounded-lg border border-border">
-            <span>Hoạt động dạng {activity.type} chưa hỗ trợ thao tác trên web.</span>
-          </div>
-        )}
-
-        {isQuiz && (
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-muted px-3 py-1.5 rounded-lg">
-            <HelpCircle className="h-4 w-4" />
-            Bài kiểm tra trắc nghiệm
-          </div>
-        )}
+          {isQuiz && (
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-muted px-3 py-1.5 rounded-lg">
+              <HelpCircle className="h-4 w-4" />
+              Bài kiểm tra trắc nghiệm
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Instructions */}

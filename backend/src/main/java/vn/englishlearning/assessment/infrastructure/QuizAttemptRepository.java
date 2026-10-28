@@ -17,4 +17,9 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, UUID> 
   int countByEnrollmentIdAndActivityId(UUID enrollmentId, UUID activityId);
 
   boolean existsByEnrollmentIdAndActivityIdAndPassedTrue(UUID enrollmentId, UUID activityId);
+
+  @org.springframework.data.jpa.repository.Query(
+      "SELECT DISTINCT a FROM QuizAttempt a LEFT JOIN FETCH a.answers WHERE a.enrollmentId = :enrollmentId ORDER BY a.submittedAt DESC")
+  List<QuizAttempt> findByEnrollmentIdWithAnswersOrderBySubmittedAtDesc(
+      @org.springframework.data.repository.query.Param("enrollmentId") UUID enrollmentId);
 }

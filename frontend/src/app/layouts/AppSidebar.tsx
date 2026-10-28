@@ -6,6 +6,7 @@ import {
   GraduationCap,
   LoaderCircle,
   LogOut,
+  RotateCcw,
   Settings,
   User as UserIcon,
   X,
@@ -106,6 +107,12 @@ export function AppSidebar({ isOpen, onClose, collapsed }: AppSidebarProps) {
       href: "/schedule",
       icon: Calendar,
       match: location.pathname.startsWith("/schedule"),
+    },
+    {
+      title: "Ôn tập",
+      href: "/review",
+      icon: RotateCcw,
+      match: location.pathname.startsWith("/review"),
     },
     {
       title: "Tùy chọn học tập",

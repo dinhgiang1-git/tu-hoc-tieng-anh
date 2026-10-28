@@ -16,4 +16,7 @@ public interface QuizQuestionRepository extends JpaRepository<QuizQuestion, UUID
   List<QuizQuestion> findByActivityIdOrderByOrderIndexAsc(UUID activityId);
 
   long countByActivityId(UUID activityId);
+
+  @Query("SELECT q FROM QuizQuestion q LEFT JOIN FETCH q.options WHERE q.id = :id")
+  java.util.Optional<QuizQuestion> findByIdWithOptions(@Param("id") UUID id);
 }

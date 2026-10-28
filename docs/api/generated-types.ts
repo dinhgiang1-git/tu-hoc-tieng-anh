@@ -407,6 +407,80 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/enrollments/{enrollmentId}/review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lấy tổng hợp danh sách câu sai và bài học đã đánh dấu ôn tập
+         * @description Trả về danh sách câu hỏi làm sai từ các bài kiểm tra trắc nghiệm gần nhất và danh sách bài học/nhiệm vụ đã được người học đánh dấu (bookmark).
+         */
+        get: operations["getReviewSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/review-bookmarks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Đánh dấu bài học hoặc nhiệm vụ để ôn tập */
+        post: operations["createBookmark"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/review-bookmarks/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Xóa đánh dấu ôn tập */
+        delete: operations["deleteBookmark"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/enrollments/{enrollmentId}/review/questions/{questionId}/checks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Làm lại và kiểm tra câu hỏi sai trong màn hình ôn tập
+         * @description Kiểm tra câu trả lời của người học cho một câu hỏi sai. Nếu đúng, ghi nhận resolution và chuyển câu hỏi sang trạng thái resolved. Không thay đổi điểm số của bài quiz gốc.
+         */
+        post: operations["checkMistakeQuestion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/notes": {
         parameters: {
             query?: never;
@@ -1153,6 +1227,67 @@ export interface components {
             isCorrect: boolean;
             explanation?: string | null;
         };
+        CreateBookmarkRequest: {
+            /** Format: uuid */
+            enrollmentId: string;
+            /** Format: uuid */
+            lessonId: string;
+            /** Format: uuid */
+            activityId?: string | null;
+            note?: string | null;
+        };
+        BookmarkResponse: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            enrollmentId: string;
+            /** Format: uuid */
+            lessonId: string;
+            lessonTitle: string;
+            /** Format: uuid */
+            activityId?: string | null;
+            activityTitle?: string | null;
+            activityType?: string | null;
+            note?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        MistakeItemResponse: {
+            /** Format: uuid */
+            questionId: string;
+            prompt: string;
+            /** Format: uuid */
+            lessonId?: string | null;
+            lessonTitle?: string | null;
+            /** Format: uuid */
+            activityId?: string | null;
+            activityTitle?: string | null;
+            options: components["schemas"]["QuizOptionDto"][];
+            resolved: boolean;
+            /** Format: date-time */
+            lastAttemptedAt: string;
+        };
+        ReviewSummaryResponse: {
+            /** Format: uuid */
+            enrollmentId: string;
+            bookmarkedItems: components["schemas"]["BookmarkResponse"][];
+            mistakes: components["schemas"]["MistakeItemResponse"][];
+        };
+        CheckQuestionRequest: {
+            /** Format: uuid */
+            selectedOptionId: string;
+        };
+        QuestionCheckResponse: {
+            /** Format: uuid */
+            questionId: string;
+            /** Format: uuid */
+            selectedOptionId: string;
+            /** Format: uuid */
+            correctOptionId: string;
+            isCorrect: boolean;
+            explanation?: string | null;
+            resolved: boolean;
+        };
         /** @enum {string} */
         ActivityStatus: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
         /** @enum {string} */
@@ -1804,6 +1939,121 @@ export interface operations {
                 };
             };
             401: components["responses"]["UnauthorizedProblem"];
+            404: components["responses"]["NotFoundProblem"];
+        };
+    };
+    getReviewSummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                enrollmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Danh sách câu sai và bài đánh dấu ôn tập */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewSummaryResponse"];
+                };
+            };
+            401: components["responses"]["UnauthorizedProblem"];
+            404: components["responses"]["NotFoundProblem"];
+        };
+    };
+    createBookmark: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description CSRF token lấy từ endpoint GET /auth/csrf */
+                "X-CSRF-TOKEN": components["parameters"]["CsrfHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateBookmarkRequest"];
+            };
+        };
+        responses: {
+            /** @description Đã tạo bookmark thành công */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookmarkResponse"];
+                };
+            };
+            400: components["responses"]["BadRequestProblem"];
+            401: components["responses"]["UnauthorizedProblem"];
+            403: components["responses"]["ForbiddenProblem"];
+            404: components["responses"]["NotFoundProblem"];
+        };
+    };
+    deleteBookmark: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description CSRF token lấy từ endpoint GET /auth/csrf */
+                "X-CSRF-TOKEN": components["parameters"]["CsrfHeader"];
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Đã xóa bookmark thành công */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["UnauthorizedProblem"];
+            403: components["responses"]["ForbiddenProblem"];
+            404: components["responses"]["NotFoundProblem"];
+        };
+    };
+    checkMistakeQuestion: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description CSRF token lấy từ endpoint GET /auth/csrf */
+                "X-CSRF-TOKEN": components["parameters"]["CsrfHeader"];
+            };
+            path: {
+                enrollmentId: string;
+                questionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CheckQuestionRequest"];
+            };
+        };
+        responses: {
+            /** @description Kết quả kiểm tra câu hỏi ôn tập */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionCheckResponse"];
+                };
+            };
+            400: components["responses"]["BadRequestProblem"];
+            401: components["responses"]["UnauthorizedProblem"];
+            403: components["responses"]["ForbiddenProblem"];
             404: components["responses"]["NotFoundProblem"];
         };
     };

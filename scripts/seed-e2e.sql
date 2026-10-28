@@ -67,6 +67,8 @@ WHERE username IN (SELECT username FROM e2e_fixture_users)
 ON CONFLICT (user_id) DO NOTHING;
 
 -- 3. Reset any state created by previous E2E test runs (scoped exclusively to e2e_% users)
+DELETE FROM review_resolution WHERE enrollment_id IN (SELECT id FROM enrollment WHERE user_id IN (SELECT id FROM app_user WHERE username IN (SELECT username FROM e2e_fixture_users)));
+DELETE FROM review_bookmark WHERE user_id IN (SELECT id FROM app_user WHERE username IN (SELECT username FROM e2e_fixture_users));
 DELETE FROM quiz_attempt WHERE user_id IN (SELECT id FROM app_user WHERE username IN (SELECT username FROM e2e_fixture_users));
 DELETE FROM note WHERE user_id IN (SELECT id FROM app_user WHERE username IN (SELECT username FROM e2e_fixture_users));
 DELETE FROM activity_progress WHERE enrollment_id IN (SELECT id FROM enrollment WHERE user_id IN (SELECT id FROM app_user WHERE username IN (SELECT username FROM e2e_fixture_users)));

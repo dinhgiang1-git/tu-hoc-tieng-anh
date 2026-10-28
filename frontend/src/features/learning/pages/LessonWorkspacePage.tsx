@@ -31,6 +31,7 @@ import { notesApi, notesKeys, type NoteResponse } from "@/features/notes/api/not
 import { MarkdownContent } from "../components/MarkdownContent";
 import { ActivityRenderer } from "../components/ActivityRenderer";
 import { NoteEditor } from "@/features/notes/components/NoteEditor";
+import { BookmarkButton } from "@/features/review/components/BookmarkButton";
 
 export function LessonWorkspacePage() {
   const { enrollmentId = "", lessonId = "" } = useParams();
@@ -343,6 +344,13 @@ function LessonWorkspaceContent() {
           </div>
 
           <div className="flex items-center gap-2">
+            {enrollmentId && lessonId && (
+              <BookmarkButton
+                enrollmentId={enrollmentId}
+                lessonId={lessonId}
+              />
+            )}
+
             {/* Notes toggle button */}
             <Button
               type="button"
@@ -494,6 +502,7 @@ function LessonWorkspaceContent() {
                   activity={activity}
                   index={idx}
                   enrollmentId={enrollmentId}
+                  lessonId={lessonId}
                   enrollmentVersion={enrollmentVersion}
                   onVersionUpdate={handleVersionUpdate}
                   onActivityUpdated={(updated) =>

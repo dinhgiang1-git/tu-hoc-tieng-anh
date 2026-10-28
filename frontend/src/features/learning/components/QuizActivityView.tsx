@@ -18,6 +18,7 @@ import type {
 } from "../api/quiz.api";
 import { quizApi } from "../api/quiz.api";
 import type { ActivityWorkspaceDto } from "../api/learning-workspace.api";
+import { queryClient } from "@/app/query-client";
 
 interface QuizActivityViewProps {
   activity: ActivityWorkspaceDto;
@@ -132,6 +133,7 @@ export function QuizActivityView({
       onActivityUpdated({
         status: res.activityCompleted ? "COMPLETED" : "IN_PROGRESS",
       });
+      void queryClient.invalidateQueries({ queryKey: ["review"] });
     } catch (err: unknown) {
       if (err instanceof ApiError) {
         if (err.status === 409) {
