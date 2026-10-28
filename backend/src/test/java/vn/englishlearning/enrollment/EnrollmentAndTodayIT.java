@@ -10,6 +10,7 @@ import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -1237,5 +1238,326 @@ class EnrollmentAndTodayIT {
           .as("Schedule query must not select instructions: " + q)
           .doesNotContain("instructions");
     }
+  }
+
+  @Test
+  @DisplayName(
+      "G4-02 IT: Reschedule preview (no mutation), commit (version bump & schedules updated), replay, conflict, cross-user isolation")
+  void testReschedulePreviewAndCommitWorkflow() {
+    CsrfSession sessionA = login("usera", "Password123!");
+    String enrollKey = UUID.randomUUID().toString();
+
+    // 1. Create enrollment for User A
+    EnrollmentRequests.CreateEnrollmentRequest createReq =
+        new EnrollmentRequests.CreateEnrollmentRequest(
+            curriculumId,
+            revisionId,
+            LocalDate.of(2026, 10, 26),
+            List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY),
+            30,
+            "Asia/Ho_Chi_Minh");
+
+    HttpHeaders headersA = new HttpHeaders();
+    headersA.setContentType(MediaType.APPLICATION_JSON);
+    headersA.set("X-CSRF-TOKEN", sessionA.csrfToken());
+    headersA.set(HttpHeaders.COOKIE, sessionA.sessionCookie());
+    headersA.set("Idempotency-Key", enrollKey);
+
+    ResponseEntity<EnrollmentResponses.EnrollmentResponse> createResp =
+        restTemplate.postForEntity(
+            baseUrl() + "/enrollments",
+            new HttpEntity<>(createReq, headersA),
+            EnrollmentResponses.EnrollmentResponse.class);
+    assertThat(createResp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    UUID enrollmentId = createResp.getBody().id();
+    assertThat(createResp.getBody().version()).isEqualTo(1L);
+
+    // 2. Preview reschedule: pure calculation, no mutation to DB
+    EnrollmentRequests.SchedulePreviewRequest previewReq =
+        new EnrollmentRequests.SchedulePreviewRequest(
+            LocalDate.of(2026, 10, 27), List.of(DayOfWeek.TUESDAY, DayOfWeek.THURSDAY), 45);
+
+    HttpHeaders previewHeaders = new HttpHeaders();
+    previewHeaders.setContentType(MediaType.APPLICATION_JSON);
+    previewHeaders.set("X-CSRF-TOKEN", sessionA.csrfToken());
+    previewHeaders.set(HttpHeaders.COOKIE, sessionA.sessionCookie());
+
+    ResponseEntity<EnrollmentResponses.SchedulePreviewResponse> previewResp =
+        restTemplate.postForEntity(
+            baseUrl() + "/enrollments/" + enrollmentId + "/schedule/preview",
+            new HttpEntity<>(previewReq, previewHeaders),
+            EnrollmentResponses.SchedulePreviewResponse.class);
+
+    assertThat(previewResp.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(previewResp.getBody()).isNotNull();
+    assertThat(previewResp.getBody().enrollmentVersion()).isEqualTo(1L);
+    assertThat(previewResp.getBody().modifiedSchedules()).isNotEmpty();
+
+    // Verify DB was NOT mutated by preview
+    Enrollment enrAfterPreview = enrollmentRepository.findById(enrollmentId).orElseThrow();
+    assertThat(enrAfterPreview.getVersion()).isEqualTo(1L);
+    assertThat(enrAfterPreview.getStudyDays()).isEqualTo("MONDAY,WEDNESDAY,FRIDAY");
+
+    // 3. Commit reschedule with key1 & expectedVersion 1
+    String commitKey1 = UUID.randomUUID().toString();
+    EnrollmentRequests.ScheduleCommitRequest commitReq =
+        new EnrollmentRequests.ScheduleCommitRequest(
+            LocalDate.of(2026, 10, 27), List.of(DayOfWeek.TUESDAY, DayOfWeek.THURSDAY), 45, 1L);
+
+    HttpHeaders commitHeaders1 = new HttpHeaders();
+    commitHeaders1.setContentType(MediaType.APPLICATION_JSON);
+    commitHeaders1.set("X-CSRF-TOKEN", sessionA.csrfToken());
+    commitHeaders1.set(HttpHeaders.COOKIE, sessionA.sessionCookie());
+    commitHeaders1.set("Idempotency-Key", commitKey1);
+
+    ResponseEntity<EnrollmentResponses.EnrollmentResponse> commitResp =
+        restTemplate.postForEntity(
+            baseUrl() + "/enrollments/" + enrollmentId + "/schedule/commit",
+            new HttpEntity<>(commitReq, commitHeaders1),
+            EnrollmentResponses.EnrollmentResponse.class);
+
+    assertThat(commitResp.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(commitResp.getBody().version()).isEqualTo(2L);
+    assertThat(commitResp.getBody().studyDays())
+        .containsExactly(DayOfWeek.TUESDAY, DayOfWeek.THURSDAY);
+
+    // Verify DB mutated: version is now 2, studyDays updated
+    Enrollment enrAfterCommit = enrollmentRepository.findById(enrollmentId).orElseThrow();
+    assertThat(enrAfterCommit.getVersion()).isEqualTo(2L);
+    assertThat(enrAfterCommit.getStudyDays()).isEqualTo("TUESDAY,THURSDAY");
+    assertThat(enrAfterCommit.getDailyTargetMinutes()).isEqualTo(45);
+
+    // 4. Idempotent replay: same key + same payload returns 200 without bumping version
+    ResponseEntity<EnrollmentResponses.EnrollmentResponse> replayResp =
+        restTemplate.postForEntity(
+            baseUrl() + "/enrollments/" + enrollmentId + "/schedule/commit",
+            new HttpEntity<>(commitReq, commitHeaders1),
+            EnrollmentResponses.EnrollmentResponse.class);
+
+    assertThat(replayResp.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(replayResp.getBody().version()).isEqualTo(2L);
+    assertThat(enrollmentRepository.findById(enrollmentId).orElseThrow().getVersion())
+        .isEqualTo(2L);
+
+    // 5. Conflict on key reuse with different payload -> 409
+    EnrollmentRequests.ScheduleCommitRequest differentPayloadReq =
+        new EnrollmentRequests.ScheduleCommitRequest(
+            LocalDate.of(2026, 10, 27),
+            List.of(DayOfWeek.TUESDAY, DayOfWeek.THURSDAY),
+            60, // different minutes
+            1L);
+
+    ResponseEntity<String> conflictKeyResp =
+        restTemplate.postForEntity(
+            baseUrl() + "/enrollments/" + enrollmentId + "/schedule/commit",
+            new HttpEntity<>(differentPayloadReq, commitHeaders1),
+            String.class);
+    assertThat(conflictKeyResp.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+
+    // 6. Stale expectedVersion -> 409 Conflict
+    String commitKey2 = UUID.randomUUID().toString();
+    EnrollmentRequests.ScheduleCommitRequest staleReq =
+        new EnrollmentRequests.ScheduleCommitRequest(
+            LocalDate.of(2026, 10, 27),
+            List.of(DayOfWeek.TUESDAY, DayOfWeek.THURSDAY),
+            45,
+            1L); // stale version (current is 2)
+
+    HttpHeaders commitHeaders2 = new HttpHeaders();
+    commitHeaders2.setContentType(MediaType.APPLICATION_JSON);
+    commitHeaders2.set("X-CSRF-TOKEN", sessionA.csrfToken());
+    commitHeaders2.set(HttpHeaders.COOKIE, sessionA.sessionCookie());
+    commitHeaders2.set("Idempotency-Key", commitKey2);
+
+    ResponseEntity<String> staleResp =
+        restTemplate.postForEntity(
+            baseUrl() + "/enrollments/" + enrollmentId + "/schedule/commit",
+            new HttpEntity<>(staleReq, commitHeaders2),
+            String.class);
+    assertThat(staleResp.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+
+    // 7. Cross-user isolation: User B cannot preview or commit User A's schedule -> 404
+    CsrfSession sessionB = login("userb", "Password123!");
+    HttpHeaders headersB = new HttpHeaders();
+    headersB.setContentType(MediaType.APPLICATION_JSON);
+    headersB.set("X-CSRF-TOKEN", sessionB.csrfToken());
+    headersB.set(HttpHeaders.COOKIE, sessionB.sessionCookie());
+
+    ResponseEntity<String> userBPreview =
+        restTemplate.postForEntity(
+            baseUrl() + "/enrollments/" + enrollmentId + "/schedule/preview",
+            new HttpEntity<>(previewReq, headersB),
+            String.class);
+    assertThat(userBPreview.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+    headersB.set("Idempotency-Key", UUID.randomUUID().toString());
+    ResponseEntity<String> userBCommit =
+        restTemplate.postForEntity(
+            baseUrl() + "/enrollments/" + enrollmentId + "/schedule/commit",
+            new HttpEntity<>(commitReq, headersB),
+            String.class);
+    assertThat(userBCommit.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+  }
+
+  @Test
+  @DisplayName(
+      "G4-03: Lifecycle workflow (pause -> Today PAUSED -> resume with new schedule -> Today ACTIVE -> abandon)")
+  void testLifecyclePauseResumeAbandonWorkflow() {
+    CsrfSession sessionA = login("usera", "Password123!");
+
+    // 1. Create active enrollment
+    String idempotencyKey = UUID.randomUUID().toString();
+    EnrollmentRequests.CreateEnrollmentRequest createReq =
+        new EnrollmentRequests.CreateEnrollmentRequest(
+            curriculumId,
+            revisionId,
+            LocalDate.of(2026, 10, 26),
+            List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY),
+            30,
+            "Asia/Ho_Chi_Minh");
+
+    HttpHeaders headersA = new HttpHeaders();
+    headersA.setContentType(MediaType.APPLICATION_JSON);
+    headersA.set("X-CSRF-TOKEN", sessionA.csrfToken());
+    headersA.set(HttpHeaders.COOKIE, sessionA.sessionCookie());
+    headersA.set("Idempotency-Key", idempotencyKey);
+
+    ResponseEntity<EnrollmentResponses.EnrollmentResponse> createResp =
+        restTemplate.postForEntity(
+            baseUrl() + "/enrollments",
+            new HttpEntity<>(createReq, headersA),
+            EnrollmentResponses.EnrollmentResponse.class);
+
+    assertThat(createResp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    UUID enrollmentId = createResp.getBody().id();
+    assertThat(createResp.getBody().status()).isEqualTo(EnrollmentStatus.ACTIVE);
+    assertThat(createResp.getBody().version()).isEqualTo(1L);
+
+    // 2. Pause enrollment with expectedVersion = 1
+    EnrollmentRequests.LifecycleTransitionRequest pauseReq =
+        new EnrollmentRequests.LifecycleTransitionRequest(1L);
+
+    HttpHeaders actionHeaders = new HttpHeaders();
+    actionHeaders.setContentType(MediaType.APPLICATION_JSON);
+    actionHeaders.set("X-CSRF-TOKEN", sessionA.csrfToken());
+    actionHeaders.set(HttpHeaders.COOKIE, sessionA.sessionCookie());
+
+    ResponseEntity<EnrollmentResponses.EnrollmentResponse> pauseResp =
+        restTemplate.postForEntity(
+            baseUrl() + "/enrollments/" + enrollmentId + "/pause",
+            new HttpEntity<>(pauseReq, actionHeaders),
+            EnrollmentResponses.EnrollmentResponse.class);
+
+    assertThat(pauseResp.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(pauseResp.getBody().status()).isEqualTo(EnrollmentStatus.PAUSED);
+    assertThat(pauseResp.getBody().version()).isEqualTo(2L);
+
+    // Verify DB updated
+    Enrollment enrPaused = enrollmentRepository.findById(enrollmentId).orElseThrow();
+    assertThat(enrPaused.getStatus()).isEqualTo(EnrollmentStatus.PAUSED);
+    assertThat(enrPaused.getVersion()).isEqualTo(2L);
+
+    // Verify Today endpoint reflects PAUSED state
+    ResponseEntity<TodayResponses.TodayResponse> todayResp =
+        restTemplate.exchange(
+            baseUrl() + "/me/today",
+            HttpMethod.GET,
+            new HttpEntity<>(actionHeaders),
+            TodayResponses.TodayResponse.class);
+
+    assertThat(todayResp.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(todayResp.getBody().state()).isEqualTo("PAUSED");
+    assertThat(todayResp.getBody().primaryAction()).isNull();
+    assertThat(todayResp.getBody().overdueLessons()).isEmpty();
+
+    // 3. Stale version pause fails -> 409
+    ResponseEntity<String> stalePause =
+        restTemplate.postForEntity(
+            baseUrl() + "/enrollments/" + enrollmentId + "/pause",
+            new HttpEntity<>(new EnrollmentRequests.LifecycleTransitionRequest(1L), actionHeaders),
+            String.class);
+    assertThat(stalePause.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+
+    // 4. Cross-user isolation: User B cannot resume User A's enrollment -> 404
+    CsrfSession sessionB = login("userb", "Password123!");
+    HttpHeaders headersB = new HttpHeaders();
+    headersB.setContentType(MediaType.APPLICATION_JSON);
+    headersB.set("X-CSRF-TOKEN", sessionB.csrfToken());
+    headersB.set(HttpHeaders.COOKIE, sessionB.sessionCookie());
+    headersB.set("Idempotency-Key", UUID.randomUUID().toString());
+
+    LocalDate testToday = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+    EnrollmentRequests.ScheduleCommitRequest resumeReq =
+        new EnrollmentRequests.ScheduleCommitRequest(
+            testToday, List.of(DayOfWeek.TUESDAY, DayOfWeek.THURSDAY), 45, 2L);
+
+    ResponseEntity<String> userBResume =
+        restTemplate.postForEntity(
+            baseUrl() + "/enrollments/" + enrollmentId + "/resume",
+            new HttpEntity<>(resumeReq, headersB),
+            String.class);
+    assertThat(userBResume.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+    // 5. User A resumes enrollment in 1 atomic transaction with new schedule
+    String resumeKey = UUID.randomUUID().toString();
+    actionHeaders.set("Idempotency-Key", resumeKey);
+
+    ResponseEntity<EnrollmentResponses.EnrollmentResponse> resumeResp =
+        restTemplate.postForEntity(
+            baseUrl() + "/enrollments/" + enrollmentId + "/resume",
+            new HttpEntity<>(resumeReq, actionHeaders),
+            EnrollmentResponses.EnrollmentResponse.class);
+
+    assertThat(resumeResp.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(resumeResp.getBody().status()).isEqualTo(EnrollmentStatus.ACTIVE);
+    assertThat(resumeResp.getBody().version()).isEqualTo(3L);
+    assertThat(resumeResp.getBody().studyDays())
+        .containsExactly(DayOfWeek.TUESDAY, DayOfWeek.THURSDAY);
+
+    // Verify DB updated
+    Enrollment enrResumed = enrollmentRepository.findById(enrollmentId).orElseThrow();
+    assertThat(enrResumed.getStatus()).isEqualTo(EnrollmentStatus.ACTIVE);
+    assertThat(enrResumed.getVersion()).isEqualTo(3L);
+    assertThat(enrResumed.getStudyDays()).isEqualTo("TUESDAY,THURSDAY");
+    assertThat(enrResumed.getDailyTargetMinutes()).isEqualTo(45);
+
+    // 6. Idempotent replay of resume
+    ResponseEntity<EnrollmentResponses.EnrollmentResponse> replayResume =
+        restTemplate.postForEntity(
+            baseUrl() + "/enrollments/" + enrollmentId + "/resume",
+            new HttpEntity<>(resumeReq, actionHeaders),
+            EnrollmentResponses.EnrollmentResponse.class);
+    assertThat(replayResume.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(replayResume.getBody().version()).isEqualTo(3L);
+
+    // 7. Abandon enrollment
+    actionHeaders.remove("Idempotency-Key");
+    EnrollmentRequests.LifecycleTransitionRequest abandonReq =
+        new EnrollmentRequests.LifecycleTransitionRequest(3L);
+
+    ResponseEntity<EnrollmentResponses.EnrollmentResponse> abandonResp =
+        restTemplate.postForEntity(
+            baseUrl() + "/enrollments/" + enrollmentId + "/abandon",
+            new HttpEntity<>(abandonReq, actionHeaders),
+            EnrollmentResponses.EnrollmentResponse.class);
+
+    assertThat(abandonResp.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(abandonResp.getBody().status()).isEqualTo(EnrollmentStatus.ABANDONED);
+    assertThat(abandonResp.getBody().version()).isEqualTo(4L);
+
+    Enrollment enrAbandoned = enrollmentRepository.findById(enrollmentId).orElseThrow();
+    assertThat(enrAbandoned.getStatus()).isEqualTo(EnrollmentStatus.ABANDONED);
+    assertThat(enrAbandoned.getVersion()).isEqualTo(4L);
+
+    // Verify Today endpoint shows NO_ENROLLMENT when active enrollment is abandoned
+    ResponseEntity<TodayResponses.TodayResponse> todayAfterAbandon =
+        restTemplate.exchange(
+            baseUrl() + "/me/today",
+            HttpMethod.GET,
+            new HttpEntity<>(actionHeaders),
+            TodayResponses.TodayResponse.class);
+
+    assertThat(todayAfterAbandon.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(todayAfterAbandon.getBody().state()).isEqualTo("NO_ENROLLMENT");
   }
 }

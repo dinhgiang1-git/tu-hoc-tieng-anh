@@ -13,6 +13,7 @@ import {
   Compass,
   GraduationCap,
   PauseCircle,
+  Play,
   Sparkles,
 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button-variants";
@@ -256,18 +257,29 @@ export function TodayPage() {
 
       {/* 2. State: PAUSED */}
       {today.state === "PAUSED" && (
-        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-6 shadow-sm space-y-3">
-          <div className="flex items-center gap-3">
-            <PauseCircle className="h-7 w-7 text-amber-600 dark:text-amber-400 shrink-0" />
-            <div>
+        <div
+          className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-6 shadow-sm space-y-4"
+          data-testid="today-paused-state"
+        >
+          <div className="flex items-start gap-3">
+            <PauseCircle className="h-7 w-7 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+            <div className="space-y-1.5 flex-1">
               <h3 className="text-base font-bold text-amber-900 dark:text-amber-200">
                 Lộ trình học đang tạm dừng
               </h3>
-              <p className="text-xs text-amber-800 dark:text-amber-300 mt-1">
-                Lộ trình này hiện đang ở trạng thái tạm dừng. Bạn không có bài học cần thực
-                hiện hôm nay. Tính năng tiếp tục lộ trình và điều chỉnh lịch linh hoạt sẽ
-                được hỗ trợ trong Giai đoạn G4.
+              <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
+                Lộ trình này hiện đang ở trạng thái tạm dừng. Tiến độ học của bạn được bảo lưu nguyên vẹn và hệ thống tạm dừng tính bài quá hạn. Bạn có thể tiếp tục học và xếp lại lịch bất cứ lúc nào sẵn sàng.
               </p>
+              <div className="pt-2">
+                <Link
+                  to="/schedule"
+                  className={buttonVariants({ size: "sm", className: "gap-1.5" })}
+                  data-testid="today-resume-cta-button"
+                >
+                  <Play className="h-3.5 w-3.5" />
+                  Xem lịch và tiếp tục học
+                </Link>
+              </div>
             </div>
           </div>
         </div>

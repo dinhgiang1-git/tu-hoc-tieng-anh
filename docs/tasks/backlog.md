@@ -367,8 +367,8 @@
 
 - **G4 — Lịch cá nhân Linh hoạt & Đổi lịch (2–4 ngày):**
   * G4-01: [x] Codex nghiệm thu luồng chính ngày 26/10/2026 theo quy trình nhanh: 31 BE unit liên quan + 10 FE schedule tests + 3 E2E thật đạt, build/lint qua; JUnit PostgreSQL IT vướng loopback môi trường, hoãn kiểm tra lại cuối G4. Chi tiết [G4-01_IMPLEMENTATION.md](../G4-01_IMPLEMENTATION.md). Tiếp theo G4-02.
-  * G4-02: [ ] Đã chuẩn bị [G4-02_HANDOFF.md](G4-02_HANDOFF.md): preview/confirm đổi lịch, giữ buổi đã xong, transaction/version/idempotency. Chờ triển khai/nghiệm thu theo quy trình nhanh, baseline `aca84d7`.
-  * G4-03: Tính năng Tạm dừng (Pause) và Tiếp tục (Resume) lộ trình trong 1 transaction.
+  * G4-02: [x] Codex nghiệm thu ngày 28/10/2026 theo quy trình nhanh: 28 BE unit + 1 PostgreSQL Testcontainers IT + 13 FE schedule tests + 3 E2E thật đạt; preview tính toán thuần, commit nguyên tử CAS expectedVersion, idempotency, bảo toàn 100% bài đã hoàn thành & originalDate, modal UI desktop có invalidation và 409 conflict handling. Chi tiết [G4-02_ACCEPTANCE.md](../G4-02_ACCEPTANCE.md). Tiếp theo G4-03.
+  * G4-03: [x] Nghiệm thu hoàn thành ngày 28/10/2026: 40 BE unit + 16 FE unit + 4/4 E2E Playwright desktop đạt 100%, build 0 errors, lint 0 errors; Pause đóng băng tiến độ & ngừng nợ bài, Resume nguyên tử 1 transaction tính toán lịch mới, Abandon giải phóng partial unique index. Chi tiết [G4-03_ACCEPTANCE.md](../G4-03_ACCEPTANCE.md). Toàn bộ mốc G4 hoàn thành.
 - **G5 — Quiz & Ôn tập Tối thiểu (3–5 ngày):**
   * G5-01: Model câu hỏi trắc nghiệm, server chấm điểm tự động, chính sách `ON_SUBMIT` vs `PASS_SCORE`.
   * G5-02: Đánh dấu bài ôn tập (Bookmark), theo dõi câu sai và giải quyết câu sai (Resolution tracking).

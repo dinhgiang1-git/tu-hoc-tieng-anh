@@ -19,4 +19,17 @@ public final class EnrollmentRequests {
       @NotEmpty List<DayOfWeek> studyDays,
       @Min(10) @Max(180) int dailyTargetMinutes,
       @NotNull String timeZone) {}
+
+  public record SchedulePreviewRequest(
+      @NotNull LocalDate resumeDate,
+      @NotEmpty List<DayOfWeek> studyDays,
+      @Min(10) @Max(180) int dailyTargetMinutes) {}
+
+  public record ScheduleCommitRequest(
+      @NotNull LocalDate resumeDate,
+      @NotEmpty List<DayOfWeek> studyDays,
+      @Min(10) @Max(180) int dailyTargetMinutes,
+      @NotNull Long expectedVersion) {}
+
+  public record LifecycleTransitionRequest(@NotNull Long expectedVersion) {}
 }

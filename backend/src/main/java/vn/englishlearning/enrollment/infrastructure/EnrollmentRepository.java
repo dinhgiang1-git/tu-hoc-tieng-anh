@@ -39,4 +39,54 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, UUID> {
       @Param("status") EnrollmentStatus status,
       @Param("completedAt") Instant completedAt,
       @Param("now") Instant now);
+
+  @Modifying(flushAutomatically = true)
+  @Query(
+      "UPDATE Enrollment e SET e.version = :newVersion, e.studyDays = :studyDays, e.dailyTargetMinutes = :dailyTargetMinutes, e.updatedAt = :now "
+          + "WHERE e.id = :id AND e.version = :expectedVersion")
+  int updateScheduleConfigAndVersion(
+      @Param("id") UUID id,
+      @Param("expectedVersion") Long expectedVersion,
+      @Param("newVersion") Long newVersion,
+      @Param("studyDays") String studyDays,
+      @Param("dailyTargetMinutes") int dailyTargetMinutes,
+      @Param("now") Instant now);
+
+  @Modifying(flushAutomatically = true)
+  @Query(
+      "UPDATE Enrollment e SET e.status = :status, e.version = :newVersion, e.updatedAt = :now "
+          + "WHERE e.id = :id AND e.version = :expectedVersion AND e.status = :expectedStatus")
+  int updateStatusAndVersion(
+      @Param("id") UUID id,
+      @Param("expectedVersion") Long expectedVersion,
+      @Param("newVersion") Long newVersion,
+      @Param("expectedStatus") EnrollmentStatus expectedStatus,
+      @Param("status") EnrollmentStatus status,
+      @Param("now") Instant now);
+
+  @Modifying(flushAutomatically = true)
+  @Query(
+      "UPDATE Enrollment e SET e.status = :status, e.version = :newVersion, e.studyDays = :studyDays, e.dailyTargetMinutes = :dailyTargetMinutes, e.updatedAt = :now "
+          + "WHERE e.id = :id AND e.version = :expectedVersion AND e.status = :expectedStatus")
+  int resumeEnrollment(
+      @Param("id") UUID id,
+      @Param("expectedVersion") Long expectedVersion,
+      @Param("newVersion") Long newVersion,
+      @Param("expectedStatus") EnrollmentStatus expectedStatus,
+      @Param("status") EnrollmentStatus status,
+      @Param("studyDays") String studyDays,
+      @Param("dailyTargetMinutes") int dailyTargetMinutes,
+      @Param("now") Instant now);
+
+  @Modifying(flushAutomatically = true)
+  @Query(
+      "UPDATE Enrollment e SET e.status = :status, e.version = :newVersion, e.updatedAt = :now "
+          + "WHERE e.id = :id AND e.version = :expectedVersion AND e.status IN (:allowedStatuses)")
+  int abandonEnrollment(
+      @Param("id") UUID id,
+      @Param("expectedVersion") Long expectedVersion,
+      @Param("newVersion") Long newVersion,
+      @Param("allowedStatuses") Collection<EnrollmentStatus> allowedStatuses,
+      @Param("status") EnrollmentStatus status,
+      @Param("now") Instant now);
 }

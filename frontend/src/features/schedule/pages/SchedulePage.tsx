@@ -12,6 +12,9 @@ import {
   Clock,
   Coffee,
   Globe,
+  PauseCircle,
+  Play,
+  XCircle,
 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -25,6 +28,9 @@ import {
   scheduleKeys,
   type DayOfWeek,
 } from "@/features/enrollment/api/enrollment.api";
+import { RescheduleDialog } from "../components/RescheduleDialog";
+import { PauseConfirmationDialog } from "../components/PauseConfirmationDialog";
+import { AbandonConfirmationDialog } from "../components/AbandonConfirmationDialog";
 
 const VIETNAMESE_DAYS: Record<DayOfWeek, string> = {
   MONDAY: "Thứ Hai",
@@ -119,6 +125,12 @@ export function SchedulePage() {
 
   // Local state for selected enrollment in this view (does not mutate preferences)
   const [selectedEnrollmentId, setSelectedEnrollmentId] = useState<string | null>(null);
+
+  // Reschedule and lifecycle dialog states
+  const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
+  const [rescheduleMode, setRescheduleMode] = useState<"reschedule" | "resume">("reschedule");
+  const [isPauseOpen, setIsPauseOpen] = useState(false);
+  const [isAbandonOpen, setIsAbandonOpen] = useState(false);
 
   const enrollments = useMemo(
     () => myEnrollmentsQuery.data ?? [],
@@ -298,9 +310,72 @@ export function SchedulePage() {
               </span>
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Globe className="h-3.5 w-3.5" />
-              <span>Múi giờ: {enrollmentDetail.timeZone}</span>
+            <div className="flex flex-wrap items-center gap-2">
+              {enrollmentDetail.status === "ACTIVE" && (
+                <>
+                  <button
+                    type="button"
+                    data-testid="schedule-open-reschedule-button"
+                    onClick={() => {
+                      setRescheduleMode("reschedule");
+                      setIsRescheduleOpen(true);
+                    }}
+                    className={buttonVariants({ variant: "outline", size: "sm" })}
+                  >
+                    <Calendar className="mr-1.5 h-3.5 w-3.5 text-primary" />
+                    Đổi lịch
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="schedule-pause-button"
+                    onClick={() => setIsPauseOpen(true)}
+                    className={buttonVariants({ variant: "outline", size: "sm" })}
+                  >
+                    <PauseCircle className="mr-1.5 h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+                    Tạm dừng
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="schedule-abandon-button"
+                    onClick={() => setIsAbandonOpen(true)}
+                    className={buttonVariants({ variant: "ghost", size: "sm" })}
+                  >
+                    <XCircle className="mr-1.5 h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
+                    Kết thúc
+                  </button>
+                </>
+              )}
+
+              {enrollmentDetail.status === "PAUSED" && (
+                <>
+                  <button
+                    type="button"
+                    data-testid="schedule-resume-button"
+                    onClick={() => {
+                      setRescheduleMode("resume");
+                      setIsRescheduleOpen(true);
+                    }}
+                    className={buttonVariants({ variant: "default", size: "sm" })}
+                  >
+                    <Play className="mr-1.5 h-3.5 w-3.5" />
+                    Tiếp tục học
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="schedule-abandon-button"
+                    onClick={() => setIsAbandonOpen(true)}
+                    className={buttonVariants({ variant: "ghost", size: "sm" })}
+                  >
+                    <XCircle className="mr-1.5 h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
+                    Kết thúc
+                  </button>
+                </>
+              )}
+
+              <div className="flex items-center gap-2 text-xs text-muted-foreground ml-1">
+                <Globe className="h-3.5 w-3.5" />
+                <span>Múi giờ: {enrollmentDetail.timeZone}</span>
+              </div>
             </div>
           </div>
 
@@ -329,6 +404,18 @@ export function SchedulePage() {
               )}
             </div>
           </div>
+
+          {enrollmentDetail.status === "PAUSED" && (
+            <div
+              className="flex items-center gap-2.5 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200"
+              data-testid="schedule-paused-banner"
+            >
+              <PauseCircle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+              <p>
+                <strong>Lộ trình đang tạm dừng:</strong> Tiến độ học được giữ nguyên, hệ thống không tính bài quá hạn. Bấm <strong>"Tiếp tục học"</strong> để chọn ngày học lại và xếp lịch cho các bài học chưa hoàn thành.
+              </p>
+            </div>
+          )}
         </div>
       ) : null}
 
@@ -511,6 +598,42 @@ export function SchedulePage() {
             );
           })}
         </div>
+      )}
+
+      {/* Reschedule / Resume Dialog Modal */}
+      {enrollmentDetail && activeEnrollmentId && (
+        <RescheduleDialog
+          isOpen={isRescheduleOpen}
+          onClose={() => setIsRescheduleOpen(false)}
+          enrollmentId={activeEnrollmentId}
+          curriculumTitle={activeEnrollment?.curriculumTitle ?? "Lộ trình học"}
+          defaultDailyTargetMinutes={enrollmentDetail.dailyTargetMinutes}
+          defaultStudyDays={enrollmentDetail.studyDays}
+          timeZone={enrollmentDetail.timeZone}
+          mode={rescheduleMode}
+        />
+      )}
+
+      {/* Pause Confirmation Dialog Modal */}
+      {enrollmentDetail && activeEnrollmentId && (
+        <PauseConfirmationDialog
+          isOpen={isPauseOpen}
+          onClose={() => setIsPauseOpen(false)}
+          enrollmentId={activeEnrollmentId}
+          expectedVersion={enrollmentDetail.version}
+          curriculumTitle={activeEnrollment?.curriculumTitle ?? "Lộ trình học"}
+        />
+      )}
+
+      {/* Abandon Confirmation Dialog Modal */}
+      {enrollmentDetail && activeEnrollmentId && (
+        <AbandonConfirmationDialog
+          isOpen={isAbandonOpen}
+          onClose={() => setIsAbandonOpen(false)}
+          enrollmentId={activeEnrollmentId}
+          expectedVersion={enrollmentDetail.version}
+          curriculumTitle={activeEnrollment?.curriculumTitle ?? "Lộ trình học"}
+        />
       )}
     </div>
   );

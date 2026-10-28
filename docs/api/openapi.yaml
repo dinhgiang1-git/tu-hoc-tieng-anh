@@ -791,6 +791,8 @@ paths:
           $ref: '#/components/responses/ForbiddenProblem'
         '404':
           $ref: '#/components/responses/NotFoundProblem'
+        '409':
+          $ref: '#/components/responses/ConflictProblem'
 
   /enrollments/{enrollmentId}/schedule/commit:
     post:
@@ -1836,6 +1838,25 @@ components:
           minimum: 10
           maximum: 180
 
+    RescheduledLessonItemResponse:
+      type: object
+      required: [lessonId, lessonTitle, previousPlannedDate, newPlannedDate, originalDate]
+      properties:
+        lessonId:
+          type: string
+          format: uuid
+        lessonTitle:
+          type: string
+        previousPlannedDate:
+          type: string
+          format: date
+        newPlannedDate:
+          type: string
+          format: date
+        originalDate:
+          type: string
+          format: date
+
     SchedulePreviewResponse:
       type: object
       required: [enrollmentVersion, proposedEndDate, modifiedSchedules]
@@ -1844,12 +1865,12 @@ components:
           type: integer
           format: int64
         proposedEndDate:
-          type: string
+          type: [string, "null"]
           format: date
         modifiedSchedules:
           type: array
           items:
-            $ref: '#/components/schemas/LessonScheduleResponse'
+            $ref: '#/components/schemas/RescheduledLessonItemResponse'
 
     ScheduleCommitRequest:
       type: object
@@ -1864,6 +1885,8 @@ components:
             $ref: '#/components/schemas/DayOfWeek'
         dailyTargetMinutes:
           type: integer
+          minimum: 10
+          maximum: 180
         expectedVersion:
           type: integer
           format: int64

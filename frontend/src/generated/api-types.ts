@@ -1016,12 +1016,23 @@ export interface components {
             studyDays: components["schemas"]["DayOfWeek"][];
             dailyTargetMinutes: number;
         };
+        RescheduledLessonItemResponse: {
+            /** Format: uuid */
+            lessonId: string;
+            lessonTitle: string;
+            /** Format: date */
+            previousPlannedDate: string;
+            /** Format: date */
+            newPlannedDate: string;
+            /** Format: date */
+            originalDate: string;
+        };
         SchedulePreviewResponse: {
             /** Format: int64 */
             enrollmentVersion: number;
             /** Format: date */
-            proposedEndDate: string;
-            modifiedSchedules: components["schemas"]["LessonScheduleResponse"][];
+            proposedEndDate: string | null;
+            modifiedSchedules: components["schemas"]["RescheduledLessonItemResponse"][];
         };
         ScheduleCommitRequest: {
             /** Format: date */
@@ -1806,6 +1817,7 @@ export interface operations {
             401: components["responses"]["UnauthorizedProblem"];
             403: components["responses"]["ForbiddenProblem"];
             404: components["responses"]["NotFoundProblem"];
+            409: components["responses"]["ConflictProblem"];
         };
     };
     commitReschedule: {

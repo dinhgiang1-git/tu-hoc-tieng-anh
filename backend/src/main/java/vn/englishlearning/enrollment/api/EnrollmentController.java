@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import vn.englishlearning.enrollment.application.CreateEnrollmentService;
 import vn.englishlearning.enrollment.application.EnrollmentQueryService;
+import vn.englishlearning.enrollment.application.RescheduleService;
 import vn.englishlearning.shared.api.ErrorCode;
 import vn.englishlearning.shared.domain.DomainException;
 
@@ -26,12 +27,15 @@ public class EnrollmentController {
 
   private final CreateEnrollmentService createEnrollmentService;
   private final EnrollmentQueryService enrollmentQueryService;
+  private final RescheduleService rescheduleService;
 
   public EnrollmentController(
       CreateEnrollmentService createEnrollmentService,
-      EnrollmentQueryService enrollmentQueryService) {
+      EnrollmentQueryService enrollmentQueryService,
+      RescheduleService rescheduleService) {
     this.createEnrollmentService = createEnrollmentService;
     this.enrollmentQueryService = enrollmentQueryService;
+    this.rescheduleService = rescheduleService;
   }
 
   @PostMapping("/enrollments")
@@ -69,5 +73,48 @@ public class EnrollmentController {
   @GetMapping("/me/enrollments")
   public List<EnrollmentResponses.EnrollmentSummaryResponse> getMyEnrollments() {
     return enrollmentQueryService.getMyEnrollments();
+  }
+
+  @PostMapping("/enrollments/{enrollmentId}/schedule/preview")
+  public EnrollmentResponses.SchedulePreviewResponse previewReschedule(
+      @PathVariable UUID enrollmentId,
+      @Valid @RequestBody EnrollmentRequests.SchedulePreviewRequest request) {
+    return rescheduleService.previewReschedule(enrollmentId, request);
+  }
+
+  @PostMapping("/enrollments/{enrollmentId}/schedule/commit")
+  public EnrollmentResponses.EnrollmentResponse commitReschedule(
+      @PathVariable UUID enrollmentId,
+      @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
+      @Valid @RequestBody EnrollmentRequests.ScheduleCommitRequest request) {
+    if (idempotencyKey == null || idempotencyKey.isBlank()) {
+      throw new DomainException(ErrorCode.VALIDATION_FAILED, "Idempotency-Key header is required");
+    }
+    return rescheduleService.commitReschedule(idempotencyKey, enrollmentId, request);
+  }
+
+  @PostMapping("/enrollments/{enrollmentId}/pause")
+  public EnrollmentResponses.EnrollmentResponse pauseEnrollment(
+      @PathVariable UUID enrollmentId,
+      @Valid @RequestBody EnrollmentRequests.LifecycleTransitionRequest request) {
+    return rescheduleService.pauseEnrollment(enrollmentId, request);
+  }
+
+  @PostMapping("/enrollments/{enrollmentId}/resume")
+  public EnrollmentResponses.EnrollmentResponse resumeEnrollment(
+      @PathVariable UUID enrollmentId,
+      @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
+      @Valid @RequestBody EnrollmentRequests.ScheduleCommitRequest request) {
+    if (idempotencyKey == null || idempotencyKey.isBlank()) {
+      throw new DomainException(ErrorCode.VALIDATION_FAILED, "Idempotency-Key header is required");
+    }
+    return rescheduleService.resumeEnrollment(idempotencyKey, enrollmentId, request);
+  }
+
+  @PostMapping("/enrollments/{enrollmentId}/abandon")
+  public EnrollmentResponses.EnrollmentResponse abandonEnrollment(
+      @PathVariable UUID enrollmentId,
+      @Valid @RequestBody EnrollmentRequests.LifecycleTransitionRequest request) {
+    return rescheduleService.abandonEnrollment(enrollmentId, request);
   }
 }

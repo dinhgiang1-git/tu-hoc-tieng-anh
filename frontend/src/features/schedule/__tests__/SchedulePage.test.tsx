@@ -343,4 +343,210 @@ describe("SchedulePage", () => {
     expect(screen.queryByText("Bạn chưa đăng ký lộ trình nào")).not.toBeInTheDocument();
   });
 
+  it("shows 'Đổi lịch' button for ACTIVE enrollment and opens RescheduleDialog", async () => {
+    renderSchedule();
+    const rescheduleBtn = await screen.findByTestId("schedule-open-reschedule-button");
+    expect(rescheduleBtn).toBeInTheDocument();
+    expect(rescheduleBtn).toHaveTextContent("Đổi lịch");
+
+    fireEvent.click(rescheduleBtn);
+    expect(screen.getByTestId("reschedule-dialog")).toBeInTheDocument();
+    expect(screen.getByText("Đổi lịch học")).toBeInTheDocument();
+
+    // Close button works
+    fireEvent.click(screen.getByTestId("reschedule-close-button"));
+    expect(screen.queryByTestId("reschedule-dialog")).not.toBeInTheDocument();
+  });
+
+  it("hides 'Đổi lịch' button for PAUSED enrollment", async () => {
+    vi.spyOn(authApi, "getPreferences").mockResolvedValue({
+      dailyTargetMinutes: 45,
+      focusedEnrollmentId: mockEnrollmentId2, // mockDetail2 is PAUSED
+    });
+    renderSchedule();
+    await waitFor(() => {
+      expect(screen.getByText("Luyện Phát Âm Chuẩn RP")).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId("schedule-open-reschedule-button")).not.toBeInTheDocument();
+  });
+
+  it("calculates preview, invalidates on input edit, and commits atomically", async () => {
+    const previewSpy = vi.spyOn(enrollmentApi, "previewReschedule").mockResolvedValue({
+      enrollmentVersion: 1,
+      proposedEndDate: "2026-11-25",
+      modifiedSchedules: [
+        {
+          lessonId: "l1111111-1111-1111-1111-111111111111",
+          lessonTitle: "Bài 1: Làm quen",
+          previousPlannedDate: "2026-10-26",
+          newPlannedDate: "2026-10-28",
+          originalDate: "2026-10-26",
+        },
+      ],
+    });
+
+    const commitSpy = vi.spyOn(enrollmentApi, "commitReschedule").mockResolvedValue({
+      ...mockDetail1,
+      version: 2,
+    });
+
+    renderSchedule();
+    const openBtn = await screen.findByTestId("schedule-open-reschedule-button");
+    fireEvent.click(openBtn);
+
+    // Click preview
+    const previewBtn = screen.getByTestId("reschedule-preview-button");
+    fireEvent.click(previewBtn);
+
+    await waitFor(() => {
+      expect(previewSpy).toHaveBeenCalledWith(
+        mockEnrollmentId,
+        expect.objectContaining({
+          dailyTargetMinutes: 30,
+        }),
+      );
+    });
+
+    // Preview result is shown
+    expect(await screen.findByTestId("reschedule-preview-result")).toBeInTheDocument();
+    expect(screen.getByText("25/11/2026")).toBeInTheDocument();
+    expect(screen.getByText("Bài 1: Làm quen")).toBeInTheDocument();
+
+    // Editing input invalidates preview
+    const minutesInput = screen.getByTestId("reschedule-minutes-input");
+    fireEvent.change(minutesInput, { target: { value: "45" } });
+    expect(screen.queryByTestId("reschedule-preview-result")).not.toBeInTheDocument();
+
+    // Preview again
+    fireEvent.click(previewBtn);
+    expect(await screen.findByTestId("reschedule-preview-result")).toBeInTheDocument();
+
+    // Confirm commit
+    const confirmBtn = screen.getByTestId("reschedule-confirm-button");
+    fireEvent.click(confirmBtn);
+
+    await waitFor(() => {
+      expect(commitSpy).toHaveBeenCalledWith(
+        mockEnrollmentId,
+        expect.objectContaining({
+          dailyTargetMinutes: 45,
+          expectedVersion: 1,
+        }),
+        expect.any(String),
+      );
+    });
+
+    // Modal closes on success
+    await waitFor(() => {
+      expect(screen.queryByTestId("reschedule-dialog")).not.toBeInTheDocument();
+    });
+  });
+
+  it("opens pause dialog from ACTIVE enrollment and pauses successfully", async () => {
+    const pauseSpy = vi.spyOn(enrollmentApi, "pause").mockResolvedValue({
+      ...mockDetail1,
+      status: "PAUSED",
+      version: 2,
+    });
+
+    renderSchedule();
+    const pauseBtn = await screen.findByTestId("schedule-pause-button");
+    fireEvent.click(pauseBtn);
+
+    expect(screen.getByTestId("schedule-pause-modal")).toBeInTheDocument();
+    expect(screen.getByText("Tạm dừng lộ trình học")).toBeInTheDocument();
+
+    const confirmPauseBtn = screen.getByTestId("schedule-confirm-pause-button");
+    fireEvent.click(confirmPauseBtn);
+
+    await waitFor(() => {
+      expect(pauseSpy).toHaveBeenCalledWith(mockEnrollmentId, { expectedVersion: 1 });
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("schedule-pause-modal")).not.toBeInTheDocument();
+    });
+  });
+
+  it("shows 'Tiếp tục học' button and paused banner for PAUSED enrollment, resumes with atomic commit", async () => {
+    vi.spyOn(authApi, "getPreferences").mockResolvedValue({
+      dailyTargetMinutes: 45,
+      focusedEnrollmentId: mockEnrollmentId2, // PAUSED
+    });
+
+    const previewSpy = vi.spyOn(enrollmentApi, "previewReschedule").mockResolvedValue({
+      enrollmentVersion: 2,
+      proposedEndDate: "2026-11-30",
+      modifiedSchedules: [],
+    });
+
+    const resumeSpy = vi.spyOn(enrollmentApi, "resume").mockResolvedValue({
+      ...mockDetail2,
+      status: "ACTIVE",
+      version: 3,
+    });
+
+    renderSchedule();
+    expect(await screen.findByTestId("schedule-paused-banner")).toBeInTheDocument();
+    expect(screen.queryByTestId("schedule-open-reschedule-button")).not.toBeInTheDocument();
+
+    const resumeBtn = screen.getByTestId("schedule-resume-button");
+    expect(resumeBtn).toHaveTextContent("Tiếp tục học");
+    fireEvent.click(resumeBtn);
+
+    // Reschedule dialog opens in resume mode
+    expect(screen.getByTestId("reschedule-dialog")).toBeInTheDocument();
+    expect(screen.getByText("Tiếp tục lộ trình học")).toBeInTheDocument();
+
+    // Preview
+    fireEvent.click(screen.getByTestId("reschedule-preview-button"));
+    await waitFor(() => {
+      expect(previewSpy).toHaveBeenCalled();
+    });
+
+    // Confirm button has resume label
+    const confirmBtn = screen.getByTestId("reschedule-confirm-button");
+    expect(confirmBtn).toHaveTextContent("Xác nhận tiếp tục học");
+    fireEvent.click(confirmBtn);
+
+    await waitFor(() => {
+      expect(resumeSpy).toHaveBeenCalledWith(
+        mockEnrollmentId2,
+        expect.objectContaining({
+          expectedVersion: 2,
+        }),
+        expect.any(String),
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("reschedule-dialog")).not.toBeInTheDocument();
+    });
+  });
+
+  it("opens abandon dialog and abandons enrollment successfully", async () => {
+    const abandonSpy = vi.spyOn(enrollmentApi, "abandon").mockResolvedValue({
+      ...mockDetail1,
+      status: "ABANDONED",
+      version: 2,
+    });
+
+    renderSchedule();
+    const abandonBtn = await screen.findByTestId("schedule-abandon-button");
+    fireEvent.click(abandonBtn);
+
+    expect(screen.getByTestId("schedule-abandon-modal")).toBeInTheDocument();
+    expect(screen.getByText("Kết thúc lộ trình học")).toBeInTheDocument();
+
+    const confirmAbandonBtn = screen.getByTestId("schedule-confirm-abandon-button");
+    fireEvent.click(confirmAbandonBtn);
+
+    await waitFor(() => {
+      expect(abandonSpy).toHaveBeenCalledWith(mockEnrollmentId, { expectedVersion: 1 });
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("schedule-abandon-modal")).not.toBeInTheDocument();
+    });
+  });
 });

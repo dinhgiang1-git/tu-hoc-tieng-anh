@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import vn.englishlearning.enrollment.application.CreateEnrollmentService;
 import vn.englishlearning.enrollment.application.EnrollmentQueryService;
+import vn.englishlearning.enrollment.application.RescheduleService;
 import vn.englishlearning.enrollment.domain.EnrollmentStatus;
 import vn.englishlearning.shared.api.ErrorCode;
 import vn.englishlearning.shared.api.GlobalExceptionHandler;
@@ -32,6 +33,7 @@ class EnrollmentControllerTest {
 
   private CreateEnrollmentService createEnrollmentService;
   private EnrollmentQueryService enrollmentQueryService;
+  private RescheduleService rescheduleService;
   private MockMvc mockMvc;
   private ObjectMapper objectMapper;
 
@@ -39,8 +41,10 @@ class EnrollmentControllerTest {
   void setUp() {
     createEnrollmentService = mock(CreateEnrollmentService.class);
     enrollmentQueryService = mock(EnrollmentQueryService.class);
+    rescheduleService = mock(RescheduleService.class);
     EnrollmentController controller =
-        new EnrollmentController(createEnrollmentService, enrollmentQueryService);
+        new EnrollmentController(
+            createEnrollmentService, enrollmentQueryService, rescheduleService);
     objectMapper =
         org.springframework.http.converter.json.Jackson2ObjectMapperBuilder.json()
             .featuresToDisable(
@@ -223,5 +227,189 @@ class EnrollmentControllerTest {
         .andExpect(jsonPath("$[0].originalDate").value("2026-10-26"))
         .andExpect(jsonPath("$[0].isCompleted").value(false))
         .andExpect(jsonPath("$[0].isOverdue").value(false));
+  }
+
+  @Test
+  @DisplayName("POST /api/v1/enrollments/{id}/schedule/preview returns 200 with preview response")
+  void previewReschedule_returnsOk() throws Exception {
+    UUID enrollmentId = UUID.randomUUID();
+    UUID lessonId = UUID.randomUUID();
+    LocalDate prevDate = LocalDate.of(2026, 10, 26);
+    LocalDate newDate = LocalDate.of(2026, 10, 28);
+
+    EnrollmentRequests.SchedulePreviewRequest request =
+        new EnrollmentRequests.SchedulePreviewRequest(
+            prevDate, List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY), 30);
+
+    EnrollmentResponses.RescheduledLessonItemResponse item =
+        new EnrollmentResponses.RescheduledLessonItemResponse(
+            lessonId, "Bài 1", prevDate, newDate, prevDate);
+
+    EnrollmentResponses.SchedulePreviewResponse response =
+        new EnrollmentResponses.SchedulePreviewResponse(2L, newDate, List.of(item));
+
+    when(rescheduleService.previewReschedule(eq(enrollmentId), any())).thenReturn(response);
+
+    mockMvc
+        .perform(
+            post("/api/v1/enrollments/{enrollmentId}/schedule/preview", enrollmentId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.enrollmentVersion").value(2))
+        .andExpect(jsonPath("$.proposedEndDate").value("2026-10-28"))
+        .andExpect(jsonPath("$.modifiedSchedules[0].lessonId").value(lessonId.toString()))
+        .andExpect(jsonPath("$.modifiedSchedules[0].previousPlannedDate").value("2026-10-26"))
+        .andExpect(jsonPath("$.modifiedSchedules[0].newPlannedDate").value("2026-10-28"));
+  }
+
+  @Test
+  @DisplayName(
+      "POST /api/v1/enrollments/{id}/schedule/commit requires Idempotency-Key and returns 200")
+  void commitReschedule_success() throws Exception {
+    UUID enrollmentId = UUID.randomUUID();
+    UUID userId = UUID.randomUUID();
+    String key = UUID.randomUUID().toString();
+
+    EnrollmentRequests.ScheduleCommitRequest request =
+        new EnrollmentRequests.ScheduleCommitRequest(
+            LocalDate.of(2026, 10, 26), List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY), 30, 2L);
+
+    EnrollmentResponses.EnrollmentResponse response =
+        new EnrollmentResponses.EnrollmentResponse(
+            enrollmentId,
+            userId,
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            EnrollmentStatus.ACTIVE,
+            LocalDate.of(2026, 10, 26),
+            "Asia/Ho_Chi_Minh",
+            List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY),
+            3L);
+
+    when(rescheduleService.commitReschedule(eq(key), eq(enrollmentId), any())).thenReturn(response);
+
+    mockMvc
+        .perform(
+            post("/api/v1/enrollments/{enrollmentId}/schedule/commit", enrollmentId)
+                .header("Idempotency-Key", key)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(enrollmentId.toString()))
+        .andExpect(jsonPath("$.version").value(3));
+  }
+
+  @Test
+  @DisplayName("POST /api/v1/enrollments/{id}/schedule/commit without Idempotency-Key returns 400")
+  void commitReschedule_missingKey_returnsBadRequest() throws Exception {
+    UUID enrollmentId = UUID.randomUUID();
+    EnrollmentRequests.ScheduleCommitRequest request =
+        new EnrollmentRequests.ScheduleCommitRequest(
+            LocalDate.of(2026, 10, 26), List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY), 30, 2L);
+
+    mockMvc
+        .perform(
+            post("/api/v1/enrollments/{enrollmentId}/schedule/commit", enrollmentId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("POST /api/v1/enrollments/{id}/pause returns 200 with PAUSED")
+  void pauseEnrollment_returnsOk() throws Exception {
+    UUID enrollmentId = UUID.randomUUID();
+    EnrollmentRequests.LifecycleTransitionRequest request =
+        new EnrollmentRequests.LifecycleTransitionRequest(2L);
+
+    EnrollmentResponses.EnrollmentResponse response =
+        new EnrollmentResponses.EnrollmentResponse(
+            enrollmentId,
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            EnrollmentStatus.PAUSED,
+            LocalDate.of(2026, 10, 26),
+            "Asia/Ho_Chi_Minh",
+            List.of(DayOfWeek.MONDAY),
+            3L);
+
+    when(rescheduleService.pauseEnrollment(eq(enrollmentId), any())).thenReturn(response);
+
+    mockMvc
+        .perform(
+            post("/api/v1/enrollments/{enrollmentId}/pause", enrollmentId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.status").value("PAUSED"))
+        .andExpect(jsonPath("$.version").value(3));
+  }
+
+  @Test
+  @DisplayName("POST /api/v1/enrollments/{id}/resume returns 200 with ACTIVE")
+  void resumeEnrollment_returnsOk() throws Exception {
+    UUID enrollmentId = UUID.randomUUID();
+    String key = UUID.randomUUID().toString();
+
+    EnrollmentRequests.ScheduleCommitRequest request =
+        new EnrollmentRequests.ScheduleCommitRequest(
+            LocalDate.of(2026, 10, 26), List.of(DayOfWeek.MONDAY), 30, 3L);
+
+    EnrollmentResponses.EnrollmentResponse response =
+        new EnrollmentResponses.EnrollmentResponse(
+            enrollmentId,
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            EnrollmentStatus.ACTIVE,
+            LocalDate.of(2026, 10, 26),
+            "Asia/Ho_Chi_Minh",
+            List.of(DayOfWeek.MONDAY),
+            4L);
+
+    when(rescheduleService.resumeEnrollment(eq(key), eq(enrollmentId), any())).thenReturn(response);
+
+    mockMvc
+        .perform(
+            post("/api/v1/enrollments/{enrollmentId}/resume", enrollmentId)
+                .header("Idempotency-Key", key)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.status").value("ACTIVE"))
+        .andExpect(jsonPath("$.version").value(4));
+  }
+
+  @Test
+  @DisplayName("POST /api/v1/enrollments/{id}/abandon returns 200 with ABANDONED")
+  void abandonEnrollment_returnsOk() throws Exception {
+    UUID enrollmentId = UUID.randomUUID();
+    EnrollmentRequests.LifecycleTransitionRequest request =
+        new EnrollmentRequests.LifecycleTransitionRequest(4L);
+
+    EnrollmentResponses.EnrollmentResponse response =
+        new EnrollmentResponses.EnrollmentResponse(
+            enrollmentId,
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            EnrollmentStatus.ABANDONED,
+            LocalDate.of(2026, 10, 26),
+            "Asia/Ho_Chi_Minh",
+            List.of(DayOfWeek.MONDAY),
+            5L);
+
+    when(rescheduleService.abandonEnrollment(eq(enrollmentId), any())).thenReturn(response);
+
+    mockMvc
+        .perform(
+            post("/api/v1/enrollments/{enrollmentId}/abandon", enrollmentId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.status").value("ABANDONED"))
+        .andExpect(jsonPath("$.version").value(5));
   }
 }

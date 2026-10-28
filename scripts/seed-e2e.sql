@@ -20,7 +20,9 @@ INSERT INTO e2e_fixture_users VALUES
   ('e2e_learner_ux'),
   ('e2e_learner_race'),
   ('e2e_learner_sched_a'),
-  ('e2e_learner_sched_b');
+  ('e2e_learner_sched_b'),
+  ('e2e_learner_resched_a'),
+  ('e2e_learner_lifecycle');
 
 -- =============================================================================
 -- E2E Fixture Seed & Reset Script for G3-04 (Dev Database Safe)
@@ -49,7 +51,9 @@ VALUES
   (gen_random_uuid(), 'e2e_learner_ux', '$2a$10$0LGLN.G1bnyjLtAcyC/Ene0wkfTutzPNZtsXEdKv5DOfWxSpPg2wW', 'Học viên E2E UX', 'e2e_ux@example.com', 'LEARNER', true, NOW(), NOW()),
   (gen_random_uuid(), 'e2e_learner_race', '$2a$10$0LGLN.G1bnyjLtAcyC/Ene0wkfTutzPNZtsXEdKv5DOfWxSpPg2wW', 'Học viên E2E Race', 'e2e_race@example.com', 'LEARNER', true, NOW(), NOW()),
   (gen_random_uuid(), 'e2e_learner_sched_a', '$2a$10$0LGLN.G1bnyjLtAcyC/Ene0wkfTutzPNZtsXEdKv5DOfWxSpPg2wW', 'Học viên E2E Sched A', 'e2e_sched_a@example.com', 'LEARNER', true, NOW(), NOW()),
-  (gen_random_uuid(), 'e2e_learner_sched_b', '$2a$10$0LGLN.G1bnyjLtAcyC/Ene0wkfTutzPNZtsXEdKv5DOfWxSpPg2wW', 'Học viên E2E Sched B', 'e2e_sched_b@example.com', 'LEARNER', true, NOW(), NOW())
+  (gen_random_uuid(), 'e2e_learner_sched_b', '$2a$10$0LGLN.G1bnyjLtAcyC/Ene0wkfTutzPNZtsXEdKv5DOfWxSpPg2wW', 'Học viên E2E Sched B', 'e2e_sched_b@example.com', 'LEARNER', true, NOW(), NOW()),
+  (gen_random_uuid(), 'e2e_learner_resched_a', '$2a$10$0LGLN.G1bnyjLtAcyC/Ene0wkfTutzPNZtsXEdKv5DOfWxSpPg2wW', 'Học viên E2E Resched A', 'e2e_resched_a@example.com', 'LEARNER', true, NOW(), NOW()),
+  (gen_random_uuid(), 'e2e_learner_lifecycle', '$2a$10$0LGLN.G1bnyjLtAcyC/Ene0wkfTutzPNZtsXEdKv5DOfWxSpPg2wW', 'Học viên E2E Lifecycle', 'e2e_lifecycle@example.com', 'LEARNER', true, NOW(), NOW())
 ON CONFLICT (username) DO UPDATE SET password_hash = EXCLUDED.password_hash,
   display_name = EXCLUDED.display_name, email = EXCLUDED.email;
 

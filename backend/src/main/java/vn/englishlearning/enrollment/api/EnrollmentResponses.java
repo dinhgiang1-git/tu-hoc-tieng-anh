@@ -60,4 +60,16 @@ public final class EnrollmentResponses {
       LocalDate originalDate,
       boolean isCompleted,
       boolean isOverdue) {}
+
+  public record RescheduledLessonItemResponse(
+      UUID lessonId,
+      String lessonTitle,
+      LocalDate previousPlannedDate,
+      LocalDate newPlannedDate,
+      LocalDate originalDate) {}
+
+  public record SchedulePreviewResponse(
+      Long enrollmentVersion,
+      LocalDate proposedEndDate,
+      List<RescheduledLessonItemResponse> modifiedSchedules) {}
 }

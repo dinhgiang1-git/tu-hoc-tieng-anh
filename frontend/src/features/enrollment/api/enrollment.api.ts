@@ -8,6 +8,13 @@ export type LessonSummaryResponse = components["schemas"]["LessonSummaryResponse
 export type LessonScheduleResponse = components["schemas"]["LessonScheduleResponse"];
 export type CreateEnrollmentRequest = components["schemas"]["CreateEnrollmentRequest"];
 export type DayOfWeek = components["schemas"]["DayOfWeek"];
+export type SchedulePreviewRequest = components["schemas"]["SchedulePreviewRequest"];
+export type SchedulePreviewResponse = components["schemas"]["SchedulePreviewResponse"];
+export type RescheduledLessonItemResponse = components["schemas"]["RescheduledLessonItemResponse"];
+export type ScheduleCommitRequest = components["schemas"]["ScheduleCommitRequest"];
+export interface LifecycleTransitionRequest {
+  expectedVersion: number;
+}
 
 export const enrollmentKeys = {
   all: ["enrollments"] as const,
@@ -81,5 +88,84 @@ export const enrollmentApi = {
       method: "GET",
       signal,
     });
+  },
+
+  async previewReschedule(
+    enrollmentId: string,
+    payload: SchedulePreviewRequest,
+    signal?: AbortSignal,
+  ): Promise<SchedulePreviewResponse> {
+    return apiRequest<SchedulePreviewResponse>(
+      `/enrollments/${enrollmentId}/schedule/preview`,
+      {
+        method: "POST",
+        json: payload,
+        signal,
+      },
+    );
+  },
+
+  async commitReschedule(
+    enrollmentId: string,
+    payload: ScheduleCommitRequest,
+    idempotencyKey: string,
+    signal?: AbortSignal,
+  ): Promise<EnrollmentResponse> {
+    return apiRequest<EnrollmentResponse>(
+      `/enrollments/${enrollmentId}/schedule/commit`,
+      {
+        method: "POST",
+        json: payload,
+        idempotencyKey,
+        signal,
+      },
+    );
+  },
+
+  async pause(
+    enrollmentId: string,
+    payload: LifecycleTransitionRequest,
+    signal?: AbortSignal,
+  ): Promise<EnrollmentResponse> {
+    return apiRequest<EnrollmentResponse>(
+      `/enrollments/${enrollmentId}/pause`,
+      {
+        method: "POST",
+        json: payload,
+        signal,
+      },
+    );
+  },
+
+  async resume(
+    enrollmentId: string,
+    payload: ScheduleCommitRequest,
+    idempotencyKey: string,
+    signal?: AbortSignal,
+  ): Promise<EnrollmentResponse> {
+    return apiRequest<EnrollmentResponse>(
+      `/enrollments/${enrollmentId}/resume`,
+      {
+        method: "POST",
+        json: payload,
+        idempotencyKey,
+        signal,
+      },
+    );
+  },
+
+  async abandon(
+    enrollmentId: string,
+    payload: LifecycleTransitionRequest,
+    signal?: AbortSignal,
+  ): Promise<EnrollmentResponse> {
+    return apiRequest<EnrollmentResponse>(
+      `/enrollments/${enrollmentId}/abandon`,
+      {
+        method: "POST",
+        json: payload,
+        signal,
+      },
+    );
   },
 };
