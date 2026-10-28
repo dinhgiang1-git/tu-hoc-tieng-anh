@@ -370,7 +370,7 @@
   * G4-02: [x] Codex nghiệm thu ngày 28/10/2026 theo quy trình nhanh: 28 BE unit + 1 PostgreSQL Testcontainers IT + 13 FE schedule tests + 3 E2E thật đạt; preview tính toán thuần, commit nguyên tử CAS expectedVersion, idempotency, bảo toàn 100% bài đã hoàn thành & originalDate, modal UI desktop có invalidation và 409 conflict handling. Chi tiết [G4-02_ACCEPTANCE.md](../G4-02_ACCEPTANCE.md). Tiếp theo G4-03.
   * G4-03: [x] Nghiệm thu hoàn thành ngày 28/10/2026: 40 BE unit + 16 FE unit + 4/4 E2E Playwright desktop đạt 100%, build 0 errors, lint 0 errors; Pause đóng băng tiến độ & ngừng nợ bài, Resume nguyên tử 1 transaction tính toán lịch mới, Abandon giải phóng partial unique index. Chi tiết [G4-03_ACCEPTANCE.md](../G4-03_ACCEPTANCE.md). Toàn bộ mốc G4 hoàn thành.
 - **G5 — Quiz & Ôn tập Tối thiểu (3–5 ngày):**
-  * G5-01: Model câu hỏi trắc nghiệm, server chấm điểm tự động, chính sách `ON_SUBMIT` vs `PASS_SCORE`.
+  * G5-01: [x] Nghiệm thu hoàn thành ngày 28/10/2026: 28 BE unit + 56 FE unit + E2E Playwright desktop đạt 100%, 3 ảnh chụp màn hình; model trắc nghiệm V008, ẩn đáp án & giải thích chống gian lận, server auto-grading, chính sách ON_SUBMIT vs PASS_SCORE (80%), bảo toàn thành tích khi thi lại điểm thấp hơn. Chi tiết [G5-01_ACCEPTANCE.md](../G5-01_ACCEPTANCE.md). Tiếp theo G5-02.
   * G5-02: Đánh dấu bài ôn tập (Bookmark), theo dõi câu sai và giải quyết câu sai (Resolution tracking).
 - **G6 — Hoàn thiện Lộ trình A & Báo cáo Học tập (2–4 ngày):**
   * G6-01: Thống kê tiến độ trực quan (Biểu đồ thanh theo tuần, lịch sử học tập theo ngày thực tế).

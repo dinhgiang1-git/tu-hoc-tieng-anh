@@ -86,6 +86,31 @@
                 "skillTags": {
                   "type": "array",
                   "items": { "type": "string" }
+                },
+                "quizQuestions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["prompt", "options"],
+                    "properties": {
+                      "orderIndex": { "type": "integer" },
+                      "prompt": { "type": "string", "minLength": 3 },
+                      "explanation": { "type": "string" },
+                      "options": {
+                        "type": "array",
+                        "minItems": 2,
+                        "items": {
+                          "type": "object",
+                          "required": ["content", "isCorrect"],
+                          "properties": {
+                            "orderIndex": { "type": "integer" },
+                            "content": { "type": "string", "minLength": 1 },
+                            "isCorrect": { "type": "boolean" }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }

@@ -23,7 +23,18 @@ class DryRunAndCliTest {
     PackageChecksumCalculator checksumCalc = new PackageChecksumCalculator(objectMapper);
     ImportCurriculumPackageService service =
         new ImportCurriculumPackageService(
-            validator, checksumCalc, null, null, null, null, null, null, null, objectMapper, null);
+            validator,
+            checksumCalc,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            objectMapper,
+            null);
 
     DryRunSummary summary = service.dryRun(packageDir);
 
@@ -34,8 +45,8 @@ class DryRunAndCliTest {
     assertThat(summary.lessonCount()).isEqualTo(6);
     assertThat(summary.requiredLessonCount()).isEqualTo(5);
     assertThat(summary.optionalLessonCount()).isEqualTo(1);
-    assertThat(summary.activityCount()).isEqualTo(21);
-    assertThat(summary.effectivelyRequiredActivityCount()).isEqualTo(19);
+    assertThat(summary.activityCount()).isEqualTo(22);
+    assertThat(summary.effectivelyRequiredActivityCount()).isEqualTo(20);
     assertThat(summary.resourceCount()).isEqualTo(5);
     assertThat(summary.unverifiedResourceCount()).isEqualTo(5);
     assertThat(summary.checksum()).isNotNull().hasSize(64);

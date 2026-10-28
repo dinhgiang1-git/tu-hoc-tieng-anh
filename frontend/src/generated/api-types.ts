@@ -347,6 +347,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/enrollments/{enrollmentId}/activities/{activityId}/quiz": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lấy thông tin câu hỏi và các lựa chọn của bài kiểm tra trắc nghiệm
+         * @description Trả về danh sách câu hỏi và lựa chọn để người học làm bài. Tuyệt đối không trả về đáp án đúng (isCorrect) hay lời giải thích (explanation).
+         */
+        get: operations["getQuiz"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/enrollments/{enrollmentId}/activities/{activityId}/quiz/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Nộp bài kiểm tra trắc nghiệm và nhận kết quả chấm tự động
+         * @description Server chấm điểm tự động toàn bộ câu trả lời, tính điểm, xác định đạt/chưa đạt theo chính sách, lưu lần làm bài và cập nhật tiến độ học tập nếu đạt.
+         */
+        post: operations["submitQuiz"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/enrollments/{enrollmentId}/summary": {
         parameters: {
             query?: never;
@@ -1046,6 +1086,73 @@ export interface components {
             /** Format: int64 */
             expectedVersion: number;
         };
+        QuizDetailResponse: {
+            /** Format: uuid */
+            activityId: string;
+            title: string;
+            completionPolicy: string;
+            passingScorePercentage: number;
+            questions: components["schemas"]["QuizQuestionDto"][];
+            latestAttempt?: components["schemas"]["QuizAttemptSummaryDto"];
+        };
+        QuizQuestionDto: {
+            /** Format: uuid */
+            id: string;
+            orderIndex: number;
+            prompt: string;
+            options: components["schemas"]["QuizOptionDto"][];
+        };
+        QuizOptionDto: {
+            /** Format: uuid */
+            id: string;
+            orderIndex: number;
+            content: string;
+        };
+        QuizAttemptSummaryDto: {
+            /** Format: uuid */
+            id: string;
+            attemptNumber: number;
+            score: number;
+            totalQuestions: number;
+            scorePercentage: number;
+            passed: boolean;
+            /** Format: date-time */
+            submittedAt: string;
+        };
+        QuizSubmitRequest: {
+            /** Format: int64 */
+            expectedVersion: number;
+            answers: components["schemas"]["QuizAnswerItemRequest"][];
+        };
+        QuizAnswerItemRequest: {
+            /** Format: uuid */
+            questionId: string;
+            /** Format: uuid */
+            selectedOptionId: string;
+        };
+        QuizResultResponse: {
+            /** Format: uuid */
+            attemptId: string;
+            attemptNumber: number;
+            score: number;
+            totalQuestions: number;
+            scorePercentage: number;
+            passed: boolean;
+            activityCompleted: boolean;
+            /** Format: int64 */
+            enrollmentVersion: number;
+            questionResults: components["schemas"]["QuestionResultDto"][];
+        };
+        QuestionResultDto: {
+            /** Format: uuid */
+            questionId: string;
+            /** Format: uuid */
+            selectedOptionId: string;
+            /** Format: uuid */
+            correctOptionId: string;
+            isCorrect: boolean;
+            explanation?: string | null;
+        };
         /** @enum {string} */
         ActivityStatus: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
         /** @enum {string} */
@@ -1610,6 +1717,68 @@ export interface operations {
             400: components["responses"]["BadRequestProblem"];
             401: components["responses"]["UnauthorizedProblem"];
             403: components["responses"]["ForbiddenProblem"];
+            404: components["responses"]["NotFoundProblem"];
+            409: components["responses"]["ConflictProblem"];
+        };
+    };
+    getQuiz: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                enrollmentId: string;
+                activityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Đề bài trắc nghiệm và lần làm bài gần nhất */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuizDetailResponse"];
+                };
+            };
+            400: components["responses"]["BadRequestProblem"];
+            401: components["responses"]["UnauthorizedProblem"];
+            404: components["responses"]["NotFoundProblem"];
+        };
+    };
+    submitQuiz: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description CSRF token lấy từ endpoint GET /auth/csrf */
+                "X-CSRF-TOKEN": components["parameters"]["CsrfHeader"];
+                /** @description Khóa chống lặp tùy chọn */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKeyHeaderOptional"];
+            };
+            path: {
+                enrollmentId: string;
+                activityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QuizSubmitRequest"];
+            };
+        };
+        responses: {
+            /** @description Kết quả chấm điểm bài trắc nghiệm */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuizResultResponse"];
+                };
+            };
+            400: components["responses"]["BadRequestProblem"];
+            401: components["responses"]["UnauthorizedProblem"];
             404: components["responses"]["NotFoundProblem"];
             409: components["responses"]["ConflictProblem"];
         };

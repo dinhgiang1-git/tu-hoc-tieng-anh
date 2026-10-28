@@ -227,6 +227,61 @@
           "completionPolicy": "RESPONSE_SUBMIT",
           "instructions": "Tự đánh giá mức độ tự tin (Thang điểm 1-5) đối với: /iː/ vs /ɪ/, /p/ vs /b/, âm Schwa và Trọng âm từ.",
           "skillTags": ["assessment", "reflection"]
+        },
+        {
+          "key": "pilot.w01.l05.a04",
+          "title": "Trắc nghiệm Tổng kết Ngữ âm Tuần 1",
+          "type": "QUIZ",
+          "required": true,
+          "completionPolicy": "PASS_SCORE",
+          "instructions": "Trả lời 4 câu hỏi trắc nghiệm kiểm tra khả năng nhận diện âm và trọng âm chuẩn Anh-Anh (cần đạt tối thiểu 80% để hoàn thành).",
+          "skillTags": ["quiz", "pronunciation", "ipa", "assessment"],
+          "quizQuestions": [
+            {
+              "orderIndex": 1,
+              "prompt": "Từ nào sau đây chứa nguyên âm ngắn /ɪ/ chuẩn Anh-Anh?",
+              "explanation": "Từ 'ship' có phiên âm /ʃɪp/ chứa nguyên âm ngắn /ɪ/. Các từ 'sheep' (/ʃiːp/), 'beat' (/biːt/), 'seat' (/siːt/) đều chứa nguyên âm dài /iː/.",
+              "options": [
+                { "orderIndex": 1, "content": "sheep", "isCorrect": false },
+                { "orderIndex": 2, "content": "ship", "isCorrect": true },
+                { "orderIndex": 3, "content": "beat", "isCorrect": false },
+                { "orderIndex": 4, "content": "seat", "isCorrect": false }
+              ]
+            },
+            {
+              "orderIndex": 2,
+              "prompt": "Hiện tượng bật hơi (Aspiration) xuất hiện mạnh nhất ở phụ âm nào khi đứng đầu âm tiết nhấn?",
+              "explanation": "Âm /p/ là phụ âm vô thanh bật hơi (voiceless aspirated plosive), tạo luồng khí mạnh khi phát âm ở đầu âm tiết nhấn. Âm /b/ là âm hữu thanh không bật hơi.",
+              "options": [
+                { "orderIndex": 1, "content": "/p/", "isCorrect": true },
+                { "orderIndex": 2, "content": "/b/", "isCorrect": false },
+                { "orderIndex": 3, "content": "/m/", "isCorrect": false },
+                { "orderIndex": 4, "content": "/w/", "isCorrect": false }
+              ]
+            },
+            {
+              "orderIndex": 3,
+              "prompt": "Quy tắc trọng âm phổ biến nhất cho danh từ 2 âm tiết trong tiếng Anh là gì?",
+              "explanation": "Đa số (>80%) danh từ và tính từ 2 âm tiết trong tiếng Anh có trọng âm rơi vào âm tiết thứ nhất (ví dụ: 'table', 'present', 'export').",
+              "options": [
+                { "orderIndex": 1, "content": "Nhấn vào âm tiết thứ nhất", "isCorrect": true },
+                { "orderIndex": 2, "content": "Nhấn vào âm tiết thứ hai", "isCorrect": false },
+                { "orderIndex": 3, "content": "Đọc đều cả hai âm tiết", "isCorrect": false },
+                { "orderIndex": 4, "content": "Luôn nhấn vào âm tiết chứa âm Schwa", "isCorrect": false }
+              ]
+            },
+            {
+              "orderIndex": 4,
+              "prompt": "Âm Schwa /ə/ có đặc điểm gì nổi bật?",
+              "explanation": "Âm Schwa /ə/ là âm lướt nhẹ, thả lỏng toàn bộ cơ môi lưỡi, và chỉ xuất hiện ở các âm tiết KHÔNG mang trọng âm.",
+              "options": [
+                { "orderIndex": 1, "content": "Chỉ xuất hiện ở âm tiết không mang trọng âm và cơ miệng thả lỏng", "isCorrect": true },
+                { "orderIndex": 2, "content": "Luôn mang trọng âm chính của từ", "isCorrect": false },
+                { "orderIndex": 3, "content": "Phải căng cơ môi như âm /iː/", "isCorrect": false },
+                { "orderIndex": 4, "content": "Chỉ xuất hiện ở đầu câu", "isCorrect": false }
+              ]
+            }
+          ]
         }
       ]
     },

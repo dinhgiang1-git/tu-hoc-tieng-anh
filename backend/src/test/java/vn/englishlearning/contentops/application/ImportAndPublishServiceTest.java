@@ -16,6 +16,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,6 +49,8 @@ class ImportAndPublishServiceTest {
   private LessonRepository lessonRepository;
   private ActivityRepository activityRepository;
   private ResourceRepository resourceRepository;
+  private vn.englishlearning.assessment.infrastructure.QuizQuestionRepository
+      quizQuestionRepository;
   private ObjectMapper objectMapper;
   private Clock fixedClock;
 
@@ -63,6 +66,8 @@ class ImportAndPublishServiceTest {
     lessonRepository = mock(LessonRepository.class);
     activityRepository = mock(ActivityRepository.class);
     resourceRepository = mock(ResourceRepository.class);
+    quizQuestionRepository =
+        mock(vn.englishlearning.assessment.infrastructure.QuizQuestionRepository.class);
     objectMapper = new ObjectMapper();
     fixedClock = Clock.fixed(Instant.parse("2026-10-24T12:00:00Z"), ZoneOffset.UTC);
 
@@ -80,6 +85,7 @@ class ImportAndPublishServiceTest {
             lessonRepository,
             activityRepository,
             resourceRepository,
+            quizQuestionRepository,
             objectMapper,
             fixedClock);
 
@@ -109,7 +115,16 @@ class ImportAndPublishServiceTest {
     when(phaseRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
     when(weekRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
     when(lessonRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
-    when(activityRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+    when(activityRepository.save(any()))
+        .thenAnswer(
+            inv -> {
+              Activity a = inv.getArgument(0);
+              if (a.getId() == null) {
+                org.springframework.test.util.ReflectionTestUtils.setField(
+                    a, "id", UUID.randomUUID());
+              }
+              return a;
+            });
 
     ImportSummary summary = importService.importPackage(packageDir);
 
@@ -120,7 +135,7 @@ class ImportAndPublishServiceTest {
     assertThat(summary.phaseCount()).isEqualTo(1);
     assertThat(summary.weekCount()).isEqualTo(1);
     assertThat(summary.lessonCount()).isEqualTo(6);
-    assertThat(summary.activityCount()).isEqualTo(21);
+    assertThat(summary.activityCount()).isEqualTo(22);
     assertThat(summary.resourceCount()).isEqualTo(5);
   }
 
@@ -296,7 +311,7 @@ class ImportAndPublishServiceTest {
     importPackage_newCurriculumAndRevision_success();
     org.mockito.ArgumentCaptor<Activity> activities =
         org.mockito.ArgumentCaptor.forClass(Activity.class);
-    verify(activityRepository, org.mockito.Mockito.times(21)).save(activities.capture());
+    verify(activityRepository, org.mockito.Mockito.times(22)).save(activities.capture());
     assertThat(activities.getAllValues().subList(0, 4))
         .extracting(Activity::getOrderIndex)
         .containsExactly(1, 2, 3, 4);

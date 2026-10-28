@@ -120,7 +120,18 @@ public class CurriculumCli {
     PackageChecksumCalculator checksumCalc = new PackageChecksumCalculator(objectMapper);
     ImportCurriculumPackageService service =
         new ImportCurriculumPackageService(
-            validator, checksumCalc, null, null, null, null, null, null, null, objectMapper, null);
+            validator,
+            checksumCalc,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            objectMapper,
+            null);
 
     DryRunSummary summary = service.dryRun(packageDir);
 

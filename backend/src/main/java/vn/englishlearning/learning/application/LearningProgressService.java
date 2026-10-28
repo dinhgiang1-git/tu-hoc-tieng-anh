@@ -670,6 +670,129 @@ public class LearningProgressService {
   }
 
   @Transactional
+  public Long recordQuizAssessmentResult(
+      UUID enrollmentId,
+      UUID activityId,
+      boolean passed,
+      int score,
+      int totalQuestions,
+      Long expectedVersion) {
+    UUID currentUserId = currentUser.requireUserId();
+    Enrollment enrollment =
+        enrollmentRepository
+            .findById(enrollmentId)
+            .orElseThrow(
+                () ->
+                    new DomainException(
+                        ErrorCode.RESOURCE_NOT_FOUND, "Enrollment not found: " + enrollmentId));
+
+    if (!enrollment.getUserId().equals(currentUserId)) {
+      throw new DomainException(
+          ErrorCode.RESOURCE_NOT_FOUND, "Enrollment not found: " + enrollmentId);
+    }
+
+    Activity activity =
+        activityRepository
+            .findById(activityId)
+            .orElseThrow(
+                () ->
+                    new DomainException(
+                        ErrorCode.RESOURCE_NOT_FOUND, "Activity not found: " + activityId));
+
+    if (enrollment.getStatus() == EnrollmentStatus.PAUSED
+        || enrollment.getStatus() == EnrollmentStatus.ABANDONED) {
+      throw new DomainException(
+          ErrorCode.STATE_CONFLICT,
+          "Lộ trình đang ở trạng thái " + enrollment.getStatus() + ", không thể thao tác học tập.");
+    }
+
+    if (!enrollment.getVersion().equals(expectedVersion)) {
+      throw new DomainException(
+          ErrorCode.VERSION_CONFLICT, "Dữ liệu đã thay đổi. Hãy tải lại trước khi lưu.");
+    }
+
+    Instant now = Instant.now(clock);
+    ZoneId zoneId = ZoneId.of(enrollment.getTimeZone());
+    LocalDate localDate = LocalDate.now(clock.withZone(zoneId));
+
+    ActivityProgress progress =
+        activityProgressRepository
+            .findByEnrollmentIdAndActivityId(enrollmentId, activityId)
+            .orElse(null);
+
+    boolean wasAlreadyCompleted =
+        progress != null && progress.getStatus() == ActivityStatus.COMPLETED;
+
+    ActivityStatus targetStatus;
+    if (passed || wasAlreadyCompleted) {
+      targetStatus = ActivityStatus.COMPLETED;
+    } else {
+      targetStatus = ActivityStatus.IN_PROGRESS;
+    }
+
+    if (progress == null) {
+      progress = new ActivityProgress(enrollmentId, activityId, targetStatus, null, now);
+    } else {
+      progress.setStatus(targetStatus, now);
+    }
+    activityProgressRepository.save(progress);
+
+    String eventPayload =
+        "{\"status\":\""
+            + targetStatus
+            + "\",\"score\":"
+            + score
+            + ",\"total\":"
+            + totalQuestions
+            + ",\"passed\":"
+            + passed
+            + "}";
+    LearningEvent event =
+        new LearningEvent(
+            currentUserId,
+            enrollmentId,
+            activityId,
+            "QUIZ_SUBMITTED",
+            eventPayload,
+            localDate,
+            enrollment.getTimeZone(),
+            now);
+    learningEventRepository.save(event);
+
+    if (targetStatus == ActivityStatus.COMPLETED) {
+      updateLessonScheduleCompletion(enrollment, activity.getLesson().getId(), now);
+    }
+
+    ProgressStats stats = computeProgressStats(enrollment.getId(), enrollment.getRevisionId());
+    EnrollmentStatus targetEnrollmentStatus = enrollment.getStatus();
+    Instant targetCompletedAt = enrollment.getCompletedAt();
+    if (stats.totalRequired() > 0 && stats.completedRequired() == stats.totalRequired()) {
+      targetEnrollmentStatus = EnrollmentStatus.COMPLETED;
+      if (targetCompletedAt == null) {
+        targetCompletedAt = now;
+      }
+    }
+
+    Long newVersion = expectedVersion + 1;
+    entityManager.detach(enrollment);
+    int updatedRows =
+        enrollmentRepository.updateVersionAndState(
+            enrollment.getId(),
+            expectedVersion,
+            newVersion,
+            targetEnrollmentStatus,
+            targetCompletedAt,
+            now);
+
+    if (updatedRows == 0) {
+      throw new DomainException(
+          ErrorCode.VERSION_CONFLICT, "Dữ liệu đã thay đổi. Hãy tải lại trước khi lưu.");
+    }
+
+    return newVersion;
+  }
+
+  @Transactional
   public ActivityResponseDto saveResponseDraft(
       UUID enrollmentId, UUID activityId, SaveResponseDraftRequest request) {
     if (request == null || request.expectedVersion() == null) {

@@ -15,6 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vn.englishlearning.assessment.domain.QuizOption;
+import vn.englishlearning.assessment.domain.QuizQuestion;
+import vn.englishlearning.assessment.infrastructure.QuizQuestionRepository;
 import vn.englishlearning.contentops.domain.ContentConflictException;
 import vn.englishlearning.contentops.domain.ContentValidationException;
 import vn.englishlearning.contentops.domain.DryRunSummary;
@@ -55,6 +58,7 @@ public class ImportCurriculumPackageService {
   private final LessonRepository lessonRepository;
   private final ActivityRepository activityRepository;
   private final ResourceRepository resourceRepository;
+  private final QuizQuestionRepository quizQuestionRepository;
   private final ObjectMapper objectMapper;
   private final Clock clock;
 
@@ -68,6 +72,7 @@ public class ImportCurriculumPackageService {
       LessonRepository lessonRepository,
       ActivityRepository activityRepository,
       ResourceRepository resourceRepository,
+      QuizQuestionRepository quizQuestionRepository,
       ObjectMapper objectMapper,
       Clock clock) {
     this.validator = validator;
@@ -79,6 +84,7 @@ public class ImportCurriculumPackageService {
     this.lessonRepository = lessonRepository;
     this.activityRepository = activityRepository;
     this.resourceRepository = resourceRepository;
+    this.quizQuestionRepository = quizQuestionRepository;
     this.objectMapper = objectMapper;
     this.clock = clock;
   }
@@ -443,7 +449,41 @@ public class ImportCurriculumPackageService {
                       }
                     }
 
-                    activityRepository.save(act);
+                    Activity savedAct = activityRepository.save(act);
+
+                    JsonNode qQuestionsNode = actNode.path("quizQuestions");
+                    if (qQuestionsNode.isArray()) {
+                      for (int qIdx = 0; qIdx < qQuestionsNode.size(); qIdx++) {
+                        JsonNode qNode = qQuestionsNode.get(qIdx);
+                        int qOrder =
+                            qNode.hasNonNull("orderIndex")
+                                ? qNode.path("orderIndex").asInt()
+                                : (qIdx + 1);
+                        String prompt = qNode.path("prompt").asText();
+                        String explanation =
+                            qNode.hasNonNull("explanation")
+                                ? qNode.path("explanation").asText()
+                                : null;
+                        QuizQuestion question =
+                            new QuizQuestion(savedAct.getId(), qOrder, prompt, explanation, now);
+
+                        JsonNode optionsNode = qNode.path("options");
+                        if (optionsNode.isArray()) {
+                          for (int oIdx = 0; oIdx < optionsNode.size(); oIdx++) {
+                            JsonNode oNode = optionsNode.get(oIdx);
+                            int oOrder =
+                                oNode.hasNonNull("orderIndex")
+                                    ? oNode.path("orderIndex").asInt()
+                                    : (oIdx + 1);
+                            String content = oNode.path("content").asText();
+                            boolean isCorrect = oNode.path("isCorrect").asBoolean(false);
+                            QuizOption option = new QuizOption(oOrder, content, isCorrect, now);
+                            question.addOption(option);
+                          }
+                        }
+                        quizQuestionRepository.save(question);
+                      }
+                    }
                   }
                 }
               }

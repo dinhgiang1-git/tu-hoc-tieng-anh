@@ -111,10 +111,9 @@ describe("TodayPage", () => {
         screen.getByText("Lộ trình học đang tạm dừng"),
       ).toBeInTheDocument();
       expect(
-        screen.getByText(/Tính năng tiếp tục lộ trình và điều chỉnh lịch linh hoạt sẽ được hỗ trợ trong Giai đoạn G4/i),
+        screen.getByText(/Lộ trình này hiện đang ở trạng thái tạm dừng/i),
       ).toBeInTheDocument();
-      // No fake/broken resume button
-      expect(screen.queryByRole("button", { name: /Tiếp tục lộ trình/i })).not.toBeInTheDocument();
+      expect(screen.getByTestId("today-resume-cta-button")).toBeInTheDocument();
     });
   });
 

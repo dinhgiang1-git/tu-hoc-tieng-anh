@@ -21,6 +21,7 @@ import type {
 } from "../api/learning-workspace.api";
 import { learningWorkspaceApi } from "../api/learning-workspace.api";
 import { learningProgressApi } from "../api/learning-progress.api";
+import { QuizActivityView } from "./QuizActivityView";
 
 interface ActivityRendererProps {
   activity: ActivityWorkspaceDto;
@@ -117,15 +118,17 @@ export function ActivityRenderer({
         ? "QUIZ"
         : "MANUAL_CHECK");
 
+  const isQuiz = activity.type === "QUIZ";
+
   const hasResponse =
     !isUnsupportedType &&
+    !isQuiz &&
     (policy === "RESPONSE_SUBMIT" || policy === "MANUAL_CHECK_WITH_RESPONSE");
 
   const isManualCheck =
     !isUnsupportedType &&
+    !isQuiz &&
     (policy === "MANUAL_CHECK" || policy === "MANUAL_CHECK_WITH_RESPONSE");
-
-  const isQuiz = activity.type === "QUIZ";
 
   // Handle manual complete/undo toggle
   const handleToggleManualComplete = async (targetStatus: "COMPLETED" | "NOT_STARTED") => {
@@ -667,6 +670,21 @@ export function ActivityRenderer({
               </Button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Quiz Assessment View */}
+      {isQuiz && (
+        <div className="mt-4 pt-4 border-t border-border">
+          <QuizActivityView
+            activity={activity}
+            enrollmentId={enrollmentId}
+            enrollmentVersion={enrollmentVersion}
+            onVersionUpdate={onVersionUpdate}
+            onActivityUpdated={onActivityUpdated}
+            onRefreshWorkspace={onRefreshWorkspace}
+            isReadOnly={isReadOnly}
+          />
         </div>
       )}
     </div>

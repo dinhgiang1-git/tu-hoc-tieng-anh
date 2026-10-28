@@ -545,6 +545,86 @@ paths:
         '409':
           $ref: '#/components/responses/ConflictProblem'
 
+  /enrollments/{enrollmentId}/activities/{activityId}/quiz:
+    get:
+      summary: Lấy thông tin câu hỏi và các lựa chọn của bài kiểm tra trắc nghiệm
+      description: >
+        Trả về danh sách câu hỏi và lựa chọn để người học làm bài.
+        Tuyệt đối không trả về đáp án đúng (isCorrect) hay lời giải thích (explanation).
+      operationId: getQuiz
+      tags: [Assessment]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: activityId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Đề bài trắc nghiệm và lần làm bài gần nhất
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizDetailResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
+  /enrollments/{enrollmentId}/activities/{activityId}/quiz/submit:
+    post:
+      summary: Nộp bài kiểm tra trắc nghiệm và nhận kết quả chấm tự động
+      description: >
+        Server chấm điểm tự động toàn bộ câu trả lời, tính điểm, xác định đạt/chưa đạt theo chính sách,
+        lưu lần làm bài và cập nhật tiến độ học tập nếu đạt.
+      operationId: submitQuiz
+      tags: [Assessment]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: activityId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/CsrfHeader'
+        - $ref: '#/components/parameters/IdempotencyKeyHeaderOptional'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuizSubmitRequest'
+      responses:
+        '200':
+          description: Kết quả chấm điểm bài trắc nghiệm
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizResultResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestProblem'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+        '409':
+          $ref: '#/components/responses/ConflictProblem'
+
   /enrollments/{enrollmentId}/summary:
     get:
       summary: Lấy tóm tắt tiến độ tổng thể của enrollment
@@ -1898,6 +1978,144 @@ components:
         expectedVersion:
           type: integer
           format: int64
+
+    QuizDetailResponse:
+      type: object
+      required: [activityId, title, completionPolicy, passingScorePercentage, questions]
+      properties:
+        activityId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        completionPolicy:
+          type: string
+        passingScorePercentage:
+          type: integer
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizQuestionDto'
+        latestAttempt:
+          $ref: '#/components/schemas/QuizAttemptSummaryDto'
+
+    QuizQuestionDto:
+      type: object
+      required: [id, orderIndex, prompt, options]
+      properties:
+        id:
+          type: string
+          format: uuid
+        orderIndex:
+          type: integer
+        prompt:
+          type: string
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizOptionDto'
+
+    QuizOptionDto:
+      type: object
+      required: [id, orderIndex, content]
+      properties:
+        id:
+          type: string
+          format: uuid
+        orderIndex:
+          type: integer
+        content:
+          type: string
+
+    QuizAttemptSummaryDto:
+      type: object
+      required: [id, attemptNumber, score, totalQuestions, scorePercentage, passed, submittedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        attemptNumber:
+          type: integer
+        score:
+          type: integer
+        totalQuestions:
+          type: integer
+        scorePercentage:
+          type: integer
+        passed:
+          type: boolean
+        submittedAt:
+          type: string
+          format: date-time
+
+    QuizSubmitRequest:
+      type: object
+      required: [expectedVersion, answers]
+      properties:
+        expectedVersion:
+          type: integer
+          format: int64
+        answers:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/QuizAnswerItemRequest'
+
+    QuizAnswerItemRequest:
+      type: object
+      required: [questionId, selectedOptionId]
+      properties:
+        questionId:
+          type: string
+          format: uuid
+        selectedOptionId:
+          type: string
+          format: uuid
+
+    QuizResultResponse:
+      type: object
+      required: [attemptId, attemptNumber, score, totalQuestions, scorePercentage, passed, activityCompleted, enrollmentVersion, questionResults]
+      properties:
+        attemptId:
+          type: string
+          format: uuid
+        attemptNumber:
+          type: integer
+        score:
+          type: integer
+        totalQuestions:
+          type: integer
+        scorePercentage:
+          type: integer
+        passed:
+          type: boolean
+        activityCompleted:
+          type: boolean
+        enrollmentVersion:
+          type: integer
+          format: int64
+        questionResults:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionResultDto'
+
+    QuestionResultDto:
+      type: object
+      required: [questionId, selectedOptionId, correctOptionId, isCorrect]
+      properties:
+        questionId:
+          type: string
+          format: uuid
+        selectedOptionId:
+          type: string
+          format: uuid
+        correctOptionId:
+          type: string
+          format: uuid
+        isCorrect:
+          type: boolean
+        explanation:
+          type: [string, "null"]
 
     # --- Enums ---
     ActivityStatus:
