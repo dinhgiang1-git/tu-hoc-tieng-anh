@@ -650,6 +650,34 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundProblem'
 
+  /enrollments/{enrollmentId}/analytics:
+    get:
+      summary: Lấy dữ liệu thống kê tiến độ trực quan và lịch sử học tập
+      description: >
+        Trả về các chỉ số KPI tiến độ, chuỗi ngày học liên tục (streak),
+        biểu đồ thanh theo tuần (weekly progress), và lịch sử hoạt động theo ngày thực tế.
+      operationId: getEnrollmentAnalytics
+      tags: [Learning]
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Dữ liệu phân tích và thống kê tiến độ học tập
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentAnalyticsResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
+
   # ===========================================================================
   # REVIEW & BOOKMARKS (G5-02)
   # ===========================================================================
@@ -1948,6 +1976,191 @@ components:
           type: integer
           format: int64
           example: 2
+
+    StreakStatsDto:
+      type: object
+      required: [currentStreakDays, longestStreakDays, totalActiveDays]
+      properties:
+        currentStreakDays:
+          type: integer
+          example: 3
+        longestStreakDays:
+          type: integer
+          example: 5
+        totalActiveDays:
+          type: integer
+          example: 7
+        lastActiveDate:
+          type: [string, "null"]
+          format: date
+          example: "2026-10-28"
+
+    QuizSummaryDto:
+      type: object
+      required: [totalQuizzesTaken, passedQuizzes, averageScorePercent]
+      properties:
+        totalQuizzesTaken:
+          type: integer
+          example: 2
+        passedQuizzes:
+          type: integer
+          example: 2
+        averageScorePercent:
+          type: [number, "null"]
+          example: 85.0
+
+    WeeklyProgressItemDto:
+      type: object
+      required: [weekId, weekNumber, weekTitle, totalRequiredActivities, completedRequiredActivities, progressPercent, totalLessons, completedLessons, estimatedMinutes, status]
+      properties:
+        weekId:
+          type: string
+          format: uuid
+        weekNumber:
+          type: integer
+          example: 1
+        weekTitle:
+          type: string
+          example: "Nhập môn phát âm IPA & Từ vựng căn bản"
+        totalRequiredActivities:
+          type: integer
+          example: 15
+        completedRequiredActivities:
+          type: integer
+          example: 12
+        progressPercent:
+          type: [number, "null"]
+          example: 80.0
+        totalLessons:
+          type: integer
+          example: 4
+        completedLessons:
+          type: integer
+          example: 3
+        estimatedMinutes:
+          type: integer
+          example: 120
+        status:
+          type: string
+          enum: [NOT_STARTED, IN_PROGRESS, COMPLETED]
+          example: IN_PROGRESS
+
+    DailyEventDto:
+      type: object
+      required: [id, eventType, occurredAt, activityTitle, lessonTitle]
+      properties:
+        id:
+          type: string
+          format: uuid
+        eventType:
+          type: string
+          example: COMPLETED
+        occurredAt:
+          type: string
+          format: date-time
+          example: "2026-10-28T09:30:00Z"
+        activityTitle:
+          type: string
+          example: "Luyện âm /i:/ và /ɪ/"
+        lessonTitle:
+          type: string
+          example: "Nguyên âm đơn cơ bản"
+
+    DailyActivityHistoryDto:
+      type: object
+      required: [date, completedActivitiesCount, quizAttemptsCount, events]
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2026-10-28"
+        completedActivitiesCount:
+          type: integer
+          example: 3
+        quizAttemptsCount:
+          type: integer
+          example: 1
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/DailyEventDto'
+
+    EnrollmentAnalyticsResponse:
+      type: object
+      required:
+        - enrollmentId
+        - curriculumTitle
+        - status
+        - startDate
+        - timeZone
+        - enrollmentVersion
+        - completedRequiredActivities
+        - totalRequiredActivities
+        - progressPercent
+        - completedLessons
+        - totalLessons
+        - estimatedCompletedMinutes
+        - estimatedTotalMinutes
+        - streak
+        - weeklyProgress
+        - dailyHistory
+      properties:
+        enrollmentId:
+          type: string
+          format: uuid
+        curriculumTitle:
+          type: string
+          example: "Lộ trình Tiếng Anh Giao Tiếp Toàn Diện"
+        status:
+          type: string
+          example: ACTIVE
+        startDate:
+          type: string
+          format: date
+          example: "2026-10-01"
+        timeZone:
+          type: string
+          example: "Asia/Ho_Chi_Minh"
+        enrollmentVersion:
+          type: integer
+          format: int64
+          example: 4
+        completedRequiredActivities:
+          type: integer
+          example: 12
+        totalRequiredActivities:
+          type: integer
+          example: 45
+        progressPercent:
+          type: [number, "null"]
+          example: 26.7
+        completedLessons:
+          type: integer
+          example: 3
+        totalLessons:
+          type: integer
+          example: 12
+        estimatedCompletedMinutes:
+          type: integer
+          example: 90
+        estimatedTotalMinutes:
+          type: integer
+          example: 360
+        streak:
+          $ref: '#/components/schemas/StreakStatsDto'
+        quizSummary:
+          anyOf:
+            - $ref: '#/components/schemas/QuizSummaryDto'
+            - type: "null"
+        weeklyProgress:
+          type: array
+          items:
+            $ref: '#/components/schemas/WeeklyProgressItemDto'
+        dailyHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/DailyActivityHistoryDto'
+
 
     # --- Note Models ---
     CreateNoteRequest:

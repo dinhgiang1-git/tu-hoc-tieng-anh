@@ -8,6 +8,8 @@ import { CurriculaPage } from "@/features/curricula/pages/CurriculaPage";
 import { CurriculumDetailPage } from "@/features/curricula/pages/CurriculumDetailPage";
 import { SchedulePage } from "@/features/schedule/pages/SchedulePage";
 import { ReviewPage } from "@/features/review/pages/ReviewPage";
+import { ProgressPage } from "@/features/analytics/pages/ProgressPage";
+
 
 export const router = createBrowserRouter([
   {
@@ -45,9 +47,14 @@ export const router = createBrowserRouter([
         element: <ReviewPage />,
       },
       {
+        path: "progress",
+        element: <ProgressPage />,
+      },
+      {
         path: "preferences",
         element: <PreferencesPage />,
       },
+
       {
         path: "*",
         element: <Navigate to="/" replace />,

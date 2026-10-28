@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vn.englishlearning.learning.api.AnalyticsResponses.EnrollmentAnalyticsResponse;
 import vn.englishlearning.learning.api.LearningProgressRequests.SaveResponseDraftRequest;
 import vn.englishlearning.learning.api.LearningProgressRequests.SubmitResponseRequest;
 import vn.englishlearning.learning.api.LearningProgressRequests.UpdateProgressRequest;
@@ -17,6 +18,7 @@ import vn.englishlearning.learning.api.LearningProgressResponses.LessonActivitie
 import vn.englishlearning.learning.api.LearningProgressResponses.LessonDetailResponse;
 import vn.englishlearning.learning.api.LearningProgressResponses.ProgressResponse;
 import vn.englishlearning.learning.api.LearningProgressResponses.ProgressSummaryResponse;
+import vn.englishlearning.learning.application.LearningAnalyticsService;
 import vn.englishlearning.learning.application.LearningProgressService;
 
 @RestController
@@ -24,14 +26,23 @@ import vn.englishlearning.learning.application.LearningProgressService;
 public class LearningProgressController {
 
   private final LearningProgressService learningProgressService;
+  private final LearningAnalyticsService learningAnalyticsService;
 
-  public LearningProgressController(LearningProgressService learningProgressService) {
+  public LearningProgressController(
+      LearningProgressService learningProgressService,
+      LearningAnalyticsService learningAnalyticsService) {
     this.learningProgressService = learningProgressService;
+    this.learningAnalyticsService = learningAnalyticsService;
   }
 
   @GetMapping("/{enrollmentId}/summary")
   public ProgressSummaryResponse getSummary(@PathVariable UUID enrollmentId) {
     return learningProgressService.getSummary(enrollmentId);
+  }
+
+  @GetMapping("/{enrollmentId}/analytics")
+  public EnrollmentAnalyticsResponse getAnalytics(@PathVariable UUID enrollmentId) {
+    return learningAnalyticsService.getAnalytics(enrollmentId);
   }
 
   @GetMapping("/{enrollmentId}/lessons/{lessonId}")

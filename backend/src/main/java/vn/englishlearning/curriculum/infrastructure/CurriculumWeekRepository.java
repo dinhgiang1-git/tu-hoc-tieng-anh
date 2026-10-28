@@ -13,4 +13,14 @@ public interface CurriculumWeekRepository extends JpaRepository<CurriculumWeek, 
   List<CurriculumWeek> findByPhaseIdOrderByOrderIndexAsc(UUID phaseId);
 
   Optional<CurriculumWeek> findByPhaseIdAndWeekKey(UUID phaseId, String weekKey);
+
+  @org.springframework.data.jpa.repository.Query(
+      """
+      SELECT w FROM CurriculumWeek w
+      JOIN w.phase p
+      WHERE p.revision.id = :revisionId
+      ORDER BY p.orderIndex ASC, w.orderIndex ASC, w.weekNumber ASC
+      """)
+  List<CurriculumWeek> findWeeksByRevisionIdOrdered(
+      @org.springframework.data.repository.query.Param("revisionId") UUID revisionId);
 }

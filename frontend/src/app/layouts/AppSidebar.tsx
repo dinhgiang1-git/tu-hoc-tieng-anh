@@ -8,9 +8,11 @@ import {
   LogOut,
   RotateCcw,
   Settings,
+  TrendingUp,
   User as UserIcon,
   X,
 } from "lucide-react";
+
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/features/auth";
@@ -115,7 +117,14 @@ export function AppSidebar({ isOpen, onClose, collapsed }: AppSidebarProps) {
       match: location.pathname.startsWith("/review"),
     },
     {
+      title: "Tiến độ",
+      href: "/progress",
+      icon: TrendingUp,
+      match: location.pathname.startsWith("/progress"),
+    },
+    {
       title: "Tùy chọn học tập",
+
       href: "/preferences",
       icon: Settings,
       match: location.pathname.startsWith("/preferences"),

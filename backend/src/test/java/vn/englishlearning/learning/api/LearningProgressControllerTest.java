@@ -23,6 +23,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import vn.englishlearning.curriculum.domain.ActivityType;
 import vn.englishlearning.curriculum.domain.CompletionPolicy;
+import vn.englishlearning.learning.api.AnalyticsResponses.EnrollmentAnalyticsResponse;
+import vn.englishlearning.learning.api.AnalyticsResponses.StreakStatsDto;
 import vn.englishlearning.learning.api.LearningProgressRequests.SaveResponseDraftRequest;
 import vn.englishlearning.learning.api.LearningProgressRequests.SubmitResponseRequest;
 import vn.englishlearning.learning.api.LearningProgressRequests.UpdateProgressRequest;
@@ -34,6 +36,7 @@ import vn.englishlearning.learning.api.LearningProgressResponses.LessonDetailRes
 import vn.englishlearning.learning.api.LearningProgressResponses.ProgressResponse;
 import vn.englishlearning.learning.api.LearningProgressResponses.ProgressSummaryResponse;
 import vn.englishlearning.learning.api.LearningProgressResponses.ResourceDto;
+import vn.englishlearning.learning.application.LearningAnalyticsService;
 import vn.englishlearning.learning.application.LearningProgressService;
 import vn.englishlearning.learning.domain.ActivityStatus;
 import vn.englishlearning.shared.api.ErrorCode;
@@ -43,6 +46,7 @@ import vn.englishlearning.shared.domain.DomainException;
 class LearningProgressControllerTest {
 
   private LearningProgressService service;
+  private LearningAnalyticsService analyticsService;
   private MockMvc mockMvc;
   private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -53,7 +57,9 @@ class LearningProgressControllerTest {
   @BeforeEach
   void setUp() {
     service = mock(LearningProgressService.class);
-    LearningProgressController controller = new LearningProgressController(service);
+    analyticsService = mock(LearningAnalyticsService.class);
+    LearningProgressController controller =
+        new LearningProgressController(service, analyticsService);
     mockMvc =
         MockMvcBuilders.standaloneSetup(controller)
             .setControllerAdvice(new GlobalExceptionHandler())
@@ -285,5 +291,43 @@ class LearningProgressControllerTest {
         .andExpect(jsonPath("$.activityId").value(activityId.toString()))
         .andExpect(jsonPath("$.responseText").value("My draft answer"))
         .andExpect(jsonPath("$.enrollmentVersion").value(2));
+  }
+
+  @Test
+  @DisplayName(
+      "GET /api/v1/enrollments/{enrollmentId}/analytics returns 200 with EnrollmentAnalyticsResponse")
+  void getAnalytics_returnsOk() throws Exception {
+    StreakStatsDto streak = new StreakStatsDto(3, 5, 7, java.time.LocalDate.of(2026, 10, 28));
+    EnrollmentAnalyticsResponse response =
+        new EnrollmentAnalyticsResponse(
+            enrollmentId,
+            "Lộ trình Tiếng Anh Giao Tiếp Toàn Diện",
+            "ACTIVE",
+            java.time.LocalDate.of(2026, 10, 1),
+            "Asia/Ho_Chi_Minh",
+            4L,
+            12,
+            45,
+            new BigDecimal("26.7"),
+            3,
+            12,
+            90,
+            360,
+            streak,
+            null,
+            List.of(),
+            List.of());
+
+    when(analyticsService.getAnalytics(eq(enrollmentId))).thenReturn(response);
+
+    mockMvc
+        .perform(get("/api/v1/enrollments/{enrollmentId}/analytics", enrollmentId))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.enrollmentId").value(enrollmentId.toString()))
+        .andExpect(jsonPath("$.curriculumTitle").value("Lộ trình Tiếng Anh Giao Tiếp Toàn Diện"))
+        .andExpect(jsonPath("$.completedRequiredActivities").value(12))
+        .andExpect(jsonPath("$.totalRequiredActivities").value(45))
+        .andExpect(jsonPath("$.streak.currentStreakDays").value(3))
+        .andExpect(jsonPath("$.streak.longestStreakDays").value(5));
   }
 }

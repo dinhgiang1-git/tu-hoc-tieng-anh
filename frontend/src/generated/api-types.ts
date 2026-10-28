@@ -407,6 +407,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/enrollments/{enrollmentId}/analytics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lấy dữ liệu thống kê tiến độ trực quan và lịch sử học tập
+         * @description Trả về các chỉ số KPI tiến độ, chuỗi ngày học liên tục (streak), biểu đồ thanh theo tuần (weekly progress), và lịch sử hoạt động theo ngày thực tế.
+         */
+        get: operations["getEnrollmentAnalytics"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/enrollments/{enrollmentId}/review": {
         parameters: {
             query?: never;
@@ -1081,6 +1101,117 @@ export interface components {
              * @example 2
              */
             enrollmentVersion: number;
+        };
+        StreakStatsDto: {
+            /** @example 3 */
+            currentStreakDays: number;
+            /** @example 5 */
+            longestStreakDays: number;
+            /** @example 7 */
+            totalActiveDays: number;
+            /**
+             * Format: date
+             * @example 2026-10-28
+             */
+            lastActiveDate?: string | null;
+        };
+        QuizSummaryDto: {
+            /** @example 2 */
+            totalQuizzesTaken: number;
+            /** @example 2 */
+            passedQuizzes: number;
+            /** @example 85 */
+            averageScorePercent: number | null;
+        };
+        WeeklyProgressItemDto: {
+            /** Format: uuid */
+            weekId: string;
+            /** @example 1 */
+            weekNumber: number;
+            /** @example Nhập môn phát âm IPA & Từ vựng căn bản */
+            weekTitle: string;
+            /** @example 15 */
+            totalRequiredActivities: number;
+            /** @example 12 */
+            completedRequiredActivities: number;
+            /** @example 80 */
+            progressPercent: number | null;
+            /** @example 4 */
+            totalLessons: number;
+            /** @example 3 */
+            completedLessons: number;
+            /** @example 120 */
+            estimatedMinutes: number;
+            /**
+             * @example IN_PROGRESS
+             * @enum {string}
+             */
+            status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
+        };
+        DailyEventDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example COMPLETED */
+            eventType: string;
+            /**
+             * Format: date-time
+             * @example 2026-10-28T09:30:00Z
+             */
+            occurredAt: string;
+            /** @example Luyện âm /i:/ và /ɪ/ */
+            activityTitle: string;
+            /** @example Nguyên âm đơn cơ bản */
+            lessonTitle: string;
+        };
+        DailyActivityHistoryDto: {
+            /**
+             * Format: date
+             * @example 2026-10-28
+             */
+            date: string;
+            /** @example 3 */
+            completedActivitiesCount: number;
+            /** @example 1 */
+            quizAttemptsCount: number;
+            events: components["schemas"]["DailyEventDto"][];
+        };
+        EnrollmentAnalyticsResponse: {
+            /** Format: uuid */
+            enrollmentId: string;
+            /** @example Lộ trình Tiếng Anh Giao Tiếp Toàn Diện */
+            curriculumTitle: string;
+            /** @example ACTIVE */
+            status: string;
+            /**
+             * Format: date
+             * @example 2026-10-01
+             */
+            startDate: string;
+            /** @example Asia/Ho_Chi_Minh */
+            timeZone: string;
+            /**
+             * Format: int64
+             * @example 4
+             */
+            enrollmentVersion: number;
+            /** @example 12 */
+            completedRequiredActivities: number;
+            /** @example 45 */
+            totalRequiredActivities: number;
+            /** @example 26.7 */
+            progressPercent: number | null;
+            /** @example 3 */
+            completedLessons: number;
+            /** @example 12 */
+            totalLessons: number;
+            /** @example 90 */
+            estimatedCompletedMinutes: number;
+            /** @example 360 */
+            estimatedTotalMinutes: number;
+            streak: components["schemas"]["StreakStatsDto"];
+            quizSummary?: components["schemas"]["QuizSummaryDto"] | null;
+            weeklyProgress: components["schemas"]["WeeklyProgressItemDto"][];
+            dailyHistory: components["schemas"]["DailyActivityHistoryDto"][];
         };
         CreateNoteRequest: {
             /** Format: uuid */
@@ -1936,6 +2067,30 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProgressSummaryResponse"];
+                };
+            };
+            401: components["responses"]["UnauthorizedProblem"];
+            404: components["responses"]["NotFoundProblem"];
+        };
+    };
+    getEnrollmentAnalytics: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                enrollmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Dữ liệu phân tích và thống kê tiến độ học tập */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EnrollmentAnalyticsResponse"];
                 };
             };
             401: components["responses"]["UnauthorizedProblem"];
