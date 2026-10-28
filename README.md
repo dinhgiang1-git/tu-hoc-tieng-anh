@@ -8,13 +8,19 @@ Dự án ứng dụng web tự học tiếng Anh theo lộ trình có cấu trú
 
 ## 1. Trạng thái Dự án
 
-- **Giai đoạn hiện tại:** **G3-01 đã chốt**. Codex kiểm tra độc lập: 81 backend unit tests, 31 PostgreSQL integration tests và 54 frontend tests đạt. TypeScript, lint và build đạt; xem [nghiệm thu G3-01](docs/G3-01_RECHECK.md).
-  - `[x]` **Task G1-01:** Khảo sát DB, Khởi tạo Backend Spring Boot 3.4.3 + Java 21, Flyway migration, Clock bean, Problem Details RFC 7807, Healthcheck.
-  - `[x]` **Task G1-02:** Xác thực Session (HttpOnly cookie `SESSION`), CSRF Protection (`X-CSRF-TOKEN`), Module Identity (`/auth/csrf`, `/auth/login`, `/auth/logout`, `/me`, `/me/preferences`), xử lý triệt để A1/A2/A3, regression tests trên Testcontainers.
-  - `[x]` **Task G1-03:** Khởi tạo Frontend React 19 + TypeScript Vite Shell, Tailwind CSS tokens, UI primitives, API client (CSRF in-memory adapter, Problem Details decoder), AppShell, AppSidebar (responsive mobile drawer + desktop collapse) & Login/Logout flow.
-- **Mục tiêu tiếp theo:** **G3-02 — Tiến độ nhiệm vụ, hoàn tác và nộp phản tư**.
-- **Phạm vi tiếp theo:** [giao việc G3-02](docs/tasks/G3-02_HANDOFF.md), đối chiếu [backlog G3](docs/tasks/backlog.md). G3-01 đã có đăng ký, lịch ban đầu, Today và tóm tắt bài chỉ đọc; chưa có workspace học/ghi tiến độ đầy đủ. Giới hạn kiểm tra UI và cảnh báo bundle được ghi trong báo cáo nghiệm thu G3-01.
-- **Mốc quan trọng hướng tới:** **M1** (Dùng thử vòng học cốt lõi hàng ngày với Lộ trình Thử nghiệm sau G3).
+- **Giai đoạn hiện tại:** **MỐC M2 — BẢN DÙNG ỔN ĐỊNH ĐÃ HOÀN THÀNH VÀ NGHIỆM THU (28/10/2026)**.
+- Toàn bộ các giai đoạn từ **G1 đến G7** đã được triển khai, kiểm thử tự động và nghiệm thu hoàn chỉnh:
+  - `[x]` **Mốc G1 (Nền tảng):** Khởi tạo Spring Boot 3.4.3 + Java 21, Flyway migration, React 19 + TypeScript Vite Shell, Tailwind CSS, Session HttpOnly `SESSION`, CSRF Token `X-CSRF-TOKEN`, Module Identity (`/auth/login`, `/auth/logout`, `/me/preferences`).
+  - `[x]` **Mốc G2 (Nội dung & Danh mục):** Flyway content tables, JSON Schema validator Draft 2020-12, CLI importer/publisher trong 1 transaction an toàn, API catalog & outline phẳng không N+1 (`/curricula`, `/outline`), UI danh mục và chi tiết lộ trình.
+  - `[x]` **Mốc G3 — MỐC M1 (Vòng học Cốt lõi):** Đăng ký lộ trình, lịch ban đầu, Dashboard "Hôm nay", Không gian học tập (Learning Workspace) Markdown + IPA, Ghi chú tự lưu (Autosave sau 700ms), Lưu tiến độ nguyên tử với optimistic locking (`expectedVersion`), E2E kiểm chứng đạt 100%.
+  - `[x]` **Mốc G4 (Lịch học Linh hoạt):** Lịch học tùy biến 3–5 ngày/tuần, Thuật toán đổi lịch (Reschedule Preview & Commit) bảo toàn bài đã học, Đóng băng tiến độ (Pause), Tiếp tục học (Resume) và Kết thúc (Abandon).
+  - `[x]` **Mốc G5 (Quiz & Ôn tập):** Mô hình trắc nghiệm chống gian lận (che đáp án trước submit), Chấm điểm tự động trên server, Quy tắc `ON_SUBMIT` vs `PASS_SCORE` (80%), Sổ tay ôn tập (Review mistakes & Bookmarks) tự động đồng bộ.
+  - `[x]` **Mốc G6 (Hoàn thiện Lộ trình A & Báo cáo):** Biên soạn và xuất bản đầy đủ **26 tuần Lộ trình A** (3 phases, 26 weeks, 130 lessons, 406 activities) ở trạng thái `PUBLISHED (IMMUTABLE)`, Trang tiến độ (`/progress`) với biểu đồ thanh tuần thuần CSS/SVG và chuỗi ngày học Streak thực tế.
+  - `[x]` **Mốc G7 (Vận hành & Phát hành Cá nhân):**
+    * **G7-01:** Tự động hóa sao lưu và phục hồi dữ liệu (`pg_dump`/`pg_restore`), đối soát 100% khớp hàng trên toàn bộ 23/23 bảng dữ liệu, Flyway version 009, immutability trigger; cơ chế bảo vệ kép chống ghi đè DB production.
+    * **G7-02:** Kiểm chuẩn hiệu năng API tự động (12/12 endpoints đạt p95 < 16ms, vượt trội so với ngân sách 500ms), Kiểm thử trực quan desktop (1440×900 và 1280×800) không lỗi font IPA, không tràn ngang.
+    * **G7-03:** Sổ tay vận hành toàn diện [docs/RUNBOOK.md](docs/RUNBOOK.md) và biên bản nghiệm thu mốc M2 [docs/G7-03_ACCEPTANCE.md](docs/G7-03_ACCEPTANCE.md).
+- **Tài liệu vận hành chính:** Xem chi tiết tại [docs/RUNBOOK.md](docs/RUNBOOK.md).
 
 ---
 
@@ -96,10 +102,11 @@ tu-hoc-tieng-anh/
 ├── FE_CODE_CONVENTION.md         # Quy chuẩn lập trình Frontend (React TSX + Tailwind Vite)
 ├── README.md                     # Tài liệu giới thiệu dự án và hướng dẫn điều phối
 │
-├── docs/                         # Toàn bộ tài liệu phân tích kỹ thuật và đặc tả G0
-│   ├── G0_REVIEW.md              # Biên bản rà soát G0 độc lập và các điểm R1–R8 đã xử lý
-│   ├── G1-01_REVIEW.md           # Biên bản rà soát G1-01
-│   ├── G1-02_REVIEW.md           # Biên bản rà soát G1-02
+├── docs/                         # Toàn bộ tài liệu phân tích kỹ thuật, nghiệm thu và vận hành
+│   ├── RUNBOOK.md                # Sổ tay hướng dẫn vận hành toàn diện hệ thống Mốc M2
+│   ├── G7-01_ACCEPTANCE.md       # Nghiệm thu sao lưu & phục hồi dữ liệu tự động
+│   ├── G7-02_ACCEPTANCE.md       # Nghiệm thu hiệu năng API và kiểm thử trực quan desktop
+│   ├── G7-03_ACCEPTANCE.md       # Nghiệm thu Runbook và phát hành bản dùng ổn định (Mốc M2)
 │   ├── product-rules.md          # Quy tắc nghiệp vụ, công thức tiến độ, vòng đời trạng thái
 │   ├── content-mapping.md        # Đối chiếu 26 tuần lộ trình A, phân loại nguồn & pilot 3 ngày/tuần
 │   ├── wireframes.md             # Mô tả chi tiết wireframe các màn hình chính và responsive
@@ -107,40 +114,22 @@ tu-hoc-tieng-anh/
 │   │   ├── openapi.yaml          # OpenAPI 3.1 contract ban đầu đầy đủ (0 lint errors)
 │   │   └── generated-types.ts    # TypeScript types sinh từ openapi.yaml
 │   ├── adr/                      # Các quyết định kiến trúc quan trọng (ADR 001 - 005)
-│   │   ├── ADR-001-modular-monolith-and-tech-stack.md
-│   │   ├── ADR-002-learning-model-and-completion-policy.md
-│   │   ├── ADR-003-session-csrf-and-optimistic-concurrency.md
-│   │   ├── ADR-004-british-english-offline-pronunciation-architecture.md
-│   │   └── ADR-005-content-package-versioning-and-verification.md
 │   └── tasks/
 │       └── backlog.md            # Danh mục công việc chi tiết từ G1 đến G7 và PA
 │
 ├── content/                      # Gói nội dung giáo trình được quản lý bằng Git
 │   ├── schemas/                  # Bộ JSON Schema chuyên biệt xác thực nội dung
-│   │   ├── manifest.schema.json  # Schema xác thực manifest.json
-│   │   ├── week.schema.json      # Schema xác thực các file weeks/*.json
-│   │   ├── resources.schema.json # Schema xác thực resources.json
-│   │   └── curriculum.schema.json# Schema tổng hợp dạng bundled
-│   └── pilot-curriculum/         # Lộ trình thử nghiệm (Pilot Curriculum) chuẩn Anh-Anh
-│       ├── v1/                   # Gói v1 xuất bản chính thức (100% hoàn chỉnh, 1 tuần)
-│       │   ├── manifest.json     # Khai báo metadata, bản quyền và phase
-│       │   ├── resources.json    # Danh mục tài liệu tham khảo ngoài (phân định nguồn gốc)
-│       │   ├── weeks/
-│       │   │   └── week-01.json  # Tuần 1: 6 bài, 21 activities (19 bắt buộc hiệu lực)
-│       │   └── lessons/          # 6 file Markdown chi tiết cho Tuần 1
-│       │       ├── w01-l01-vowels.md
-│       │       ├── w01-l02-consonants.md
-│       │       ├── w01-l03-word-stress.md
-│       │       ├── w01-l04-schwa.md
-│       │       ├── w01-l05-week1-review.md
-│       │       └── w01-l06-optional-rhoticity.md
-│       └── drafts/               # Tách riêng các tuần nháp chưa đưa vào manifest
-│           └── week-02-sketch.json
+│   ├── pilot-curriculum/v1/      # Lộ trình thử nghiệm (1 tuần, 6 bài, 21 activities)
+│   └── roadmap-a/v1/             # Lộ trình A hoàn chỉnh 26 tuần (3 phases, 130 lessons, 406 activities)
 │
 ├── frontend/                     # Ứng dụng Frontend React SPA (Vite + TSX + Tailwind)
 │
-└── scripts/                      # Script kiểm thử tự động G0-FIX
-    ├── validate-content.js       # Kiểm tra Schema, Markdown paths, Resource keys, Key uniqueness
+└── scripts/                      # Bộ công cụ tự động hóa vận hành, kiểm thử & sao lưu
+    ├── backup-db.ps1             # Sao lưu dữ liệu pg_dump nén an toàn nhị phân + SHA-256
+    ├── restore-db.ps1            # Phục hồi dữ liệu pg_restore tự động xác thực SHA-256
+    ├── verify-backup-restore.ps1 # Kiểm thử tự động đối soát toàn vẹn 23/23 bảng dữ liệu
+    ├── benchmark-api.mjs         # Đo kiểm chuẩn hiệu năng API (12 endpoints, p95 < 500ms)
+    ├── validate-content.js       # Kiểm tra Schema, Markdown paths, Resource keys
     └── validate-openapi-examples.js # Kiểm tra cú pháp OpenAPI 3.1 & tính đầy đủ của schema/payload
 ```
 
