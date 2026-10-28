@@ -60,7 +60,7 @@ const enrollmentSchema = z.object({
   timeZone: z.string().min(1, "Múi giờ không được để trống"),
 });
 
-export type EnrollmentFormValues = z.infer<typeof enrollmentSchema>;
+type EnrollmentFormValues = z.infer<typeof enrollmentSchema>;
 
 function getTodayString(): string {
   const d = new Date();
@@ -70,11 +70,18 @@ function getTodayString(): string {
   return `${year}-${month}-${day}`;
 }
 
+import { calculateEstimatedPlan } from "../lib/schedule-estimator";
+import { curriculaApi, curriculaKeys } from "@/features/curricula/api/curricula.api";
+
 interface EnrollmentFormProps {
   curriculumId: string;
   revisionId: string;
   defaultDailyTargetMinutes: number;
   defaultTimeZone: string;
+  totalRequiredLessons?: number;
+  totalStages?: number;
+  isOutlinePending?: boolean;
+  onRetryOutline?: () => void;
   onClose: () => void;
 }
 
@@ -83,6 +90,10 @@ function EnrollmentForm({
   revisionId,
   defaultDailyTargetMinutes,
   defaultTimeZone,
+  totalRequiredLessons,
+  totalStages,
+  isOutlinePending,
+  onRetryOutline,
   onClose,
 }: EnrollmentFormProps) {
   const navigate = useNavigate();
@@ -158,11 +169,20 @@ function EnrollmentForm({
   });
 
   const currentStudyDays = form.watch("studyDays") || [];
+  const currentStartDate = form.watch("startDate") || "";
+  const estimatedPlan =
+    totalRequiredLessons != null && totalRequiredLessons > 0
+      ? calculateEstimatedPlan(
+          currentStartDate,
+          currentStudyDays,
+          totalRequiredLessons,
+        )
+      : null;
 
   const handleStudyDayToggle = (day: DayOfWeek) => {
     const isSelected = currentStudyDays.includes(day);
     const updated = isSelected
-      ? currentStudyDays.filter((d) => d !== day)
+      ? currentStudyDays.filter((d: DayOfWeek) => d !== day)
       : [...currentStudyDays, day];
     form.setValue("studyDays", updated, { shouldValidate: true });
   };
@@ -260,6 +280,56 @@ function EnrollmentForm({
           )}
         </div>
 
+        {/* Estimated Completion & Schedule Distinction Card */}
+        {estimatedPlan ? (
+          <div
+            data-testid="estimated-plan-card"
+            className="rounded-xl border border-primary/20 bg-primary/5 p-3.5 text-xs text-foreground space-y-2.5"
+          >
+            <div className="flex items-center justify-between font-semibold text-primary">
+              <span className="flex items-center gap-1.5">
+                <Calendar className="h-4 w-4" />
+                Thời gian hoàn thành dự kiến:
+              </span>
+              <span className="text-sm font-bold text-foreground">
+                {estimatedPlan.endDateStr}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 pt-1 border-t border-primary/10 text-muted-foreground">
+              <div className="space-y-0.5">
+                <span className="block font-medium text-foreground">Nội dung giáo trình:</span>
+                <span>
+                  {totalStages != null ? `${totalStages} chặng • ` : ""}
+                  {totalRequiredLessons} buổi học bắt buộc
+                </span>
+              </div>
+              <div className="space-y-0.5">
+                <span className="block font-medium text-foreground">Lịch học cá nhân:</span>
+                <span>{currentStudyDays.length} buổi/tuần • ~{estimatedPlan.totalWeeks} tuần</span>
+              </div>
+            </div>
+
+            <p className="text-[11px] text-muted-foreground border-t border-primary/10 pt-2 leading-relaxed">
+              💡 <strong>Lưu ý:</strong> Lộ trình gồm {totalRequiredLessons} buổi học bắt buộc. Với nhịp học {currentStudyDays.length} buổi/tuần theo lịch của bạn, dự kiến hoàn thành vào {estimatedPlan.endDateStr} (~{estimatedPlan.totalWeeks} tuần).
+            </p>
+          </div>
+        ) : (
+          currentStudyDays.length > 0 && (
+            <div className="rounded-xl border border-border bg-muted/30 p-3 text-xs text-muted-foreground">
+              {isOutlinePending
+                ? "Đang tính toán thời gian hoàn thành dự kiến..."
+                : "Chưa tính được ngày dự kiến hoàn thành."}
+              {onRetryOutline && (
+                <Button type="button" variant="outline" size="sm"
+                  className="mt-2 block" onClick={onRetryOutline}>
+                  Tải lại cấu trúc lộ trình
+                </Button>
+              )}
+            </div>
+          )
+        )}
+
         {/* Daily Target Minutes */}
         <div className="space-y-1.5">
           <Label
@@ -350,6 +420,8 @@ export interface EnrollmentDialogProps {
   curriculumTitle: string;
   isOpen: boolean;
   onClose: () => void;
+  totalRequiredLessons?: number;
+  totalStages?: number;
 }
 
 export function EnrollmentDialog({
@@ -358,6 +430,8 @@ export function EnrollmentDialog({
   curriculumTitle,
   isOpen,
   onClose,
+  totalRequiredLessons,
+  totalStages,
 }: EnrollmentDialogProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -372,6 +446,34 @@ export function EnrollmentDialog({
     queryFn: ({ signal }) => authApi.getPreferences(signal),
     enabled: isOpen,
   });
+
+  // Query outline to dynamically calculate required lessons when not provided
+  const { data: outline, isPending: isOutlinePending, isError: isOutlineError,
+    refetch: refetchOutline } = useQuery({
+    queryKey: curriculaKeys.outline(revisionId),
+    queryFn: ({ signal }) => curriculaApi.outline(revisionId, signal),
+    enabled: isOpen && totalRequiredLessons === undefined,
+  });
+
+  const resolvedRequiredLessons =
+    totalRequiredLessons ??
+    (outline
+      ? outline.phases.reduce(
+          (sum, p) =>
+            sum +
+            p.weeks.reduce(
+              (wSum, w) => wSum + w.lessons.filter((l) => l.required).length,
+              0,
+            ),
+          0,
+        )
+      : undefined);
+
+  const resolvedStages =
+    totalStages ??
+    (outline
+      ? outline.phases.reduce((sum, p) => sum + p.weeks.length, 0)
+      : undefined);
 
   const defaultDailyTargetMinutes = preferences?.dailyTargetMinutes ?? 30;
   const defaultTimeZone =
@@ -479,6 +581,10 @@ export function EnrollmentDialog({
             revisionId={revisionId}
             defaultDailyTargetMinutes={defaultDailyTargetMinutes}
             defaultTimeZone={defaultTimeZone}
+            totalRequiredLessons={resolvedRequiredLessons}
+            totalStages={resolvedStages}
+            isOutlinePending={totalRequiredLessons === undefined && isOutlinePending}
+            onRetryOutline={isOutlineError ? () => { void refetchOutline(); } : undefined}
             onClose={onClose}
           />
         )}

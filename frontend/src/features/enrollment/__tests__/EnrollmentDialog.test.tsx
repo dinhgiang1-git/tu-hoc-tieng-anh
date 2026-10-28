@@ -3,7 +3,9 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 import { EnrollmentDialog } from "../components/EnrollmentDialog";
-import { enrollmentApi } from "../api/enrollment.api";
+import { calculateEstimatedPlan } from "../lib/schedule-estimator";
+import { enrollmentApi, type DayOfWeek } from "../api/enrollment.api";
+import { curriculaApi } from "@/features/curricula/api/curricula.api";
 import { authApi } from "@/features/auth";
 import { ApiError } from "@/lib/api/api-error";
 
@@ -43,7 +45,11 @@ describe("EnrollmentDialog", () => {
     });
   });
 
-  const renderDialog = (isOpen = true) => {
+  const renderDialog = (
+    isOpen = true,
+    totalRequiredLessons: number | null = 130,
+    totalStages: number | null = 26,
+  ) => {
     return render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -51,6 +57,8 @@ describe("EnrollmentDialog", () => {
             curriculumId="c1111111-1111-1111-1111-111111111111"
             revisionId="r1111111-1111-1111-1111-111111111111"
             curriculumTitle="Lộ trình Phát âm Anh-Anh Thử nghiệm"
+            totalRequiredLessons={totalRequiredLessons ?? undefined}
+            totalStages={totalStages ?? undefined}
             isOpen={isOpen}
             onClose={mockOnClose}
           />
@@ -259,5 +267,130 @@ describe("EnrollmentDialog", () => {
 
     fireEvent.keyDown(window, { key: "Escape" });
     expect(mockOnClose).toHaveBeenCalled();
+  });
+
+  describe("calculateEstimatedPlan", () => {
+    it("counts calendar weeks across the autumn DST transition", () => {
+      vi.stubEnv("TZ", "America/New_York");
+      try {
+        const days: DayOfWeek[] = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
+        expect(calculateEstimatedPlan("2026-10-29", days, 7)).toEqual({
+          endDateStr: "04/11/2026", totalWeeks: 1,
+        });
+      } finally {
+        vi.unstubAllEnvs();
+      }
+    });
+
+    it("rejects impossible dates and handles leap days", () => {
+      expect(calculateEstimatedPlan("2026-02-30", ["MONDAY"], 1)).toBeNull();
+      expect(calculateEstimatedPlan("2028-02-28", ["MONDAY", "TUESDAY", "WEDNESDAY"], 3))
+        .toEqual({ endDateStr: "01/03/2028", totalWeeks: 1 });
+    });
+    it("calculates exact end date for 3 days/week matching evaluation report baseline (28/10/2026 -> 25/08/2027)", () => {
+      const days: DayOfWeek[] = ["MONDAY", "WEDNESDAY", "FRIDAY"];
+      const plan = calculateEstimatedPlan("2026-10-28", days, 130);
+      expect(plan).not.toBeNull();
+      expect(plan?.endDateStr).toBe("25/08/2027");
+      expect(plan?.totalWeeks).toBe(44);
+    });
+
+    it("calculates exact end date for 5 days/week (26 weeks)", () => {
+      const days: DayOfWeek[] = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"];
+      const plan = calculateEstimatedPlan("2026-10-26", days, 130);
+      expect(plan).not.toBeNull();
+      expect(plan?.totalWeeks).toBe(26);
+    });
+
+    it("calculates exact end date for pilot curriculum with 5 required lessons (2 weeks)", () => {
+      const days: DayOfWeek[] = ["MONDAY", "WEDNESDAY", "FRIDAY"];
+      const plan = calculateEstimatedPlan("2026-10-28", days, 5);
+      expect(plan).not.toBeNull();
+      // Wed 28, Fri 30, Mon 2, Wed 4, Fri 6 Nov 2026
+      expect(plan?.endDateStr).toBe("06/11/2026");
+      expect(plan?.totalWeeks).toBe(2);
+    });
+
+    it("returns null when totalLessons <= 0, studyDays is empty, or date is invalid", () => {
+      expect(calculateEstimatedPlan("2026-10-28", ["MONDAY"], 0)).toBeNull();
+      expect(calculateEstimatedPlan("2026-10-28", [], 10)).toBeNull();
+      expect(calculateEstimatedPlan("", ["MONDAY"], 10)).toBeNull();
+    });
+  });
+
+  it("displays estimated completion card and distinguishes stages from personal schedule for Roadmap A (130 lessons)", async () => {
+    renderDialog(true, 130, 26);
+
+    const card = await screen.findByTestId("estimated-plan-card");
+    expect(card).toBeInTheDocument();
+
+    expect(screen.getByText("Thời gian hoàn thành dự kiến:")).toBeInTheDocument();
+    expect(screen.getByText("26 chặng • 130 buổi học bắt buộc")).toBeInTheDocument();
+    expect(screen.getByText(/3 buổi\/tuần • ~44 tuần/i)).toBeInTheDocument();
+    expect(screen.getByText(/Lộ trình gồm 130 buổi học bắt buộc/i)).toBeInTheDocument();
+  });
+
+  it("displays dynamic estimation for Pilot curriculum with 5 required lessons (does not hardcode 130)", async () => {
+    renderDialog(true, 5, 1);
+
+    const card = await screen.findByTestId("estimated-plan-card");
+    expect(card).toBeInTheDocument();
+
+    expect(screen.getByText("1 chặng • 5 buổi học bắt buộc")).toBeInTheDocument();
+    expect(screen.getByText(/3 buổi\/tuần • ~2 tuần/i)).toBeInTheDocument();
+    expect(screen.getByText(/Lộ trình gồm 5 buổi học bắt buộc/i)).toBeInTheDocument();
+  });
+
+  it("shows fallback message when required lessons are not yet available", async () => {
+    const outlineMock = vi.spyOn(curriculaApi, "outline").mockRejectedValue(new Error("Network error"));
+
+    renderDialog(true, null, null);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Chưa tính được ngày dự kiến hoàn thành."),
+      ).toBeInTheDocument();
+    });
+    expect(screen.getByRole("button", { name: "Tải lại cấu trúc lộ trình" })).toBeInTheDocument();
+    outlineMock.mockResolvedValue({ id: "r1", version: "1.0.0", status: "PUBLISHED", phases: [] });
+    fireEvent.click(screen.getByRole("button", { name: "Tải lại cấu trúc lộ trình" }));
+    await waitFor(() => expect(screen.queryByRole("button", { name: "Tải lại cấu trúc lộ trình" })).not.toBeInTheDocument());
+  });
+
+  it("dynamically resolves required lessons from curriculaApi.outline query when prop is omitted", async () => {
+    vi.spyOn(curriculaApi, "outline").mockResolvedValue({
+      id: "r1111111-1111-1111-1111-111111111111",
+      version: "1.0.0",
+      status: "PUBLISHED",
+      phases: [
+        {
+          id: "p1",
+          key: "phase1",
+          title: "Phase 1",
+          orderIndex: 0,
+          weeks: [
+            {
+              id: "w1",
+              key: "week1",
+              title: "Week 1",
+              weekNumber: 1,
+              orderIndex: 0,
+              lessons: [
+                { id: "l1", key: "l1", title: "L1", orderIndex: 0, estimatedMinutes: 25, required: true },
+                { id: "l2", key: "l2", title: "L2", orderIndex: 1, estimatedMinutes: 25, required: true },
+                { id: "l3", key: "l3", title: "L3", orderIndex: 2, estimatedMinutes: 25, required: false }, // optional lesson
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    renderDialog(true, null, null);
+
+    await waitFor(() => {
+      // 2 required lessons out of 3 total lessons, 1 stage
+      expect(screen.getByText("1 chặng • 2 buổi học bắt buộc")).toBeInTheDocument();
+    });
   });
 });

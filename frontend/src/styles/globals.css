@@ -9,7 +9,61 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased font-sans selection:bg-primary/20 selection:text-primary;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  }
+  h1 {
+    font-size: 2rem;
+    line-height: 2.5rem;
+    letter-spacing: -0.025em;
+    font-weight: 700;
+  }
+  h2 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    letter-spacing: -0.02em;
+    font-weight: 650;
+  }
+  h3 {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    letter-spacing: -0.015em;
+    font-weight: 600;
+  }
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.25);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

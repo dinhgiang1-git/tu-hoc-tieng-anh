@@ -149,7 +149,7 @@ export function AppSidebar({ isOpen, onClose, collapsed }: AppSidebarProps) {
                   Tự Học Tiếng Anh
                 </span>
                 <span className="text-[11px] font-medium text-muted-foreground">
-                  Chuẩn Anh - Anh (RP)
+                  Định hướng Anh - Anh (en-GB)
                 </span>
               </div>
             )}
@@ -178,11 +178,12 @@ export function AppSidebar({ isOpen, onClose, collapsed }: AppSidebarProps) {
               <Link
                 key={item.href}
                 to={item.href}
+                aria-current={item.match ? "page" : undefined}
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                   item.match
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                    ? "bg-secondary text-primary font-semibold"
+                    : "text-muted-foreground hover:bg-muted/80 hover:text-foreground",
                   collapsed && "justify-center px-2",
                 )}
                 title={collapsed ? item.title : undefined}
@@ -278,8 +279,8 @@ export function AppSidebar({ isOpen, onClose, collapsed }: AppSidebarProps) {
       {/* Desktop Sidebar */}
       <aside
         className={cn(
-          "hidden md:flex flex-col border-r border-border bg-card transition-all duration-300 ease-in-out",
-          collapsed ? "w-16" : "w-64",
+          "hidden md:flex flex-col border-r border-border bg-card transition-all duration-300 ease-in-out shrink-0",
+          collapsed ? "w-16" : "w-56",
         )}
       >
         {renderSidebarContent(false)}

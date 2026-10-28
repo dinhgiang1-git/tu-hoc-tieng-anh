@@ -53,6 +53,24 @@ describe("TodayPage", () => {
     );
   };
 
+  it.each(["preferences", "enrollments"] as const)(
+    "shows a retryable %s error even while the dashboard is pending",
+    async (source) => {
+      vi.spyOn(todayApi, "getToday").mockReturnValue(new Promise(() => {}));
+      if (source === "preferences") {
+        vi.mocked(authApi.getPreferences).mockRejectedValue(new Error("Offline"));
+      } else {
+        vi.mocked(enrollmentApi.myEnrollments).mockRejectedValue(new Error("Offline"));
+      }
+      renderToday();
+      expect(await screen.findByText(source === "preferences"
+        ? "Không thể tải tùy chọn học tập. Vui lòng thử lại."
+        : "Không thể tải danh sách lộ trình. Vui lòng thử lại.")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Thử lại" })).toBeInTheDocument();
+      expect(screen.queryByText("Bạn chưa đăng ký lộ trình học nào")).not.toBeInTheDocument();
+    },
+  );
+
   it("renders state 1: NO_ENROLLMENT with empty state CTA linking to /curricula", async () => {
     const noEnrollmentResponse: TodayResponse = {
       state: "NO_ENROLLMENT",

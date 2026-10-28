@@ -47,6 +47,10 @@ export default {
           foreground: "hsl(var(--warning-foreground))",
         },
       },
+      fontFamily: {
+        sans: ['"Segoe UI"', "system-ui", "-apple-system", "sans-serif"],
+        display: ['"Segoe UI"', "system-ui", "-apple-system", "sans-serif"],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

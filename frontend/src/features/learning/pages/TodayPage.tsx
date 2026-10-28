@@ -10,26 +10,50 @@ import {
   ChevronDown,
   ChevronUp,
   Clock,
-  Compass,
   GraduationCap,
+  Headphones,
   PauseCircle,
   Play,
   Sparkles,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { ApiError } from "@/lib/api/api-error";
 import { authApi, authKeys } from "@/features/auth";
 import { enrollmentApi, enrollmentKeys } from "@/features/enrollment/api/enrollment.api";
 import { todayApi, todayKeys } from "../api/today.api";
+import { PronounceButton } from "@/components/shared/PronounceButton";
+import { IpaSoundboardModal } from "../components/IpaSoundboardModal";
+
+function formatTodayDate(dateStr?: string | null): string {
+  if (!dateStr) return "";
+  const parts = dateStr.split("-").map(Number);
+  if (parts.length !== 3 || isNaN(parts[0]) || isNaN(parts[1]) || isNaN(parts[2])) {
+    return dateStr;
+  }
+  const [year, month, day] = parts;
+  const d = new Date(year, month - 1, day);
+  const weekdayNames = [
+    "Chủ Nhật",
+    "Thứ Hai",
+    "Thứ Ba",
+    "Thứ Tư",
+    "Thứ Năm",
+    "Thứ Sáu",
+    "Thứ Bảy",
+  ];
+  const weekday = weekdayNames[d.getDay()];
+  return `${weekday}, ${day} tháng ${month}, ${year}`;
+}
 
 export function TodayPage() {
   const queryClient = useQueryClient();
   const [overdueAccordionOpen, setOverdueAccordionOpen] = useState(false);
+  const [ipaModalOpen, setIpaModalOpen] = useState(false);
 
   // 1. Fetch user preferences (to obtain current focusedEnrollmentId)
   const preferencesQuery = useQuery({
@@ -61,16 +85,33 @@ export function TodayPage() {
     },
   });
 
+  // Failed supporting reads must not become an empty enrollment list or a spinner.
+  if (preferencesQuery.isError || myEnrollmentsQuery.isError) {
+    return (
+      <ErrorState
+        message={preferencesQuery.isError
+          ? "Không thể tải tùy chọn học tập. Vui lòng thử lại."
+          : "Không thể tải danh sách lộ trình. Vui lòng thử lại."}
+        onRetry={() => {
+          if (preferencesQuery.isError) void preferencesQuery.refetch();
+          if (myEnrollmentsQuery.isError) void myEnrollmentsQuery.refetch();
+        }}
+      />
+    );
+  }
+
   // Loading state
-  if (preferencesQuery.isPending || todayQuery.isPending) {
+  if (preferencesQuery.isPending || myEnrollmentsQuery.isPending || todayQuery.isPending) {
     return (
       <div className="space-y-6" role="status" aria-label="Đang tải dữ liệu Hôm nay">
         <div className="space-y-2">
           <Skeleton className="h-8 w-48" />
           <Skeleton className="h-4 w-72" />
         </div>
-        <Skeleton className="h-48 w-full rounded-2xl" />
-        <Skeleton className="h-32 w-full rounded-2xl" />
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_280px] gap-6">
+          <Skeleton className="h-64 w-full rounded-2xl" />
+          <Skeleton className="h-64 w-full rounded-2xl" />
+        </div>
       </div>
     );
   }
@@ -101,79 +142,149 @@ export function TodayPage() {
     }
   };
 
+  const formattedDate = formatTodayDate(today.todayDate);
+
   return (
     <div className="space-y-6">
-      {/* Page Header with Enrollment Switcher */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-6 border-b border-border">
+      {/* Top Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-5 border-b border-border">
         <PageHeader
           title="Hôm nay"
           description={
-            today.todayDate
-              ? `Kế hoạch học tập ngày ${today.todayDate}`
-              : "Bắt đầu bài học theo lộ trình của bạn."
+            formattedDate
+              ? formattedDate
+              : today.todayDate
+                ? `Kế hoạch học tập ngày ${today.todayDate}`
+                : "Bắt đầu bài học theo lộ trình của bạn."
           }
         />
 
-        {enrollments.length >= 1 && (
-          <div className="flex items-center gap-2 self-start sm:self-auto">
-            <label
-              htmlFor="enrollment-switcher"
-              className="text-xs font-medium text-muted-foreground whitespace-nowrap"
-            >
-              Lộ trình:
-            </label>
-            <select
-              id="enrollment-switcher"
-              value={today.enrollmentId ?? focusedEnrollmentId ?? ""}
-              onChange={handleEnrollmentChange}
-              disabled={switchEnrollmentMutation.isPending}
-              className="rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              {!today.enrollmentId && !focusedEnrollmentId && (
-                <option value="" disabled>
-                  -- Chọn lộ trình học --
-                </option>
-              )}
-              {enrollments.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.curriculumTitle} ({item.status})
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+        <div className="flex flex-wrap items-center gap-3 self-start sm:self-auto">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIpaModalOpen(true)}
+            className="h-9 text-xs gap-1.5 border-border bg-card hover:bg-muted text-foreground font-medium shadow-xs"
+            title="Tra cứu & nghe 44 âm ngữ âm IPA"
+          >
+            <Headphones className="h-4 w-4 text-primary" />
+            <span>Bảng âm IPA (RP)</span>
+          </Button>
+
+          {enrollments.length >= 1 && (
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="enrollment-switcher"
+                className="text-xs font-medium text-muted-foreground whitespace-nowrap"
+              >
+                Lộ trình:
+              </label>
+              <select
+                id="enrollment-switcher"
+                value={today.enrollmentId ?? focusedEnrollmentId ?? ""}
+                onChange={handleEnrollmentChange}
+                disabled={switchEnrollmentMutation.isPending}
+                className="rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground shadow-xs focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                {!today.enrollmentId && !focusedEnrollmentId && (
+                  <option value="" disabled>
+                    -- Chọn lộ trình học --
+                  </option>
+                )}
+                {enrollments.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.curriculumTitle} ({item.status === "ACTIVE" ? "Đang học" : item.status})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
       </div>
 
       {switchEnrollmentMutation.isError && (
-        <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-xs font-medium text-destructive">
+        <div className="rounded-xl border border-destructive/20 bg-destructive/10 p-3.5 text-xs font-medium text-destructive">
           Không thể chuyển đổi lộ trình học. Vui lòng thử lại.
         </div>
       )}
 
-      {/* 1. State: NO_ENROLLMENT */}
-      {today.state === "NO_ENROLLMENT" && (
+      {/* State: NO_ENROLLMENT */}
+      {today.state === "NO_ENROLLMENT" ? (
         <div className="space-y-6">
-          <EmptyState
-            title="Bạn chưa đăng ký lộ trình học nào"
-            description={
-              enrollments.length > 0
-                ? "Hoặc bạn chưa chọn lộ trình ưu tiên trong các lộ trình đã đăng ký bên dưới."
-                : "Khám phá các lộ trình học phát âm Anh-Anh (RP) chuẩn quốc tế và đăng ký ngay để xây dựng thói quen học tập mỗi ngày."
-            }
-            icon={Compass}
-            action={
+          <div className="rounded-2xl border border-border bg-card p-6 md:p-8 shadow-xs space-y-5">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary text-primary px-3 py-1 text-xs font-semibold">
+              Bắt đầu lộ trình của bạn
+            </span>
+
+            <div className="space-y-2 max-w-2xl">
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+                Bạn chưa đăng ký lộ trình học nào
+              </h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Đăng ký một lộ trình học để hệ thống tự động cá nhân hoá lịch học theo từng ngày cho bạn.
+              </p>
+            </div>
+
+            <div className="pt-2 flex flex-wrap gap-3">
               <Link
                 to="/curricula"
-                className={buttonVariants({ className: "gap-2" })}
+                className={buttonVariants({ size: "default", className: "gap-2 shadow-xs font-semibold" })}
               >
                 <BookOpen className="h-4 w-4" />
                 Khám phá danh mục lộ trình
               </Link>
-            }
-          />
+              <Button
+                variant="outline"
+                onClick={() => setIpaModalOpen(true)}
+                className="gap-2 text-xs border-border bg-card text-foreground hover:bg-muted"
+              >
+                <Headphones className="h-4 w-4 text-primary" />
+                Bảng 44 âm ngữ âm IPA
+              </Button>
+            </div>
+          </div>
+
+          {/* Daily Quick Phonetic Warm-up */}
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-bold text-foreground uppercase tracking-wider">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <span>Khởi động phát âm nhanh hôm nay (Daily Warm-up)</span>
+              </div>
+              <span className="text-[11px] text-muted-foreground hidden sm:inline">
+                Bấm loa để nghe từ ví dụ
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+              {[
+                { pair: "Âm /iː/ vs /ɪ/", w1: "sheep", ipa1: "/ʃiːp/", w2: "ship", ipa2: "/ʃɪp/" },
+                { pair: "Âm /e/ vs /æ/", w1: "bed", ipa1: "/bed/", w2: "bad", ipa2: "/bæd/" },
+                { pair: "Âm /uː/ vs /ʊ/", w1: "fool", ipa1: "/fuːl/", w2: "full", ipa2: "/fʊl/" },
+              ].map((item, idx) => (
+                <div key={idx} className="rounded-xl border border-border bg-background p-3 space-y-2">
+                  <div className="text-[11px] font-semibold text-primary">{item.pair}</div>
+                  <div className="flex items-center justify-between gap-1 text-xs">
+                    <div className="flex items-center gap-1.5">
+                      <PronounceButton text={item.w1} size="icon" className="h-6 w-6" />
+                      <span className="font-semibold text-foreground">{item.w1}</span>
+                      <span className="text-muted-foreground font-mono text-[11px]">{item.ipa1}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between gap-1 text-xs">
+                    <div className="flex items-center gap-1.5">
+                      <PronounceButton text={item.w2} size="icon" className="h-6 w-6" />
+                      <span className="font-semibold text-foreground">{item.w2}</span>
+                      <span className="text-muted-foreground font-mono text-[11px]">{item.ipa2}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
           {enrollments.length > 0 && (
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-4">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
               <div>
                 <h3 className="text-base font-bold text-foreground">
                   Lộ trình bạn đã đăng ký
@@ -193,7 +304,7 @@ export function TodayPage() {
                         {item.curriculumTitle}
                       </h4>
                       <p className="text-xs text-muted-foreground">
-                        Trạng thái: {item.status} • Tiến độ: {item.progressPercent ?? 0}%
+                        Trạng thái: {item.status === "ACTIVE" ? "Đang học" : item.status} • Tiến độ: {item.progressPercent ?? 0}%
                       </p>
                     </div>
                     <button
@@ -210,377 +321,431 @@ export function TodayPage() {
             </div>
           )}
         </div>
-      )}
-
-      {/* Active Enrollment Header Banner & Progress */}
-      {today.curriculumTitle && (
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div>
-              <span className="text-xs font-medium text-primary uppercase tracking-wider">
-                Lộ trình đang học
-              </span>
-              <h2 className="text-lg font-bold text-foreground">
-                {today.curriculumTitle}
-              </h2>
-            </div>
-            {today.isRestDay && (
-              <span className="inline-flex items-center gap-1.5 self-start sm:self-auto rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
-                <Calendar className="h-3.5 w-3.5" />
-                Hôm nay là ngày nghỉ
-              </span>
-            )}
-          </div>
-
-          {/* Progress Summary */}
-          {today.progress && (
-            <div className="space-y-2 pt-2 border-t border-border">
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span className="font-medium text-foreground">
-                  Tiến độ lộ trình:{" "}
-                  <strong>
-                    {today.progress.progressPercent != null
-                      ? `${today.progress.progressPercent}%`
-                      : "0%"}
-                  </strong>
-                </span>
-                <span>
-                  {today.progress.completedRequiredActivities} /{" "}
-                  {today.progress.totalRequiredActivities} hoạt động bắt buộc
-                </span>
-              </div>
-              <Progress value={today.progress.progressPercent ?? 0} />
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* 2. State: PAUSED */}
-      {today.state === "PAUSED" && (
-        <div
-          className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-6 shadow-sm space-y-4"
-          data-testid="today-paused-state"
-        >
-          <div className="flex items-start gap-3">
-            <PauseCircle className="h-7 w-7 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-            <div className="space-y-1.5 flex-1">
-              <h3 className="text-base font-bold text-amber-900 dark:text-amber-200">
-                Lộ trình học đang tạm dừng
-              </h3>
-              <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
-                Lộ trình này hiện đang ở trạng thái tạm dừng. Tiến độ học của bạn được bảo lưu nguyên vẹn và hệ thống tạm dừng tính bài quá hạn. Bạn có thể tiếp tục học và xếp lại lịch bất cứ lúc nào sẵn sàng.
-              </p>
-              <div className="pt-2">
-                <Link
-                  to="/schedule"
-                  className={buttonVariants({ size: "sm", className: "gap-1.5" })}
-                  data-testid="today-resume-cta-button"
-                >
-                  <Play className="h-3.5 w-3.5" />
-                  Xem lịch và tiếp tục học
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 3. State: IN_PROGRESS */}
-      {today.state === "IN_PROGRESS" && today.primaryAction && (
-        <div className="rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 via-card to-card p-6 shadow-sm space-y-5">
-          <div className="flex items-start justify-between gap-4">
-            <div className="space-y-1">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/20 px-2.5 py-0.5 text-xs font-semibold text-primary">
-                <Clock className="h-3.5 w-3.5" />
-                Đang học dở
-              </span>
-              <h3 className="text-xl font-bold text-foreground">
-                {today.primaryAction.lessonTitle || "Bài học đang dở"}
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                {today.primaryAction.message}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
-            {today.primaryAction.estimatedMinutes != null && (
-              <span className="inline-flex items-center gap-1">
-                <Clock className="h-3.5 w-3.5 text-primary" />
-                Thời lượng: {today.primaryAction.estimatedMinutes} phút
-              </span>
-            )}
-            {today.primaryAction.completedActivities != null &&
-              today.primaryAction.totalActivities != null && (
-                <span className="inline-flex items-center gap-1">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-                  Đã hoàn thành {today.primaryAction.completedActivities} /{" "}
-                  {today.primaryAction.totalActivities} hoạt động
-                </span>
-              )}
-          </div>
-
-          {today.primaryAction.lessonId && today.enrollmentId && (
-            <div>
-              <Link
-                to={`/enrollments/${today.enrollmentId}/lessons/${today.primaryAction.lessonId}`}
-                className={buttonVariants({ size: "lg", className: "gap-2" })}
+      ) : (
+        /* Active States: 2-Column Desktop Grid */
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_280px] gap-6 items-start">
+          {/* Main Action Area (Left Column) */}
+          <div className="space-y-6 min-w-0">
+            {/* 1. State: PAUSED */}
+            {today.state === "PAUSED" && (
+              <article
+                className="rounded-2xl border border-amber-500/30 bg-card p-6 shadow-xs space-y-4"
+                data-testid="today-paused-state"
               >
-                Tiếp tục học
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* 4. State: DUE_TODAY */}
-      {today.state === "DUE_TODAY" && today.primaryAction && (
-        <div className="rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 via-card to-card p-6 shadow-sm space-y-5">
-          <div className="space-y-1">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/20 px-2.5 py-0.5 text-xs font-semibold text-primary">
-              <Calendar className="h-3.5 w-3.5" />
-              Đến hạn hôm nay
-            </span>
-            <h3 className="text-xl font-bold text-foreground">
-              {today.primaryAction.lessonTitle || "Bài học hôm nay"}
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              {today.primaryAction.message}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
-            {today.primaryAction.estimatedMinutes != null && (
-              <span className="inline-flex items-center gap-1">
-                <Clock className="h-3.5 w-3.5 text-primary" />
-                Thời lượng: {today.primaryAction.estimatedMinutes} phút
-              </span>
-            )}
-          </div>
-
-          {today.primaryAction.lessonId && today.enrollmentId && (
-            <div>
-              <Link
-                to={`/enrollments/${today.enrollmentId}/lessons/${today.primaryAction.lessonId}`}
-                className={buttonVariants({ size: "lg", className: "gap-2" })}
-              >
-                Bắt đầu bài học
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* 5. State: OVERDUE */}
-      {today.state === "OVERDUE" && today.primaryAction && (
-        <div className="space-y-4">
-          <div className="rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-card to-card p-6 shadow-sm space-y-5">
-            <div className="space-y-1">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/20 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:text-amber-400">
-                <AlertTriangle className="h-3.5 w-3.5" />
-                Bài học quá hạn
-              </span>
-              <h3 className="text-xl font-bold text-foreground">
-                {today.primaryAction.lessonTitle || "Bài học quá hạn"}
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                {today.primaryAction.message}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
-              {today.primaryAction.estimatedMinutes != null && (
-                <span className="inline-flex items-center gap-1">
-                  <Clock className="h-3.5 w-3.5 text-amber-600" />
-                  Thời lượng: {today.primaryAction.estimatedMinutes} phút
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-400 px-3 py-1 text-xs font-semibold">
+                  <PauseCircle className="h-3.5 w-3.5" />
+                  Đã tạm dừng
                 </span>
-              )}
-            </div>
 
-            {today.primaryAction.lessonId && today.enrollmentId && (
-              <div>
-                <Link
-                  to={`/enrollments/${today.enrollmentId}/lessons/${today.primaryAction.lessonId}`}
-                  className={buttonVariants({ size: "lg", className: "gap-2" })}
-                >
-                  Học bù ngay
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
+                <div className="space-y-1.5">
+                  <h2 className="text-2xl font-bold text-foreground">
+                    Lộ trình học đang tạm dừng
+                  </h2>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Lộ trình này hiện đang ở trạng thái tạm dừng. Tiến độ học của bạn được bảo lưu nguyên vẹn và hệ thống tạm dừng tính bài quá hạn. Bạn có thể tiếp tục học và xếp lại lịch bất cứ lúc nào sẵn sàng.
+                  </p>
+                </div>
+
+                <div className="pt-2">
+                  <Link
+                    to="/schedule"
+                    className={buttonVariants({ size: "default", className: "gap-2" })}
+                    data-testid="today-resume-cta-button"
+                  >
+                    <Play className="h-4 w-4" />
+                    Xem lịch và tiếp tục học
+                  </Link>
+                </div>
+              </article>
             )}
-          </div>
 
-          {/* Overdue Lessons Collapsible Accordion (if more than 1 overdue) */}
-          {today.overdueLessons.length > 1 && (
-            <div className="rounded-xl border border-border bg-card p-4 space-y-3">
-              <button
-                type="button"
-                onClick={() => setOverdueAccordionOpen((prev) => !prev)}
-                className="flex w-full items-center justify-between text-sm font-semibold text-foreground hover:text-primary transition-colors"
-                aria-expanded={overdueAccordionOpen}
-              >
-                <span>
-                  Các bài học quá hạn khác ({today.overdueLessons.length - 1} bài)
+            {/* 2. State: IN_PROGRESS */}
+            {today.state === "IN_PROGRESS" && today.primaryAction && (
+              <article className="rounded-2xl border border-border bg-card p-6 md:p-8 shadow-xs space-y-5">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary text-primary px-3 py-1 text-xs font-semibold">
+                  <Clock className="h-3.5 w-3.5" />
+                  Đang học dở
                 </span>
-                {overdueAccordionOpen ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
-              </button>
 
-              {overdueAccordionOpen && (
-                <ul className="divide-y divide-border border-t border-border pt-2 space-y-2">
-                  {today.overdueLessons.slice(1).map((item) => (
-                    <li
-                      key={item.lessonId}
-                      className="flex items-center justify-between pt-2 text-xs"
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold text-foreground">
+                    {today.primaryAction.lessonTitle || "Bài học đang dở"}
+                  </h2>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {today.primaryAction.message}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground pt-1">
+                  {today.primaryAction.estimatedMinutes != null && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <Clock className="h-4 w-4 text-primary" />
+                      Thời lượng: {today.primaryAction.estimatedMinutes} phút
+                    </span>
+                  )}
+                  {today.primaryAction.completedActivities != null &&
+                    today.primaryAction.totalActivities != null && (
+                      <span className="inline-flex items-center gap-1.5">
+                        <CheckCircle2 className="h-4 w-4 text-primary" />
+                        Đã hoàn thành {today.primaryAction.completedActivities} /{" "}
+                        {today.primaryAction.totalActivities} hoạt động
+                      </span>
+                    )}
+                </div>
+
+                {today.primaryAction.lessonId && today.enrollmentId && (
+                  <div className="pt-2">
+                    <Link
+                      to={`/enrollments/${today.enrollmentId}/lessons/${today.primaryAction.lessonId}`}
+                      className={buttonVariants({ size: "lg", className: "gap-2 font-semibold" })}
                     >
-                      <div>
-                        <span className="font-semibold text-foreground block">
-                          {item.lessonTitle}
-                        </span>
-                        <span className="text-muted-foreground">
-                          Lịch: {item.plannedDate} ({item.overdueDays} ngày trước)
-                        </span>
-                      </div>
-                      {today.enrollmentId && (
-                        <Link
-                          to={`/enrollments/${today.enrollmentId}/lessons/${item.lessonId}`}
-                          className={buttonVariants({
-                            variant: "outline",
-                            size: "sm",
-                            className: "h-7 text-xs",
-                          })}
-                        >
-                          Học bù
-                        </Link>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* 6. State: REST_DAY */}
-      {today.state === "REST_DAY" && (
-        <div className="space-y-4">
-          <div className="rounded-2xl border border-border bg-gradient-to-br from-muted/50 via-card to-card p-6 shadow-sm space-y-3">
-            <div className="flex items-center gap-3">
-              <Calendar className="h-6 w-6 text-primary shrink-0" />
-              <div>
-                <h3 className="text-base font-bold text-foreground">
-                  Hôm nay là ngày nghỉ theo lịch
-                </h3>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Bạn không có bài học nào đến hạn hôm nay. Hãy nghỉ ngơi để nạp năng
-                  lượng, hoặc bạn có thể học trước bài tiếp theo bên dưới.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Optional upcoming lesson suggestion on rest day */}
-          {today.primaryAction?.type === "UPCOMING" && today.primaryAction.lessonId && (
-            <div className="rounded-2xl border border-primary/20 bg-card p-6 shadow-sm space-y-4">
-              <div className="space-y-1">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  Học trước
-                </span>
-                <h4 className="text-base font-bold text-foreground">
-                  {today.primaryAction.lessonTitle}
-                </h4>
-                <p className="text-xs text-muted-foreground">
-                  {today.primaryAction.message}
-                </p>
-              </div>
-
-              {today.enrollmentId && (
-                <Link
-                  to={`/enrollments/${today.enrollmentId}/lessons/${today.primaryAction.lessonId}`}
-                  className={buttonVariants({ variant: "outline", className: "gap-2" })}
-                >
-                  Học trước bài tiếp theo
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* 7. State: UPCOMING */}
-      {today.state === "UPCOMING" && today.primaryAction && (
-        <div className="rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/5 via-card to-card p-6 shadow-sm space-y-5">
-          <div className="space-y-1">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-semibold text-primary">
-              <Sparkles className="h-3.5 w-3.5" />
-              Bài học sắp tới
-            </span>
-            <h3 className="text-xl font-bold text-foreground">
-              {today.primaryAction.lessonTitle || "Bài học tiếp theo"}
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              {today.primaryAction.message}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
-            {today.primaryAction.estimatedMinutes != null && (
-              <span className="inline-flex items-center gap-1">
-                <Clock className="h-3.5 w-3.5 text-primary" />
-                Thời lượng: {today.primaryAction.estimatedMinutes} phút
-              </span>
+                      Tiếp tục học
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                )}
+              </article>
             )}
-          </div>
 
-          {today.primaryAction.lessonId && today.enrollmentId && (
-            <div>
-              <Link
-                to={`/enrollments/${today.enrollmentId}/lessons/${today.primaryAction.lessonId}`}
-                className={buttonVariants({ size: "lg", className: "gap-2" })}
-              >
-                Học trước bài này
-                <ArrowRight className="h-4 w-4" />
-              </Link>
+            {/* 3. State: DUE_TODAY */}
+            {today.state === "DUE_TODAY" && today.primaryAction && (
+              <article className="rounded-2xl border border-border bg-card p-6 md:p-8 shadow-xs space-y-5">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary text-primary px-3 py-1 text-xs font-semibold">
+                  <Calendar className="h-3.5 w-3.5" />
+                  Đến hạn hôm nay
+                </span>
+
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold text-foreground">
+                    {today.primaryAction.lessonTitle || "Bài học hôm nay"}
+                  </h2>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {today.primaryAction.message}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground pt-1">
+                  {today.primaryAction.estimatedMinutes != null && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <Clock className="h-4 w-4 text-primary" />
+                      Thời lượng: {today.primaryAction.estimatedMinutes} phút
+                    </span>
+                  )}
+                </div>
+
+                {today.primaryAction.lessonId && today.enrollmentId && (
+                  <div className="pt-2">
+                    <Link
+                      to={`/enrollments/${today.enrollmentId}/lessons/${today.primaryAction.lessonId}`}
+                      className={buttonVariants({ size: "lg", className: "gap-2 font-semibold" })}
+                    >
+                      Bắt đầu bài học
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                )}
+              </article>
+            )}
+
+            {/* 4. State: OVERDUE */}
+            {today.state === "OVERDUE" && today.primaryAction && (
+              <div className="space-y-4">
+                <article className="rounded-2xl border border-destructive/30 bg-card p-6 md:p-8 shadow-xs space-y-5">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-destructive/10 text-destructive px-3 py-1 text-xs font-semibold">
+                    <AlertTriangle className="h-3.5 w-3.5" />
+                    Bài học quá hạn
+                  </span>
+
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-bold text-foreground">
+                      {today.primaryAction.lessonTitle || "Bài học quá hạn"}
+                    </h2>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {today.primaryAction.message}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground pt-1">
+                    {today.primaryAction.estimatedMinutes != null && (
+                      <span className="inline-flex items-center gap-1.5">
+                        <Clock className="h-4 w-4 text-destructive" />
+                        Thời lượng: {today.primaryAction.estimatedMinutes} phút
+                      </span>
+                    )}
+                  </div>
+
+                  {today.primaryAction.lessonId && today.enrollmentId && (
+                    <div className="pt-2">
+                      <Link
+                        to={`/enrollments/${today.enrollmentId}/lessons/${today.primaryAction.lessonId}`}
+                        className={buttonVariants({ size: "lg", className: "gap-2 font-semibold" })}
+                      >
+                        Học bù ngay
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </div>
+                  )}
+                </article>
+
+                {/* Overdue Lessons Collapsible Accordion (if more than 1 overdue) */}
+                {today.overdueLessons.length > 1 && (
+                  <div className="rounded-xl border border-border bg-card p-4 space-y-3 shadow-xs">
+                    <button
+                      type="button"
+                      onClick={() => setOverdueAccordionOpen((prev) => !prev)}
+                      className="flex w-full items-center justify-between text-sm font-semibold text-foreground hover:text-primary transition-colors"
+                      aria-expanded={overdueAccordionOpen}
+                    >
+                      <span>
+                        Các bài học quá hạn khác ({today.overdueLessons.length - 1} bài)
+                      </span>
+                      {overdueAccordionOpen ? (
+                        <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                      )}
+                    </button>
+
+                    {overdueAccordionOpen && (
+                      <ul className="divide-y divide-border border-t border-border pt-2 space-y-2">
+                        {today.overdueLessons.slice(1).map((item) => (
+                          <li
+                            key={item.lessonId}
+                            className="flex items-center justify-between pt-2 text-xs"
+                          >
+                            <div>
+                              <span className="font-semibold text-foreground block">
+                                {item.lessonTitle}
+                              </span>
+                              <span className="text-muted-foreground">
+                                Lịch: {item.plannedDate} ({item.overdueDays} ngày trước)
+                              </span>
+                            </div>
+                            {today.enrollmentId && (
+                              <Link
+                                to={`/enrollments/${today.enrollmentId}/lessons/${item.lessonId}`}
+                                className={buttonVariants({
+                                  variant: "outline",
+                                  size: "sm",
+                                  className: "h-7 text-xs border-border",
+                                })}
+                              >
+                                Học bù
+                              </Link>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* 5. State: REST_DAY */}
+            {today.state === "REST_DAY" && (
+              <article className="rounded-2xl border border-border bg-card p-6 md:p-8 shadow-xs space-y-5">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary text-primary px-3 py-1 text-xs font-semibold">
+                  <Calendar className="h-3.5 w-3.5" />
+                  Ngày nghỉ theo lịch
+                </span>
+
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold text-foreground">
+                    Hôm nay là ngày nghỉ theo lịch
+                  </h2>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Bạn không có bài học nào đến hạn hôm nay. Hãy nghỉ ngơi để nạp năng
+                    lượng, hoặc bạn có thể học trước bài tiếp theo bên dưới.
+                  </p>
+                </div>
+
+                {today.primaryAction?.type === "UPCOMING" && today.primaryAction.lessonId && (
+                  <div className="pt-2 border-t border-border/70 space-y-3">
+                    <div className="space-y-1">
+                      <span className="text-xs font-semibold text-primary uppercase tracking-wider block">
+                        Gợi ý học trước
+                      </span>
+                      <h3 className="text-lg font-bold text-foreground">
+                        {today.primaryAction.lessonTitle}
+                      </h3>
+                      <p className="text-xs text-muted-foreground">
+                        {today.primaryAction.message}
+                      </p>
+                    </div>
+
+                    {today.enrollmentId && (
+                      <Link
+                        to={`/enrollments/${today.enrollmentId}/lessons/${today.primaryAction.lessonId}`}
+                        className={buttonVariants({ variant: "outline", size: "default", className: "gap-2" })}
+                      >
+                        Học trước bài tiếp theo
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    )}
+                  </div>
+                )}
+              </article>
+            )}
+
+            {/* 6. State: UPCOMING */}
+            {today.state === "UPCOMING" && today.primaryAction && (
+              <article className="rounded-2xl border border-border bg-card p-6 md:p-8 shadow-xs space-y-5">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary text-primary px-3 py-1 text-xs font-semibold">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Bài học sắp tới
+                </span>
+
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold text-foreground">
+                    {today.primaryAction.lessonTitle || "Bài học tiếp theo"}
+                  </h2>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {today.primaryAction.message}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground pt-1">
+                  {today.primaryAction.estimatedMinutes != null && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <Clock className="h-4 w-4 text-primary" />
+                      Thời lượng: {today.primaryAction.estimatedMinutes} phút
+                    </span>
+                  )}
+                </div>
+
+                {today.primaryAction.lessonId && today.enrollmentId && (
+                  <div className="pt-2">
+                    <Link
+                      to={`/enrollments/${today.enrollmentId}/lessons/${today.primaryAction.lessonId}`}
+                      className={buttonVariants({ size: "lg", className: "gap-2 font-semibold" })}
+                    >
+                      Học trước bài này
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                )}
+              </article>
+            )}
+
+            {/* 7. State: CURRICULUM_COMPLETED */}
+            {today.state === "CURRICULUM_COMPLETED" && (
+              <article className="rounded-2xl border border-primary/30 bg-card p-6 md:p-8 shadow-xs space-y-5 text-center">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary text-primary">
+                  <GraduationCap className="h-8 w-8" />
+                </div>
+                <div className="space-y-2 max-w-md mx-auto">
+                  <h2 className="text-2xl font-bold text-foreground">
+                    Chúc mừng! Bạn đã hoàn thành toàn bộ lộ trình học!
+                  </h2>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Bạn đã hoàn thành xuất sắc tất cả các bài học và hoạt động bắt buộc trong lộ
+                    trình này. Hãy tiếp tục khám phá các lộ trình mới để nâng cao kỹ năng!
+                  </p>
+                </div>
+
+                <div className="pt-2 flex justify-center gap-3">
+                  <Link
+                    to="/curricula"
+                    className={buttonVariants({ className: "gap-2 font-semibold" })}
+                  >
+                    <BookOpen className="h-4 w-4" />
+                    Khám phá lộ trình khác
+                  </Link>
+                </div>
+              </article>
+            )}
+
+            {/* Support / Rhythm Guidance Card */}
+            <div className="rounded-2xl border border-border bg-card p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-sm font-bold text-foreground">Học theo nhịp của bạn</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Bạn có thể quay lại xem bài cũ và điều chỉnh ngày học bất kỳ lúc nào.
+                </p>
+              </div>
+              <span className="text-xs text-muted-foreground font-medium shrink-0">
+                Học liệu và từ ví dụ trong bài
+              </span>
             </div>
-          )}
+          </div>
+
+          {/* Right Rail: Course Summary & Progress */}
+          <aside className="space-y-6 shrink-0">
+            {today.curriculumTitle && (
+              <section className="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-4">
+                <div>
+                  <p className="text-[11px] font-semibold text-primary uppercase tracking-wider">
+                    Lộ trình của bạn
+                  </p>
+                  <h3 className="text-base font-bold text-foreground mt-1 line-clamp-2">
+                    {today.curriculumTitle}
+                  </h3>
+                </div>
+
+                {today.progress && (
+                  <div className="space-y-2 pt-2 border-t border-border/70">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <span className="font-medium text-foreground">Tiến độ nhiệm vụ</span>
+                      <strong className="text-foreground">
+                        {today.progress.progressPercent != null
+                          ? `${today.progress.progressPercent}%`
+                          : "Chưa có dữ liệu"}
+                      </strong>
+                    </div>
+                    {today.progress.progressPercent != null && (
+                      <Progress value={today.progress.progressPercent} className="h-2" />
+                    )}
+                    <p className="text-xs text-muted-foreground">
+                      {today.progress.completedRequiredActivities} /{" "}
+                      {today.progress.totalRequiredActivities} hoạt động bắt buộc
+                    </p>
+                  </div>
+                )}
+
+                <div className="pt-2 border-t border-border/70 flex items-center justify-between">
+                  <Link
+                    to="/curricula"
+                    className="text-xs font-semibold text-primary hover:underline"
+                  >
+                    Xem lộ trình học →
+                  </Link>
+                </div>
+
+                <p className="text-[11px] text-muted-foreground pt-1 border-t border-border/50 leading-relaxed">
+                  Tiến độ ghi nhận việc đã làm, không thay cho đánh giá năng lực.
+                </p>
+              </section>
+            )}
+
+            {/* Quick Phonetic Practice Mini Card */}
+            <section className="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-foreground">Tra cứu phát âm</span>
+                <span className="text-[10px] text-primary font-medium">44 âm IPA</span>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Nghe từ ví dụ và tra cứu vị trí phát âm của các nguyên âm và phụ âm chuẩn Anh-Anh.
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIpaModalOpen(true)}
+                className="w-full text-xs gap-1.5 border-border bg-background hover:bg-muted font-medium"
+              >
+                <Headphones className="h-3.5 w-3.5 text-primary" />
+                <span>Mở bảng ngữ âm IPA</span>
+              </Button>
+            </section>
+          </aside>
         </div>
       )}
 
-      {/* 8. State: CURRICULUM_COMPLETED */}
-      {today.state === "CURRICULUM_COMPLETED" && (
-        <div className="rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 via-card to-card p-8 shadow-sm text-center space-y-4">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">
-            <GraduationCap className="h-8 w-8" />
-          </div>
-          <div className="space-y-2 max-w-md mx-auto">
-            <h3 className="text-xl font-bold text-foreground">
-              Chúc mừng! Bạn đã hoàn thành toàn bộ lộ trình học!
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              Bạn đã hoàn thành xuất sắc tất cả các bài học và hoạt động bắt buộc trong lộ
-              trình này. Hãy tiếp tục khám phá các lộ trình mới để nâng cao kỹ năng!
-            </p>
-          </div>
-
-          <div className="pt-2">
-            <Link
-              to="/curricula"
-              className={buttonVariants({ className: "gap-2" })}
-            >
-              <BookOpen className="h-4 w-4" />
-              Khám phá lộ trình khác
-            </Link>
-          </div>
-        </div>
-      )}
+      {/* IPA Reference Modal */}
+      <IpaSoundboardModal
+        isOpen={ipaModalOpen}
+        onClose={() => setIpaModalOpen(false)}
+      />
     </div>
   );
 }

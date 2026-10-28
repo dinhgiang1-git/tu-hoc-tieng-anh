@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { useAuth } from "@/features/auth";
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { AppSidebar } from "./AppSidebar";
 
 export function AppShell() {
@@ -123,16 +124,24 @@ export function AppShell() {
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* British English standard pill */}
+            <div className="hidden lg:flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-2.5 py-1 text-[11px] font-semibold text-primary">
+              <span className="text-xs">🇬🇧</span>
+              <span>Định hướng Anh - Anh (en-GB)</span>
+            </div>
+
+            <ThemeToggle />
+
             {user && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 pl-1 border-l border-border">
                 <span className="hidden sm:inline-block text-xs font-medium text-muted-foreground">
                   Xin chào,{" "}
                   <strong className="text-foreground">
                     {user.fullName || user.displayName || user.username}
                   </strong>
                 </span>
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-xs border border-primary/20">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-bold text-xs shadow-xs">
                   {(user.fullName || user.displayName || user.username)
                     .charAt(0)
                     .toUpperCase()}
