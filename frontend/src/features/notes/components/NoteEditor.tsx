@@ -199,11 +199,7 @@ export function NoteEditor({
         );
       case "idle":
       default:
-        return (
-          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-            Tự động lưu sau 700ms
-          </span>
-        );
+        return null;
     }
   };
 

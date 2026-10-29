@@ -44,7 +44,7 @@ function LessonWorkspaceContent() {
   const queryClient = useQueryClient();
 
   const [focusMode, setFocusMode] = useState(false);
-  const [notesOpen, setNotesOpen] = useState(true);
+  const [notesOpen, setNotesOpen] = useState(false);
   const [versionOverride, setVersionOverride] = useState<number | null>(null);
   const [activityOverrides, setActivityOverrides] = useState<
     Record<string, Partial<ActivityWorkspaceDto>>
@@ -313,12 +313,12 @@ function LessonWorkspaceContent() {
     <div
       className={
         focusMode
-          ? "fixed inset-0 z-50 overflow-y-auto bg-background p-4 md:p-8 lg:p-12"
+          ? "fixed inset-0 z-50 overflow-y-auto bg-background p-4 md:p-6 lg:p-8"
           : "space-y-6"
       }
       data-testid={focusMode ? "focus-mode-container" : undefined}
     >
-      <div className={focusMode ? "mx-auto max-w-5xl space-y-6" : "space-y-6"}>
+      <div className="w-full space-y-6">
         {(syncError || workspaceQuery.isError || enrollmentDetailQuery.isError) && (
           <ErrorState message={syncError ?? "Không thể đồng bộ trạng thái bài học."}
             onRetry={() => { void handleVersionUpdate(enrollmentVersion).catch(() => {}); }} />
@@ -434,9 +434,9 @@ function LessonWorkspaceContent() {
         </div>
 
         {/* Main Grid: Content + Notes Editor */}
-        <div className="grid gap-6 lg:grid-cols-12 items-start">
+        <div className={`grid items-start gap-6 ${notesOpen ? "lg:grid-cols-[minmax(0,1fr)_20rem]" : "grid-cols-1"}`}>
           {/* Left Column: Lesson Content & Activities */}
-          <div className={`space-y-6 ${notesOpen ? "lg:col-span-8" : "lg:col-span-12"}`}>
+          <div className="min-w-0 space-y-6">
             {/* Lesson Markdown Reading Content Card */}
             <div className="rounded-xl border border-border bg-card p-6 shadow-sm space-y-4">
               <div className="flex items-center justify-between border-b border-border pb-3">
@@ -526,9 +526,8 @@ function LessonWorkspaceContent() {
 
           {/* Right Column: Note Editor - Always mounted, visually hidden when notesOpen is false */}
           <div
-            className={`lg:col-span-4 sticky top-4 space-y-4 ${
-              notesOpen ? "" : "hidden"
-            }`}
+            hidden={!notesOpen}
+            className="min-w-0 sticky top-4 space-y-4"
           >
             <NoteEditor
               enrollmentId={enrollmentId}

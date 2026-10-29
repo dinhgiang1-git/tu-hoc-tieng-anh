@@ -64,18 +64,18 @@ export function MarkdownContent({ content, className = "" }: MarkdownContentProp
 
   return (
     <div
-      className={`prose prose-neutral dark:prose-invert max-w-none
-        [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:text-foreground [&_h1]:mb-4 [&_h1]:mt-6 [&_h1]:tracking-tight
-        [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-foreground [&_h2]:mb-3 [&_h2]:mt-5
-        [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-foreground [&_h3]:mb-2 [&_h3]:mt-4
-        [&_p]:leading-relaxed [&_p]:text-foreground/90 [&_p]:mb-3
+      className={`prose prose-neutral dark:prose-invert max-w-none text-lg leading-[1.8] xl:text-xl
+        [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:text-foreground [&_h1]:mb-4 [&_h1]:mt-6 [&_h1]:tracking-tight
+        [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-foreground [&_h2]:mb-3 [&_h2]:mt-5
+        [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-foreground [&_h3]:mb-2 [&_h3]:mt-4
+        [&_p]:leading-[1.8] [&_p]:text-foreground/90 [&_p]:mb-4
         [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-3 [&_ul]:space-y-1
         [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-3 [&_ol]:space-y-1
         [&_li]:text-foreground/90
         [&_blockquote]:border-l-4 [&_blockquote]:border-primary/40 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_blockquote]:my-3
-        [&_code]:font-mono [&_code]:text-xs [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-primary
+        [&_code]:font-mono [&_code]:text-[0.9em] [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-primary [&_code]:break-words
         [&_pre]:bg-muted/80 [&_pre]:p-4 [&_pre]:rounded-lg [&_pre]:overflow-x-auto [&_pre]:my-3
-        [&_table]:w-full [&_table]:border-collapse [&_table]:my-4 [&_table]:text-sm
+        [&_table]:w-full [&_table]:border-collapse [&_table]:my-4 [&_table]:text-base xl:[&_table]:text-lg
         [&_th]:border [&_th]:border-border [&_th]:bg-muted/50 [&_th]:p-2.5 [&_th]:text-left [&_th]:font-semibold [&_th]:text-foreground
         [&_td]:border [&_td]:border-border [&_td]:p-2.5 [&_td]:text-foreground/90
         [&_tr:nth-child(even)]:bg-muted/20

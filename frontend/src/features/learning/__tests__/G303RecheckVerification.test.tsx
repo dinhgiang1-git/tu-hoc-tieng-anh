@@ -294,6 +294,7 @@ describe("Real Data Router Unified Navigation Guard", () => {
     await screen.findByText("Lesson 1");
 
     // Type in note editor
+    fireEvent.click(await screen.findByRole("button", { name: "Hiện ghi chú" }));
     const noteTextarea = await screen.findByLabelText("Nội dung ghi chú cá nhân");
     fireEvent.change(noteTextarea, { target: { value: "Unsaved note text" } });
 
@@ -325,6 +326,7 @@ describe("Real Data Router Unified Navigation Guard", () => {
     vi.spyOn(notesApi, "createNote").mockRejectedValue(new Error("offline"));
     const router = createTestRouter();
     render(<RouterProvider router={router} />);
+    fireEvent.click(await screen.findByRole("button", { name: "Hiện ghi chú" }));
     fireEvent.change(await screen.findByLabelText("Nội dung ghi chú cá nhân"), { target: { value: "Do not lose me" } });
     fireEvent.click(screen.getByText("Hôm nay"));
     fireEvent.click(await screen.findByRole("button", { name: /Lưu rồi rời/i }));

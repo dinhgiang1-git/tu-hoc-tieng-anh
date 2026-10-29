@@ -31,7 +31,11 @@ describe("G3-03 reviewer reproductions", () => {
     render(<QueryClientProvider client={client}><MemoryRouter initialEntries={["/enrollments/e/lessons/l"]}>
       <Routes><Route path="/enrollments/:enrollmentId/lessons/:lessonId" element={<LessonWorkspacePage />} /></Routes>
     </MemoryRouter></QueryClientProvider>);
+    fireEvent.click(await screen.findByRole("button", { name: "Hiện ghi chú" }));
     fireEvent.change(await screen.findByLabelText("Nội dung ghi chú cá nhân"), { target: { value: "Unsaved note" } });
+    fireEvent.click(screen.getByRole("button", { name: "Ẩn ghi chú" }));
+    fireEvent.click(screen.getByRole("button", { name: "Hiện ghi chú" }));
+    expect(screen.getByLabelText("Nội dung ghi chú cá nhân")).toHaveValue("Unsaved note");
     fireEvent.click(screen.getByRole("button", { name: "Chế độ tập trung" }));
     expect(screen.getByLabelText("Nội dung ghi chú cá nhân")).toHaveValue("Unsaved note");
   });

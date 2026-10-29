@@ -137,6 +137,9 @@ Bảng nguyên âm cơ bản trong Tiếng Anh:
 
     // Verify Note editor rendered
     expect(screen.getByTestId("note-editor")).toBeInTheDocument();
+    expect(screen.getByTestId("note-editor")).not.toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: "Hiện ghi chú" }));
+    expect(screen.getByTestId("note-editor")).toBeVisible();
 
     // Verify Next lesson button exists
     expect(screen.getByRole("button", { name: /Bài tiếp/i })).toBeInTheDocument();
