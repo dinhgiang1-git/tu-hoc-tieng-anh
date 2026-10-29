@@ -459,12 +459,11 @@ describe("TodayPage", () => {
     renderToday();
 
     await waitFor(() => {
-      expect(screen.getByRole("combobox")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Lộ trình" })).toBeInTheDocument();
     });
 
-    fireEvent.change(screen.getByRole("combobox"), {
-      target: { value: "e2222222-2222-2222-2222-222222222222" },
-    });
+    fireEvent.click(screen.getByRole("button", { name: "Lộ trình" }));
+    fireEvent.click(screen.getByRole("option", { name: "Lộ trình 2 (Đang học)" }));
 
     await waitFor(() => {
       expect(updatePrefSpy).toHaveBeenCalledWith({

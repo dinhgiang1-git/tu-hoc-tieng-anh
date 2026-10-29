@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Select } from "@/components/ui/select";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { ApiError } from "@/lib/api/api-error";
@@ -134,8 +135,7 @@ export function TodayPage() {
   const today = todayQuery.data;
   const enrollments = myEnrollmentsQuery.data ?? [];
 
-  const handleEnrollmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const nextId = e.target.value;
+  const handleEnrollmentChange = (nextId: string) => {
     if (nextId && nextId !== focusedEnrollmentId) {
       switchEnrollmentMutation.mutate(nextId);
     }
@@ -171,32 +171,18 @@ export function TodayPage() {
           </Button>
 
           {enrollments.length > 1 && (
-            <div className="flex items-center gap-2">
-              <label
-                htmlFor="enrollment-switcher"
-                className="sr-only"
-              >
-                Lộ trình:
-              </label>
-              <select
-                id="enrollment-switcher"
-                value={today.enrollmentId ?? focusedEnrollmentId ?? ""}
-                onChange={handleEnrollmentChange}
-                disabled={switchEnrollmentMutation.isPending}
-                className="max-w-[min(100%,24rem)] rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                {!today.enrollmentId && !focusedEnrollmentId && (
-                  <option value="" disabled>
-                    -- Chọn lộ trình học --
-                  </option>
-                )}
-                {enrollments.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.curriculumTitle} ({item.status === "ACTIVE" ? "Đang học" : item.status})
-                  </option>
-                ))}
-              </select>
-            </div>
+            <Select
+              label="Lộ trình"
+              value={today.enrollmentId ?? focusedEnrollmentId ?? ""}
+              onValueChange={handleEnrollmentChange}
+              disabled={switchEnrollmentMutation.isPending}
+              placeholder="Chọn lộ trình học"
+              className="w-96 max-w-full"
+              options={enrollments.map((item) => ({
+                value: item.id,
+                label: `${item.curriculumTitle} (${({ ACTIVE: "Đang học", PAUSED: "Tạm dừng", COMPLETED: "Hoàn thành", ABANDONED: "Đã dừng" })[item.status]})`,
+              }))}
+            />
           )}
         </div>
       </div>
