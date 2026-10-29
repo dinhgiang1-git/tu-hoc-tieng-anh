@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle, BookOpen, KeyRound, Lock, User as UserIcon } from "lucide-react";
+import { AlertCircle, BookOpen, Lock, User as UserIcon } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -136,23 +136,6 @@ export function LoginPage() {
           </div>
         </form>
 
-        <div className="rounded-lg border border-border/60 bg-muted/30 p-4 text-xs text-muted-foreground">
-          <div className="flex items-center gap-2 font-medium text-foreground mb-1">
-            <KeyRound className="h-4 w-4 text-primary" />
-            Tài khoản kiểm thử:
-          </div>
-          <p>
-            Tài khoản quản trị viên được khởi tạo tự động từ biến môi trường{" "}
-            <code className="rounded bg-muted px-1 py-0.5 font-mono text-[11px]">
-              BOOTSTRAP_ADMIN_USERNAME
-            </code>{" "}
-            và{" "}
-            <code className="rounded bg-muted px-1 py-0.5 font-mono text-[11px]">
-              BOOTSTRAP_ADMIN_PASSWORD
-            </code>
-            .
-          </p>
-        </div>
       </div>
     </div>
   );
