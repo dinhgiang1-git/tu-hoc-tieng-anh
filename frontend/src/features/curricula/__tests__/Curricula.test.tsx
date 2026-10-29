@@ -6,6 +6,7 @@ import { CurriculaPage } from "../pages/CurriculaPage";
 import { CurriculumDetailPage } from "../pages/CurriculumDetailPage";
 import { curriculaApi, type CurriculumSummary, type CurriculumDetail } from "../api/curricula.api";
 import { ApiError } from "@/lib/api/api-error";
+import { enrollmentApi } from "@/features/enrollment/api/enrollment.api";
 
 function createTestQueryClient() {
   return new QueryClient({
@@ -124,6 +125,7 @@ describe("CurriculaPage", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     queryClient = createTestQueryClient();
+    vi.spyOn(enrollmentApi, "myEnrollments").mockResolvedValue([]);
   });
 
   it("renders loading skeleton while query is pending", () => {
@@ -181,13 +183,10 @@ describe("CurriculaPage", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Chưa có lộ trình được xuất bản")).toBeInTheDocument();
-      expect(
-        screen.getByText("Các lộ trình mới sẽ xuất hiện tại đây khi nội dung sẵn sàng."),
-      ).toBeInTheDocument();
     });
   });
 
-  it("renders published curricula cards with en-GB badge, version, and link", async () => {
+  it("renders a compact curriculum card with one detail link", async () => {
     vi.spyOn(curriculaApi, "list").mockResolvedValue([mockPilotSummary]);
 
     render(
@@ -206,14 +205,30 @@ describe("CurriculaPage", () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.getByText("Anh-Anh · en-GB")).toBeInTheDocument();
-    expect(screen.getByText("v1.0.0")).toBeInTheDocument();
+    expect(screen.getByText("Anh-Anh")).toBeInTheDocument();
     expect(
       screen.getByText(/Lộ trình thí điểm chuẩn hóa phát âm IPA Anh-Anh/),
     ).toBeInTheDocument();
 
     const detailLink = screen.getByRole("link", { name: /Xem lộ trình/ });
     expect(detailLink).toHaveAttribute("href", "/curricula/pilot-curriculum");
+  });
+
+  it("does not turn an unavailable progress percentage into zero", async () => {
+    vi.spyOn(curriculaApi, "list").mockResolvedValue([mockPilotSummary]);
+    vi.mocked(enrollmentApi.myEnrollments).mockResolvedValue([{
+      id: "enrollment-1",
+      curriculumTitle: mockPilotSummary.title,
+      revisionVersion: "1.0.0",
+      status: "ACTIVE",
+      completedRequiredActivities: 0,
+      totalRequiredActivities: 0,
+      progressPercent: null,
+      version: 1,
+    }]);
+    render(<QueryClientProvider client={queryClient}><MemoryRouter><CurriculaPage /></MemoryRouter></QueryClientProvider>);
+    expect(await screen.findByText("Đang học")).toBeInTheDocument();
+    expect(screen.queryByText(/0%/)).not.toBeInTheDocument();
   });
 });
 
@@ -306,7 +321,7 @@ describe("CurriculumDetailPage", () => {
     });
   });
 
-  it("renders full pilot detail with provenance transparency, phase/week accordions, and lesson badges", async () => {
+  it("shows the first stage and reveals curriculum information on demand", async () => {
     vi.spyOn(curriculaApi, "detail").mockResolvedValue(mockPilotDetail);
 
     render(
@@ -334,19 +349,23 @@ describe("CurriculumDetailPage", () => {
     );
 
     // Curriculum info section
-    expect(screen.getByText(/Chuẩn phát âm Anh-Anh \(en-GB\) · Phiên bản 1.0.0/)).toBeInTheDocument();
+    const infoToggle = screen.getByText("Thông tin lộ trình");
+    expect(infoToggle.closest("details")).not.toHaveAttribute("open");
+    fireEvent.click(infoToggle);
+    expect(infoToggle.closest("details")).toHaveAttribute("open");
+    expect(screen.getByText(/Anh-Anh \(en-GB\) · Phiên bản 1.0.0/)).toBeInTheDocument();
     expect(screen.getByText("Biên soạn: AI Specialist, Curriculum Lead")).toBeInTheDocument();
     expect(
       screen.getByRole("link", {
         name: "Khung mục tiêu Lộ trình tiếng Anh tham khảo",
       }),
     ).toHaveAttribute("href", "https://docs.google.com/spreadsheets/d/1Yim4AAiIfHMmNTrPsTXQtGfAkhsMcsBc_6-eURCgFEU/edit#gid=0");
-    expect(screen.getByText("Educational Fair Use / Pedagogical Framework Reference")).toBeInTheDocument();
+    expect(screen.getByText(/Educational Fair Use \/ Pedagogical Framework Reference/)).toBeInTheDocument();
 
     // Truthful provenance: must NOT claim to be verified
     expect(
       screen.getByText(
-        /Nguồn tham khảo chưa được xác minh\. Giáo trình do tác giả biên soạn dựa trên nguồn tham khảo\./,
+        "Nguồn tham khảo chưa được xác minh",
       ),
     ).toBeInTheDocument();
     expect(screen.queryByText(/Đã thẩm định nội dung sư phạm/)).not.toBeInTheDocument();
@@ -355,9 +374,9 @@ describe("CurriculumDetailPage", () => {
     // Outline section
     expect(screen.getByText("Giai đoạn 1: Chuẩn hóa Ngữ âm & Ngữ pháp Nền tảng")).toBeInTheDocument();
     expect(
-      screen.getByText(/Tuần 1: Chuẩn hóa Ngữ âm IPA Anh-Anh cốt lõi/),
+      screen.getByText("Chuẩn hóa Ngữ âm IPA Anh-Anh cốt lõi"),
     ).toBeInTheDocument();
-    expect(screen.getByText(/\(6 buổi\)/)).toBeInTheDocument();
+    expect(screen.getByText("6 buổi")).toBeInTheDocument();
 
     // All 6 lessons
     expect(screen.getByText("Buổi 1: Cặp nguyên âm đơn /iː/ và /ɪ/")).toBeInTheDocument();
@@ -375,10 +394,7 @@ describe("CurriculumDetailPage", () => {
     expect(screen.getByText("30 phút")).toBeInTheDocument();
     expect(screen.getByText("15 phút")).toBeInTheDocument();
 
-    // Exactly 5 "Bắt buộc" badges and 1 "Tùy chọn" badge
-    const requiredBadges = screen.getAllByText("Bắt buộc");
-    expect(requiredBadges).toHaveLength(5);
-
+    // Optional content remains distinguishable without repeating required badges.
     const optionalBadges = screen.getAllByText("Tùy chọn");
     expect(optionalBadges).toHaveLength(1);
   });
