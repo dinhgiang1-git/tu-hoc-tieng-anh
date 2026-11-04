@@ -1,0 +1,16 @@
+{
+  "curriculumKey": "it-vocabulary-reading",
+  "version": "1.0.0",
+  "resources": [
+    {
+      "key": "res.it.http-overview",
+      "title": "MDN: Overview of HTTP (tham khảo tùy chọn)",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview",
+      "mediaType": "ARTICLE",
+      "targetLocale": "en-US",
+      "attribution": "MDN contributors; chỉ liên kết tham khảo, không sao chép đoạn văn",
+      "license": "Liên kết tham khảo; không cấp lại hoặc khẳng định quyền tái bản nội dung ngoài",
+      "verificationStatus": "LINK_CHECKED"
+    }
+  ]
+}

@@ -1,0 +1,1404 @@
+{
+  "key": "it-vocabulary-reading.w01",
+  "title": "Chặng 1: Môi trường, cấu hình và API",
+  "weekNumber": 1,
+  "orderIndex": 1,
+  "description": "Học thuật ngữ trong ngữ cảnh lập trình đã quen; tự nhớ nghĩa và cụm dùng, đọc tình huống mới rồi kiểm tra hiểu.",
+  "lessons": [
+    {
+      "key": "it-vocabulary-reading.w01.l01",
+      "title": "Buổi 1: README: môi trường, dependency và bản build",
+      "orderIndex": 1,
+      "estimatedMinutes": 35,
+      "required": true,
+      "contentFile": "lessons/w01-l01-readme-environment.md",
+      "activities": [
+        {
+          "key": "it-vocabulary-reading.w01.l01.a01",
+          "title": "Học 8 thuật ngữ trong ngữ cảnh",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc mục 1–2: nghĩa chuyên ngành, cụm dùng và ví dụ dịch. Không cần học lại tiếng Anh giao tiếp.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        },
+        {
+          "key": "it-vocabulary-reading.w01.l01.a02",
+          "title": "Nhớ lại thuật ngữ trước khi đọc",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Không nhìn bảng: giải thích dependency, prerequisite, build artifact; viết câu phân biệt environment variable với command-line argument. Tự viết trước, sau đó đối chiếu bảng và ghi mục còn nhầm.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        },
+        {
+          "key": "it-vocabulary-reading.w01.l01.a03",
+          "title": "Đọc áp dụng và kiểm tra hiểu",
+          "type": "QUIZ",
+          "required": true,
+          "completionPolicy": "PASS_SCORE",
+          "instructions": "Đọc đoạn Atlas ở mục 4 rồi trả lời các câu hỏi. Phân biệt dữ kiện đoạn với điều ngoài phạm vi. Giải thích hiện sau khi nộp.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ],
+          "quizQuestions": [
+            {
+              "orderIndex": 1,
+              "prompt": "Trong câu mới 'The exporter depends on a compression library', library đóng vai trò gì?",
+              "explanation": "Library là thành phần exporter phụ thuộc vào.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Build artifact",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Command-line argument",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Dependency",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Repository",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 2,
+              "prompt": "'A network connection is a prerequisite for downloading packages' nghĩa là gì?",
+              "explanation": "Prerequisite là điều kiện tiên quyết của hành động đang xét.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Cần có kết nối trước khi tải gói",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Tải gói xong mới tạo kết nối",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Kết nối chính là gói được tải",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Kết nối là tên tệp đầu ra",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 3,
+              "prompt": "Theo đoạn Atlas, tệp nào là build artifact?",
+              "explanation": "Script tạo ra atlas-importer.jar.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "INPUT_DIR",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Kho package registry",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Tệp mã nguồn bất kỳ",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "atlas-importer.jar",
+                  "isCorrect": true
+                }
+              ]
+            },
+            {
+              "orderIndex": 4,
+              "prompt": "Atlas lấy thư mục đầu vào từ đâu?",
+              "explanation": "Launcher đọc INPUT_DIR để lấy thư mục; tên tệp được truyền riêng.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Tên package parser",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Biến môi trường INPUT_DIR",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Đối số chứa tên tệp",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Tên repository",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 5,
+              "prompt": "Tên tệp đầu vào được cung cấp thế nào?",
+              "explanation": "Đoạn nói supply the input file name as a command-line argument.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Qua command-line argument",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Bằng đổi phiên bản Java",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Bằng đổi tên registry",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Qua dependency parser",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 6,
+              "prompt": "Sau khi sửa source, artifact đã tạo có tự thay đổi không?",
+              "explanation": "Source trong repository khác với artifact đã được tạo.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Có; repository và artifact là một",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Có; Java đọc mọi source lúc chạy",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Không; phải build lại để chứa thay đổi",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Chỉ cần đổi INPUT_DIR",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 7,
+              "prompt": "Khẳng định nào đúng về INPUT_DIR?",
+              "explanation": "Đây là tên riêng của ứng dụng mẫu, không phải bảo đảm chung của Java.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Là biến Java tự định nghĩa cho mọi ứng dụng",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Được launcher của ứng dụng quy định",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Là package của Java",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Là đầu ra build",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 8,
+              "prompt": "Cặp nào đều là prerequisite cho build được nêu?",
+              "explanation": "Đoạn liệt kê hai điều kiện này cho build.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Chỉ tên tệp và INPUT_DIR",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "JAR đã build và thư mục đầu ra",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Mọi phiên bản Java và mạng công khai",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Java 21 runtime và quyền truy cập registry nội bộ",
+                  "isCorrect": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "it-vocabulary-reading.w01.l01.a04",
+          "title": "Tóm tắt 3 ý và chọn từ cần ôn",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Viết 3 ý tiếng Việt về đoạn, giữ ít nhất 3 thuật ngữ. Tự kiểm: đúng chủ thể/hành động, giữ điều kiện và cảnh báo; ghi 2 mục cần ôn. Đây là tự đánh giá, chưa có máy chấm chất lượng tóm tắt.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "it-vocabulary-reading.w01.l02",
+      "title": "Buổi 2: Cấu hình: property, default và override",
+      "orderIndex": 2,
+      "estimatedMinutes": 35,
+      "required": true,
+      "contentFile": "lessons/w01-l02-configuration.md",
+      "activities": [
+        {
+          "key": "it-vocabulary-reading.w01.l02.a01",
+          "title": "Học 8 thuật ngữ trong ngữ cảnh",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc mục 1–2: nghĩa chuyên ngành, cụm dùng và ví dụ dịch. Không cần học lại tiếng Anh giao tiếp.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        },
+        {
+          "key": "it-vocabulary-reading.w01.l02.a02",
+          "title": "Nhớ lại thuật ngữ trước khi đọc",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Che bảng: nêu nghĩa omit, override, default value; so sánh required với optional bằng ví dụ khác. Ôn dependency và runtime của bài 1. Tự viết trước, sau đó đối chiếu bảng và ghi mục còn nhầm.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        },
+        {
+          "key": "it-vocabulary-reading.w01.l02.a03",
+          "title": "Đọc áp dụng và kiểm tra hiểu",
+          "type": "QUIZ",
+          "required": true,
+          "completionPolicy": "PASS_SCORE",
+          "instructions": "Đọc đoạn Atlas ở mục 4 rồi trả lời các câu hỏi. Phân biệt dữ kiện đoạn với điều ngoài phạm vi. Giải thích hiện sau khi nộp.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ],
+          "quizQuestions": [
+            {
+              "orderIndex": 1,
+              "prompt": "'The deployment profile overrides the local setting' mô tả gì?",
+              "explanation": "Override là ghi đè giá trị hiệu lực, không phải xóa tệp.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Cả hai bị xóa khỏi ổ đĩa",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Thiết lập profile có hiệu lực thay local theo quy tắc ưu tiên",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Profile bị bỏ qua",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Mọi giá trị được cộng với nhau",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 2,
+              "prompt": "Chỉ biết 'label is optional', có suy ra label nhận null không?",
+              "explanation": "Không bắt buộc cung cấp khác với chấp nhận một giá trị cụ thể.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Có; optional luôn là null",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Có; mọi optional đều nhận chuỗi rỗng",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Không; optional nghĩa là bắt buộc",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Không; cần đọc thêm hợp đồng giá trị",
+                  "isCorrect": true
+                }
+              ]
+            },
+            {
+              "orderIndex": 3,
+              "prompt": "Theo đoạn, omit serverUrl dẫn đến gì?",
+              "explanation": "serverUrl là required; thiếu nó gây lỗi.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Startup thất bại với lỗi cấu hình",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Dùng localhost tự động",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Bật requestLog",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Dùng timeout 3000 thay cho URL",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 4,
+              "prompt": "Nếu không cung cấp timeoutMs, client dùng gì?",
+              "explanation": "3000 là default được nêu cụ thể cho Atlas.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "1000 milliseconds",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Chuỗi rỗng",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "3000 milliseconds",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Không có giới hạn chờ",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 5,
+              "prompt": "File ghi timeoutMs=5000, command line ghi 1000: giá trị hiệu lực?",
+              "explanation": "Trong ứng dụng mẫu command line ghi đè file.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "5000",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "6000",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "3000",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "1000",
+                  "isCorrect": true
+                }
+              ]
+            },
+            {
+              "orderIndex": 6,
+              "prompt": "Mặc định requestLog ở trạng thái nào?",
+              "explanation": "Đoạn nêu requestLog is disabled by default.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Disabled",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Enabled",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Bật nếu omit serverUrl",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Tùy hệ điều hành, đoạn không nói",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 7,
+              "prompt": "Truyền timeoutMs rỗng có giống bỏ không cung cấp không?",
+              "explanation": "Atlas phân biệt omitted với invalid value và từ chối null/rỗng.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Có; luôn dùng default",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Có; luôn bật logging",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Không; Atlas từ chối giá trị rỗng",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Không; rỗng nghĩa là vô hạn",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 8,
+              "prompt": "Mô tả nào đúng toàn bộ đoạn?",
+              "explanation": "serverUrl bắt buộc, timeout có default và có thể override.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Mọi property thiếu đều an toàn",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Quy tắc từng property quyết định hậu quả khi thiếu hoặc ghi đè",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Mọi property đều nhận null",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Default không thể bị ghi đè",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "it-vocabulary-reading.w01.l02.a04",
+          "title": "Tóm tắt 3 ý và chọn từ cần ôn",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Viết 3 ý tiếng Việt về đoạn, giữ ít nhất 3 thuật ngữ. Tự kiểm: đúng chủ thể/hành động, giữ điều kiện và cảnh báo; ghi 2 mục cần ôn. Đây là tự đánh giá, chưa có máy chấm chất lượng tóm tắt.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "it-vocabulary-reading.w01.l03",
+      "title": "Buổi 3: Java/API: đầu vào, đầu ra và đối tượng",
+      "orderIndex": 3,
+      "estimatedMinutes": 35,
+      "required": true,
+      "contentFile": "lessons/w01-l03-java-api.md",
+      "activities": [
+        {
+          "key": "it-vocabulary-reading.w01.l03.a01",
+          "title": "Học 8 thuật ngữ trong ngữ cảnh",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc mục 1–2: nghĩa chuyên ngành, cụm dùng và ví dụ dịch. Không cần học lại tiếng Anh giao tiếp.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        },
+        {
+          "key": "it-vocabulary-reading.w01.l03.a02",
+          "title": "Nhớ lại thuật ngữ trước khi đọc",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Nhớ lại parameter, argument, reference, immutable; tự viết chữ ký method và lời gọi rồi chỉ rõ parameter/argument. Ôn override cấu hình: khác override method. Tự viết trước, sau đó đối chiếu bảng và ghi mục còn nhầm.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        },
+        {
+          "key": "it-vocabulary-reading.w01.l03.a03",
+          "title": "Đọc áp dụng và kiểm tra hiểu",
+          "type": "QUIZ",
+          "required": true,
+          "completionPolicy": "PASS_SCORE",
+          "instructions": "Đọc đoạn Atlas ở mục 4 rồi trả lời các câu hỏi. Phân biệt dữ kiện đoạn với điều ngoài phạm vi. Giải thích hiện sau khi nộp.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ],
+          "quizQuestions": [
+            {
+              "orderIndex": 1,
+              "prompt": "Trong send(String address), address là gì ở khai báo?",
+              "explanation": "Tên ở chữ ký khai báo là parameter; giá trị cụ thể ở lời gọi là argument.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Argument của một lần gọi đã chạy",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Return value",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Build artifact",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Parameter",
+                  "isCorrect": true
+                }
+              ]
+            },
+            {
+              "orderIndex": 2,
+              "prompt": "'The result is immutable' cho biết gì?",
+              "explanation": "Immutable nói về khả năng thay đổi trạng thái, không có nghĩa tự sao chép.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Luôn tạo bản sao khi gán biến",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Không cho thay đổi trạng thái theo hợp đồng kiểu",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Không bao giờ chứa dữ liệu",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Chỉ được dùng trong constructor",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 3,
+              "prompt": "Constructor ReportParser nhận gì?",
+              "explanation": "Đoạn nêu constructor nhận FormatRegistry.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "20 records",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "ReportResult",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "FormatRegistry dependency",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "INPUT_DIR",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 4,
+              "prompt": "parser.parse(rawText, 20) có những arguments nào?",
+              "explanation": "rawText và 20 là giá trị truyền trong lời gọi cụ thể.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "rawText và 20",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "String và int",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "source và limit ở khai báo",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "ReportParser và ReportResult",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 5,
+              "prompt": "Return value chứa tối đa bao nhiêu records ở lời gọi đó?",
+              "explanation": "Limit argument 20 quy định tối đa 20 records trong ví dụ.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Không giới hạn",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "20",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Hai",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Không có record",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 6,
+              "prompt": "Gán result sang biến khác làm gì?",
+              "explanation": "Đoạn phân biệt copy reference với copy object.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Tự deep-copy mọi record",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Tạo constructor mới",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Biến result thành mutable",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Sao chép reference",
+                  "isCorrect": true
+                }
+              ]
+            },
+            {
+              "orderIndex": 7,
+              "prompt": "Vì sao ReportResult được mô tả immutable?",
+              "explanation": "API và cách bảo vệ contained data được nêu; tên hoặc injection không đủ.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "API không cho sửa và implementation bảo vệ dữ liệu bên trong",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Vì mọi Java class đều immutable",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Chỉ vì constructor có dependency",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Vì tên lớp có chữ Result",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 8,
+              "prompt": "Có thể kết luận parser immutable chỉ từ constructor injection không?",
+              "explanation": "Đoạn cảnh báo constructor injection không tự bảo đảm điều đó.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Có, mọi injected object đều immutable",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Có, constructor luôn deep-copy",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Không",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Có, vì có hai parameters",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "it-vocabulary-reading.w01.l03.a04",
+          "title": "Tóm tắt 3 ý và chọn từ cần ôn",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Viết 3 ý tiếng Việt về đoạn, giữ ít nhất 3 thuật ngữ. Tự kiểm: đúng chủ thể/hành động, giữ điều kiện và cảnh báo; ghi 2 mục cần ôn. Đây là tự đánh giá, chưa có máy chấm chất lượng tóm tắt.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "it-vocabulary-reading.w01.l04",
+      "title": "Buổi 4: Spring vocabulary: bean, container và lifecycle",
+      "orderIndex": 4,
+      "estimatedMinutes": 35,
+      "required": true,
+      "contentFile": "lessons/w01-l04-dependency-injection.md",
+      "activities": [
+        {
+          "key": "it-vocabulary-reading.w01.l04.a01",
+          "title": "Học 8 thuật ngữ trong ngữ cảnh",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc mục 1–2: nghĩa chuyên ngành, cụm dùng và ví dụ dịch. Không cần học lại tiếng Anh giao tiếp.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        },
+        {
+          "key": "it-vocabulary-reading.w01.l04.a02",
+          "title": "Nhớ lại thuật ngữ trước khi đọc",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Nhớ lại instantiate, inject, resolve a dependency và lifecycle bằng 4 câu ngắn. Ôn instance và constructor từ bài 3. Tự viết trước, sau đó đối chiếu bảng và ghi mục còn nhầm.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        },
+        {
+          "key": "it-vocabulary-reading.w01.l04.a03",
+          "title": "Đọc áp dụng và kiểm tra hiểu",
+          "type": "QUIZ",
+          "required": true,
+          "completionPolicy": "PASS_SCORE",
+          "instructions": "Đọc đoạn Atlas ở mục 4 rồi trả lời các câu hỏi. Phân biệt dữ kiện đoạn với điều ngoài phạm vi. Giải thích hiện sau khi nộp.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ],
+          "quizQuestions": [
+            {
+              "orderIndex": 1,
+              "prompt": "'The factory instantiates a formatter' nghĩa là gì?",
+              "explanation": "Instantiate nghĩa là tạo instance.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Factory tạo một formatter instance",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Factory ghi đè cấu hình",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Formatter bị xóa khỏi repository",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Factory luôn trả null",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 2,
+              "prompt": "Resolve a dependency trong ngữ cảnh container là gì?",
+              "explanation": "Resolve có nhiều nghĩa; container ở đây tìm object phù hợp.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Hoàn tất một Promise bất kỳ",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Xóa mọi dependency",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Tìm/chọn dependency phù hợp",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Đổi dependency thành build artifact",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 3,
+              "prompt": "Trước khi inject Clock, training container phải làm gì?",
+              "explanation": "Trình tự là resolve trước, inject qua constructor sau.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Đóng application",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Resolve dependency Clock",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Chạy stop callback",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Tạo repository mới",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 4,
+              "prompt": "Có bao nhiêu Clock candidate trong ví dụ?",
+              "explanation": "Đoạn ghi exactly one Clock candidate.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Không có",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Hai",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Không xác định",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Một",
+                  "isCorrect": true
+                }
+              ]
+            },
+            {
+              "orderIndex": 5,
+              "prompt": "Nếu thiếu Clock candidate thì sao theo ví dụ?",
+              "explanation": "Đây là failure rule được nêu cho training container.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Tự tạo mọi loại Clock",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Bỏ qua constructor",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Startup thất bại",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Luôn dùng thời gian hệ điều hành",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 6,
+              "prompt": "Application scope trong đoạn nghĩa là gì?",
+              "explanation": "Đoạn định nghĩa scope riêng cho ví dụ, không khái quát mọi cấu hình Spring.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Instance mới cho mỗi dòng log",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Một ReportService instance dùng chung suốt đời ứng dụng mẫu",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Container Docker mới mỗi method",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Mọi cấu hình Spring dùng cùng object",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 7,
+              "prompt": "Lifecycle của bean mẫu gồm những bước nào?",
+              "explanation": "Ba giai đoạn được nêu trực tiếp trong đoạn.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Download package, clone repository, deep copy",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Request, response, payload",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Chỉ constructor, không callback",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Creation, start callback, stop callback",
+                  "isCorrect": true
+                }
+              ]
+            },
+            {
+              "orderIndex": 8,
+              "prompt": "Shared bean có được bảo đảm thread-safe bởi injection không?",
+              "explanation": "Đoạn tách cung cấp collaborator khỏi thread safety và immutability.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Không; phụ thuộc implementation",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Có; shared luôn immutable",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Có; container tự khóa mọi method",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Chỉ cần tên bean là đủ",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "it-vocabulary-reading.w01.l04.a04",
+          "title": "Tóm tắt 3 ý và chọn từ cần ôn",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Viết 3 ý tiếng Việt về đoạn, giữ ít nhất 3 thuật ngữ. Tự kiểm: đúng chủ thể/hành động, giữ điều kiện và cảnh báo; ghi 2 mục cần ôn. Đây là tự đánh giá, chưa có máy chấm chất lượng tóm tắt.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "it-vocabulary-reading.w01.l05",
+      "title": "Buổi 5: HTTP/API: request, payload và validation",
+      "orderIndex": 5,
+      "estimatedMinutes": 35,
+      "required": true,
+      "contentFile": "lessons/w01-l05-http-api.md",
+      "activities": [
+        {
+          "key": "it-vocabulary-reading.w01.l05.a01",
+          "title": "Học 8 thuật ngữ trong ngữ cảnh",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc mục 1–2: nghĩa chuyên ngành, cụm dùng và ví dụ dịch. Không cần học lại tiếng Anh giao tiếp.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        },
+        {
+          "key": "it-vocabulary-reading.w01.l05.a02",
+          "title": "Nhớ lại thuật ngữ trước khi đọc",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Che nghĩa: diễn giải deserialize, validate, payload, authentication; đặt câu phân biệt request body với response. Ôn required và optional từ bài 2. Tự viết trước, sau đó đối chiếu bảng và ghi mục còn nhầm.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        },
+        {
+          "key": "it-vocabulary-reading.w01.l05.a03",
+          "title": "Đọc áp dụng và kiểm tra hiểu",
+          "type": "QUIZ",
+          "required": true,
+          "completionPolicy": "PASS_SCORE",
+          "instructions": "Đọc đoạn Atlas ở mục 4 rồi trả lời các câu hỏi. Phân biệt dữ kiện đoạn với điều ngoài phạm vi. Giải thích hiện sau khi nộp.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ],
+          "quizQuestions": [
+            {
+              "orderIndex": 1,
+              "prompt": "JSON hợp cú pháp nhưng amount=-5 cho thấy cần phân biệt cặp nào?",
+              "explanation": "Đọc được cấu trúc JSON khác với dữ liệu thỏa ràng buộc nghiệp vụ.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Repository và runtime",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Constructor và package",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Deserialization và validation",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Lifecycle và scope",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 2,
+              "prompt": "Trong 'Authentication establishes the caller identity', identity là gì?",
+              "explanation": "Authentication xác định danh tính, không tự bảo đảm quyền.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Quyền tạo mọi tài nguyên",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Nội dung mọi response",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Mã trạng thái 201",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Danh tính người gọi",
+                  "isCorrect": true
+                }
+              ]
+            },
+            {
+              "orderIndex": 3,
+              "prompt": "Endpoint trong đoạn là gì?",
+              "explanation": "Đoạn nêu đúng method và URL của endpoint.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "GET /health",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "POST /invoices",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "PUT /users",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "DELETE /invoices",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 4,
+              "prompt": "Authentication xảy ra lúc nào trong API mẫu?",
+              "explanation": "Authentication runs before body processing.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Trước body processing",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Sau khi lưu invoice",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Chỉ sau response 201",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Sau mọi validation field",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 5,
+              "prompt": "Sau khi authentication thành công, JSON sai cú pháp nhận mã nào?",
+              "explanation": "Với invalid JSON được mô tả, server trả 400.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "201",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "401 trong mọi trường hợp",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "204",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "400",
+                  "isCorrect": true
+                }
+              ]
+            },
+            {
+              "orderIndex": 6,
+              "prompt": "Không có valid credentials thì API làm gì?",
+              "explanation": "Đoạn nêu 401 before an invoice is saved.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Trả 401 trước khi lưu invoice",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Lưu invoice rồi trả 201",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Chỉ bỏ currency field",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Tự cấp quyền create",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 7,
+              "prompt": "Thành công tạo invoice trả gì?",
+              "explanation": "Hợp đồng thành công trong đoạn nêu 201 và invoice identifier.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "400 và không có identifier",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "401 và payload bị xóa",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "201 và identifier trong response body",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "200 và mọi invoice của mọi người",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 8,
+              "prompt": "Đã authenticated có chắc được tạo invoice không?",
+              "explanation": "Đoạn tách authentication khỏi quyết định được create hay không.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Có; authentication gồm mọi permission",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Không; còn permission check riêng",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Có; JSON tự cấp quyền",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Chỉ cần omit amount",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "it-vocabulary-reading.w01.l05.a04",
+          "title": "Tóm tắt 3 ý và chọn từ cần ôn",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Viết 3 ý tiếng Việt về đoạn, giữ ít nhất 3 thuật ngữ. Tự kiểm: đúng chủ thể/hành động, giữ điều kiện và cảnh báo; ghi 2 mục cần ôn. Đây là tự đánh giá, chưa có máy chấm chất lượng tóm tắt.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        },
+        {
+          "key": "it-vocabulary-reading.w01.l05.a05",
+          "title": "Tra cứu HTTP tùy chọn",
+          "type": "EXTERNAL_RESOURCE",
+          "required": false,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Nếu cần, mở tổng quan HTTP và tìm request/response. Không cần đọc hết trang.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ],
+          "resourceKeys": [
+            "res.it.http-overview"
+          ]
+        }
+      ]
+    }
+  ]
+}
