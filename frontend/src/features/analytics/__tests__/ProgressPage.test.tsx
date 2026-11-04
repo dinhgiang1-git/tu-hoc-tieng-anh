@@ -195,11 +195,12 @@ describe("ProgressPage", () => {
     renderProgressPage();
 
     await waitFor(() => {
-      expect(screen.getByTestId("enrollment-switcher")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Lộ trình" })).toBeInTheDocument();
     });
 
-    const switcher = screen.getByTestId("enrollment-switcher") as HTMLSelectElement;
-    fireEvent.change(switcher, { target: { value: enrollmentId2 } });
+    fireEvent.click(screen.getByRole("button", { name: "Lộ trình" }));
+    fireEvent.keyDown(screen.getByRole("listbox"), { key: "ArrowDown" });
+    fireEvent.keyDown(screen.getByRole("listbox"), { key: "Enter" });
 
     await waitFor(() => {
       expect(analyticsApi.getEnrollmentAnalytics).toHaveBeenCalledWith(

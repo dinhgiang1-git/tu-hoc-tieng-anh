@@ -4,10 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import {
   BookOpen,
   Calendar,
-  ChevronDown,
   RotateCw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { PageHeader } from "@/components/shared/PageHeader";
 
@@ -72,29 +72,24 @@ export function ProgressPage() {
   const analyticsData = analyticsQuery.data;
 
   return (
-    <div className="container mx-auto max-w-6xl space-y-8 py-6 px-4">
+    <div className="w-full min-w-0 space-y-8">
       {/* Page Header */}
       <PageHeader
         title="Tiến độ học tập"
         description="Thống kê trực quan tiến trình học tập, biểu đồ theo tuần và lịch sử học tập theo ngày thực tế."
         actions={
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 flex-wrap items-center gap-3">
             {enrollments.length > 1 && (
-              <div className="relative">
-                <select
-                  data-testid="enrollment-switcher"
-                  className="h-9 appearance-none rounded-lg border border-border bg-card px-3 pr-8 text-xs font-medium text-foreground shadow-sm transition-colors hover:bg-muted/50 focus:outline-none focus:ring-1 focus:ring-primary"
-                  value={effectiveEnrollmentId ?? ""}
-                  onChange={(e) => setSelectedEnrollmentId(e.target.value)}
-                >
-                  {enrollments.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.curriculumTitle || "Lộ trình học"} ({item.status})
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              </div>
+              <Select
+                label="Lộ trình"
+                value={effectiveEnrollmentId ?? ""}
+                onValueChange={setSelectedEnrollmentId}
+                className="w-80 max-w-full"
+                options={enrollments.map((item) => ({
+                  value: item.id,
+                  label: `${item.curriculumTitle || "Lộ trình học"} (${item.status})`,
+                }))}
+              />
             )}
 
             <Button

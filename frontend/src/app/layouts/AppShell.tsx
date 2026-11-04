@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { AlertCircle, GraduationCap, Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import { Navigate, Outlet, useMatch } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared/ErrorState";
@@ -9,7 +9,6 @@ import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { AppSidebar } from "./AppSidebar";
 
 export function AppShell() {
-  const isLessonWorkspace = Boolean(useMatch("/enrollments/:enrollmentId/lessons/:lessonId"));
   const {
     user,
     isLoading,
@@ -88,7 +87,7 @@ export function AppShell() {
       />
 
       {/* Main Content Area */}
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         {/* Top Navbar */}
         <header className="flex h-14 items-center justify-between border-b border-border bg-card px-4 md:px-6">
           <div className="flex items-center gap-3">
@@ -171,7 +170,7 @@ export function AppShell() {
 
         {/* Content Scroll View */}
         <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-          <div className={isLessonWorkspace ? "w-full" : "mx-auto max-w-5xl"}>
+          <div className="w-full min-w-0">
             <Outlet />
           </div>
         </main>

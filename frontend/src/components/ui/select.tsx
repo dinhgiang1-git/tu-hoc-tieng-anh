@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { buttonVariants } from "./button-variants";
 
 interface SelectProps {
   value: string;
@@ -83,6 +84,7 @@ export function Select({ value, options, onValueChange, label, placeholder = "Ch
       <button
         ref={triggerRef}
         type="button"
+        data-nh-motion="press"
         aria-label={label}
         aria-describedby={`${id}-value`}
         aria-haspopup="listbox"
@@ -96,10 +98,10 @@ export function Select({ value, options, onValueChange, label, placeholder = "Ch
             open(event.key === "ArrowUp");
           }
         }}
-        className="flex h-9 w-full items-center justify-between gap-3 rounded-lg border border-border bg-card px-3 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+        className={buttonVariants({ variant: "outline", size: "sm", className: "w-full min-w-0 justify-between gap-3 text-left" })}
       >
         <span id={`${id}-value`} className="truncate">{options[selectedIndex]?.label ?? placeholder}</span>
-        <ChevronDown aria-hidden="true" className={cn("h-4 w-4 shrink-0 text-muted-foreground", isExpanded && "rotate-180")} />
+        <ChevronDown aria-hidden="true" className={cn("h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-[var(--nh-motion-duration)] ease-[var(--nh-motion-ease)] motion-reduce:transition-none", isExpanded && "rotate-180")} />
       </button>
       {isExpanded && (
         <div
@@ -110,7 +112,7 @@ export function Select({ value, options, onValueChange, label, placeholder = "Ch
           aria-activedescendant={options[activeIndex] ? `${id}-option-${activeIndex}` : undefined}
           tabIndex={-1}
           onKeyDown={handleListKeyDown}
-          className="absolute right-0 top-full z-50 mt-2 max-h-72 w-full min-w-64 max-w-[calc(100vw-2rem)] overflow-y-auto rounded-xl border border-border bg-popover p-1.5 text-popover-foreground shadow-xl outline-none"
+          className="absolute right-0 top-full z-50 mt-2 max-h-72 w-full min-w-64 max-w-[calc(100vw-2rem)] overflow-y-auto rounded-[5px] border-2 border-border bg-popover p-1.5 text-popover-foreground [box-shadow:var(--nh-shadow)] outline-none"
         >
           {options.map((option, index) => (
             <div
@@ -121,7 +123,7 @@ export function Select({ value, options, onValueChange, label, placeholder = "Ch
               onPointerMove={() => setActiveIndex(index)}
               onMouseDown={(event) => event.preventDefault()}
               onClick={() => choose(index)}
-              className={cn("flex cursor-pointer items-start gap-3 rounded-lg px-3 py-3 text-sm leading-5", index === activeIndex && "bg-accent text-accent-foreground")}
+              className={cn("flex cursor-pointer items-start gap-3 rounded-[5px] px-3 py-3 text-sm leading-5", index === activeIndex && "bg-accent text-accent-foreground")}
             >
               <Check aria-hidden="true" className={cn("mt-0.5 h-4 w-4 shrink-0 text-primary", option.value !== value && "invisible")} />
               <span>{option.label}</span>
