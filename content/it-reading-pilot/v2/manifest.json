@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "curriculumKey": "it-vocabulary-reading",
-  "version": "1.0.0",
+  "curriculumKey": "it-reading-pilot",
+  "version": "2.0.0",
   "title": "Từ vựng IT để đọc tài liệu: Java, Spring Boot & React",
   "description": "10 buổi dành cho người có tiếng Anh cơ bản: 80 mục từ/cụm chuyên ngành, nghĩa Việt, ví dụ và dịch; nhớ lại chủ động rồi đọc đoạn kỹ thuật tự biên soạn, làm quiz và tóm tắt. Không học lại giao tiếp cơ bản.",
   "targetLocale": "en-GB",
@@ -16,23 +16,23 @@
   },
   "phases": [
     {
-      "key": "it-vocabulary-reading.phase01",
+      "key": "it-reading-pilot.phase01",
       "title": "Chặng 1: Môi trường, cấu hình và API",
       "orderIndex": 1,
       "weeks": [
         {
-          "key": "it-vocabulary-reading.w01",
+          "key": "it-reading-pilot.w01",
           "path": "weeks/week-01.json"
         }
       ]
     },
     {
-      "key": "it-vocabulary-reading.phase02",
+      "key": "it-reading-pilot.phase02",
       "title": "Chặng 2: Dữ liệu, React, debug và migration",
       "orderIndex": 2,
       "weeks": [
         {
-          "key": "it-vocabulary-reading.w02",
+          "key": "it-reading-pilot.w02",
           "path": "weeks/week-02.json"
         }
       ]

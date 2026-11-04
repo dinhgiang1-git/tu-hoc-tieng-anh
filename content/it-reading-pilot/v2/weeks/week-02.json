@@ -1,20 +1,20 @@
 {
-  "key": "it-vocabulary-reading.w01",
-  "title": "Chặng 1: Môi trường, cấu hình và API",
-  "weekNumber": 1,
-  "orderIndex": 1,
+  "key": "it-reading-pilot.w02",
+  "title": "Chặng 2: Dữ liệu, React, debug và migration",
+  "weekNumber": 2,
+  "orderIndex": 2,
   "description": "Học thuật ngữ trong ngữ cảnh lập trình đã quen; tự nhớ nghĩa và cụm dùng, đọc tình huống mới rồi kiểm tra hiểu.",
   "lessons": [
     {
-      "key": "it-vocabulary-reading.w01.l01",
-      "title": "Buổi 1: README: môi trường, dependency và bản build",
+      "key": "it-reading-pilot.w02.l01",
+      "title": "Buổi 6: Database: persist, flush, commit và rollback",
       "orderIndex": 1,
       "estimatedMinutes": 35,
       "required": true,
-      "contentFile": "lessons/w01-l01-readme-environment.md",
+      "contentFile": "lessons/w02-l01-persistence.md",
       "activities": [
         {
-          "key": "it-vocabulary-reading.w01.l01.a01",
+          "key": "it-reading-pilot.w02.l01.a01",
           "title": "Học 8 thuật ngữ trong ngữ cảnh",
           "type": "READING",
           "required": true,
@@ -26,19 +26,19 @@
           ]
         },
         {
-          "key": "it-vocabulary-reading.w01.l01.a02",
+          "key": "it-reading-pilot.w02.l01.a02",
           "title": "Nhớ lại thuật ngữ trước khi đọc",
           "type": "PRACTICE",
           "required": true,
           "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
-          "instructions": "Không nhìn bảng: giải thích dependency, prerequisite, build artifact; viết câu phân biệt environment variable với command-line argument. Tự viết trước, sau đó đối chiếu bảng và ghi mục còn nhầm.",
+          "instructions": "Không nhìn bảng: mô tả riêng persist, flush, commit; giải thích constraint và fetch. Ôn response/status code bài 5. Tự viết trước, sau đó đối chiếu bảng và ghi mục còn nhầm.",
           "skillTags": [
             "technical-vocabulary",
             "reading"
           ]
         },
         {
-          "key": "it-vocabulary-reading.w01.l01.a03",
+          "key": "it-reading-pilot.w02.l01.a03",
           "title": "Đọc áp dụng và kiểm tra hiểu",
           "type": "QUIZ",
           "required": true,
@@ -51,776 +51,224 @@
           "quizQuestions": [
             {
               "orderIndex": 1,
-              "prompt": "Trong câu mới 'The exporter depends on a compression library', library đóng vai trò gì?",
-              "explanation": "Library là thành phần exporter phụ thuộc vào.",
+              "prompt": "'Flush the pending changes' có tự chứng minh transaction đã commit không?",
+              "explanation": "Flush đồng bộ thay đổi đang chờ; commit là bước riêng.",
               "options": [
                 {
                   "orderIndex": 1,
-                  "content": "Build artifact",
+                  "content": "Có; flush và commit đồng nghĩa",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 2,
-                  "content": "Command-line argument",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Dependency",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Repository",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "orderIndex": 2,
-              "prompt": "'A network connection is a prerequisite for downloading packages' nghĩa là gì?",
-              "explanation": "Prerequisite là điều kiện tiên quyết của hành động đang xét.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "Cần có kết nối trước khi tải gói",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Tải gói xong mới tạo kết nối",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Kết nối chính là gói được tải",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Kết nối là tên tệp đầu ra",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "orderIndex": 3,
-              "prompt": "Theo đoạn Atlas, tệp nào là build artifact?",
-              "explanation": "Script tạo ra atlas-importer.jar.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "INPUT_DIR",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Kho package registry",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Tệp mã nguồn bất kỳ",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "atlas-importer.jar",
-                  "isCorrect": true
-                }
-              ]
-            },
-            {
-              "orderIndex": 4,
-              "prompt": "Atlas lấy thư mục đầu vào từ đâu?",
-              "explanation": "Launcher đọc INPUT_DIR để lấy thư mục; tên tệp được truyền riêng.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "Tên package parser",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Biến môi trường INPUT_DIR",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Đối số chứa tên tệp",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Tên repository",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "orderIndex": 5,
-              "prompt": "Tên tệp đầu vào được cung cấp thế nào?",
-              "explanation": "Đoạn nói supply the input file name as a command-line argument.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "Qua command-line argument",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Bằng đổi phiên bản Java",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Bằng đổi tên registry",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Qua dependency parser",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "orderIndex": 6,
-              "prompt": "Sau khi sửa source, artifact đã tạo có tự thay đổi không?",
-              "explanation": "Source trong repository khác với artifact đã được tạo.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "Có; repository và artifact là một",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Có; Java đọc mọi source lúc chạy",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Không; phải build lại để chứa thay đổi",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Chỉ cần đổi INPUT_DIR",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "orderIndex": 7,
-              "prompt": "Khẳng định nào đúng về INPUT_DIR?",
-              "explanation": "Đây là tên riêng của ứng dụng mẫu, không phải bảo đảm chung của Java.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "Là biến Java tự định nghĩa cho mọi ứng dụng",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Được launcher của ứng dụng quy định",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Là package của Java",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Là đầu ra build",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "orderIndex": 8,
-              "prompt": "Cặp nào đều là prerequisite cho build được nêu?",
-              "explanation": "Đoạn liệt kê hai điều kiện này cho build.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "Chỉ tên tệp và INPUT_DIR",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "JAR đã build và thư mục đầu ra",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Mọi phiên bản Java và mạng công khai",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Java 21 runtime và quyền truy cập registry nội bộ",
-                  "isCorrect": true
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "key": "it-vocabulary-reading.w01.l01.a04",
-          "title": "Tóm tắt 3 ý và chọn từ cần ôn",
-          "type": "REFLECTION",
-          "required": true,
-          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
-          "instructions": "Viết 3 ý tiếng Việt về đoạn, giữ ít nhất 3 thuật ngữ. Tự kiểm: đúng chủ thể/hành động, giữ điều kiện và cảnh báo; ghi 2 mục cần ôn. Đây là tự đánh giá, chưa có máy chấm chất lượng tóm tắt.",
-          "skillTags": [
-            "technical-vocabulary",
-            "reading"
-          ]
-        }
-      ]
-    },
-    {
-      "key": "it-vocabulary-reading.w01.l02",
-      "title": "Buổi 2: Cấu hình: property, default và override",
-      "orderIndex": 2,
-      "estimatedMinutes": 35,
-      "required": true,
-      "contentFile": "lessons/w01-l02-configuration.md",
-      "activities": [
-        {
-          "key": "it-vocabulary-reading.w01.l02.a01",
-          "title": "Học 8 thuật ngữ trong ngữ cảnh",
-          "type": "READING",
-          "required": true,
-          "completionPolicy": "MANUAL_CHECK",
-          "instructions": "Đọc mục 1–2: nghĩa chuyên ngành, cụm dùng và ví dụ dịch. Không cần học lại tiếng Anh giao tiếp.",
-          "skillTags": [
-            "technical-vocabulary",
-            "reading"
-          ]
-        },
-        {
-          "key": "it-vocabulary-reading.w01.l02.a02",
-          "title": "Nhớ lại thuật ngữ trước khi đọc",
-          "type": "PRACTICE",
-          "required": true,
-          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
-          "instructions": "Che bảng: nêu nghĩa omit, override, default value; so sánh required với optional bằng ví dụ khác. Ôn dependency và runtime của bài 1. Tự viết trước, sau đó đối chiếu bảng và ghi mục còn nhầm.",
-          "skillTags": [
-            "technical-vocabulary",
-            "reading"
-          ]
-        },
-        {
-          "key": "it-vocabulary-reading.w01.l02.a03",
-          "title": "Đọc áp dụng và kiểm tra hiểu",
-          "type": "QUIZ",
-          "required": true,
-          "completionPolicy": "PASS_SCORE",
-          "instructions": "Đọc đoạn Atlas ở mục 4 rồi trả lời các câu hỏi. Phân biệt dữ kiện đoạn với điều ngoài phạm vi. Giải thích hiện sau khi nộp.",
-          "skillTags": [
-            "technical-vocabulary",
-            "reading"
-          ],
-          "quizQuestions": [
-            {
-              "orderIndex": 1,
-              "prompt": "'The deployment profile overrides the local setting' mô tả gì?",
-              "explanation": "Override là ghi đè giá trị hiệu lực, không phải xóa tệp.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "Cả hai bị xóa khỏi ổ đĩa",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Thiết lập profile có hiệu lực thay local theo quy tắc ưu tiên",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Profile bị bỏ qua",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Mọi giá trị được cộng với nhau",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "orderIndex": 2,
-              "prompt": "Chỉ biết 'label is optional', có suy ra label nhận null không?",
-              "explanation": "Không bắt buộc cung cấp khác với chấp nhận một giá trị cụ thể.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "Có; optional luôn là null",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Có; mọi optional đều nhận chuỗi rỗng",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Không; optional nghĩa là bắt buộc",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Không; cần đọc thêm hợp đồng giá trị",
-                  "isCorrect": true
-                }
-              ]
-            },
-            {
-              "orderIndex": 3,
-              "prompt": "Theo đoạn, omit serverUrl dẫn đến gì?",
-              "explanation": "serverUrl là required; thiếu nó gây lỗi.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "Startup thất bại với lỗi cấu hình",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Dùng localhost tự động",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Bật requestLog",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Dùng timeout 3000 thay cho URL",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "orderIndex": 4,
-              "prompt": "Nếu không cung cấp timeoutMs, client dùng gì?",
-              "explanation": "3000 là default được nêu cụ thể cho Atlas.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "1000 milliseconds",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Chuỗi rỗng",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "3000 milliseconds",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Không có giới hạn chờ",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "orderIndex": 5,
-              "prompt": "File ghi timeoutMs=5000, command line ghi 1000: giá trị hiệu lực?",
-              "explanation": "Trong ứng dụng mẫu command line ghi đè file.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "5000",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "6000",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "3000",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "1000",
-                  "isCorrect": true
-                }
-              ]
-            },
-            {
-              "orderIndex": 6,
-              "prompt": "Mặc định requestLog ở trạng thái nào?",
-              "explanation": "Đoạn nêu requestLog is disabled by default.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "Disabled",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Enabled",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Bật nếu omit serverUrl",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Tùy hệ điều hành, đoạn không nói",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "orderIndex": 7,
-              "prompt": "Truyền timeoutMs rỗng có giống bỏ không cung cấp không?",
-              "explanation": "Atlas phân biệt omitted với invalid value và từ chối null/rỗng.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "Có; luôn dùng default",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Có; luôn bật logging",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Không; Atlas từ chối giá trị rỗng",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Không; rỗng nghĩa là vô hạn",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "orderIndex": 8,
-              "prompt": "Mô tả nào đúng toàn bộ đoạn?",
-              "explanation": "serverUrl bắt buộc, timeout có default và có thể override.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "Mọi property thiếu đều an toàn",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Quy tắc từng property quyết định hậu quả khi thiếu hoặc ghi đè",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Mọi property đều nhận null",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Default không thể bị ghi đè",
-                  "isCorrect": false
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "key": "it-vocabulary-reading.w01.l02.a04",
-          "title": "Tóm tắt 3 ý và chọn từ cần ôn",
-          "type": "REFLECTION",
-          "required": true,
-          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
-          "instructions": "Viết 3 ý tiếng Việt về đoạn, giữ ít nhất 3 thuật ngữ. Tự kiểm: đúng chủ thể/hành động, giữ điều kiện và cảnh báo; ghi 2 mục cần ôn. Đây là tự đánh giá, chưa có máy chấm chất lượng tóm tắt.",
-          "skillTags": [
-            "technical-vocabulary",
-            "reading"
-          ]
-        }
-      ]
-    },
-    {
-      "key": "it-vocabulary-reading.w01.l03",
-      "title": "Buổi 3: Java/API: đầu vào, đầu ra và đối tượng",
-      "orderIndex": 3,
-      "estimatedMinutes": 35,
-      "required": true,
-      "contentFile": "lessons/w01-l03-java-api.md",
-      "activities": [
-        {
-          "key": "it-vocabulary-reading.w01.l03.a01",
-          "title": "Học 8 thuật ngữ trong ngữ cảnh",
-          "type": "READING",
-          "required": true,
-          "completionPolicy": "MANUAL_CHECK",
-          "instructions": "Đọc mục 1–2: nghĩa chuyên ngành, cụm dùng và ví dụ dịch. Không cần học lại tiếng Anh giao tiếp.",
-          "skillTags": [
-            "technical-vocabulary",
-            "reading"
-          ]
-        },
-        {
-          "key": "it-vocabulary-reading.w01.l03.a02",
-          "title": "Nhớ lại thuật ngữ trước khi đọc",
-          "type": "PRACTICE",
-          "required": true,
-          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
-          "instructions": "Nhớ lại parameter, argument, reference, immutable; tự viết chữ ký method và lời gọi rồi chỉ rõ parameter/argument. Ôn override cấu hình: khác override method. Tự viết trước, sau đó đối chiếu bảng và ghi mục còn nhầm.",
-          "skillTags": [
-            "technical-vocabulary",
-            "reading"
-          ]
-        },
-        {
-          "key": "it-vocabulary-reading.w01.l03.a03",
-          "title": "Đọc áp dụng và kiểm tra hiểu",
-          "type": "QUIZ",
-          "required": true,
-          "completionPolicy": "PASS_SCORE",
-          "instructions": "Đọc đoạn Atlas ở mục 4 rồi trả lời các câu hỏi. Phân biệt dữ kiện đoạn với điều ngoài phạm vi. Giải thích hiện sau khi nộp.",
-          "skillTags": [
-            "technical-vocabulary",
-            "reading"
-          ],
-          "quizQuestions": [
-            {
-              "orderIndex": 1,
-              "prompt": "Trong send(String address), address là gì ở khai báo?",
-              "explanation": "Tên ở chữ ký khai báo là parameter; giá trị cụ thể ở lời gọi là argument.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "Argument của một lần gọi đã chạy",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Return value",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Build artifact",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Parameter",
-                  "isCorrect": true
-                }
-              ]
-            },
-            {
-              "orderIndex": 2,
-              "prompt": "'The result is immutable' cho biết gì?",
-              "explanation": "Immutable nói về khả năng thay đổi trạng thái, không có nghĩa tự sao chép.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "Luôn tạo bản sao khi gán biến",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Không cho thay đổi trạng thái theo hợp đồng kiểu",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Không bao giờ chứa dữ liệu",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Chỉ được dùng trong constructor",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "orderIndex": 3,
-              "prompt": "Constructor ReportParser nhận gì?",
-              "explanation": "Đoạn nêu constructor nhận FormatRegistry.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "20 records",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "ReportResult",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "FormatRegistry dependency",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "INPUT_DIR",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "orderIndex": 4,
-              "prompt": "parser.parse(rawText, 20) có những arguments nào?",
-              "explanation": "rawText và 20 là giá trị truyền trong lời gọi cụ thể.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "rawText và 20",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "String và int",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "source và limit ở khai báo",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "ReportParser và ReportResult",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "orderIndex": 5,
-              "prompt": "Return value chứa tối đa bao nhiêu records ở lời gọi đó?",
-              "explanation": "Limit argument 20 quy định tối đa 20 records trong ví dụ.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "Không giới hạn",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "20",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Hai",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Không có record",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "orderIndex": 6,
-              "prompt": "Gán result sang biến khác làm gì?",
-              "explanation": "Đoạn phân biệt copy reference với copy object.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "Tự deep-copy mọi record",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Tạo constructor mới",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Biến result thành mutable",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Sao chép reference",
-                  "isCorrect": true
-                }
-              ]
-            },
-            {
-              "orderIndex": 7,
-              "prompt": "Vì sao ReportResult được mô tả immutable?",
-              "explanation": "API và cách bảo vệ contained data được nêu; tên hoặc injection không đủ.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "API không cho sửa và implementation bảo vệ dữ liệu bên trong",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Vì mọi Java class đều immutable",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Chỉ vì constructor có dependency",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 4,
-                  "content": "Vì tên lớp có chữ Result",
-                  "isCorrect": false
-                }
-              ]
-            },
-            {
-              "orderIndex": 8,
-              "prompt": "Có thể kết luận parser immutable chỉ từ constructor injection không?",
-              "explanation": "Đoạn cảnh báo constructor injection không tự bảo đảm điều đó.",
-              "options": [
-                {
-                  "orderIndex": 1,
-                  "content": "Có, mọi injected object đều immutable",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Có, constructor luôn deep-copy",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
                   "content": "Không",
                   "isCorrect": true
                 },
                 {
-                  "orderIndex": 4,
-                  "content": "Có, vì có hai parameters",
+                  "orderIndex": 3,
+                  "content": "Có; persist luôn là commit",
                   "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Chỉ nếu tên record là order",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 2,
+              "prompt": "'A unique constraint rejects duplicates' nói về gì?",
+              "explanation": "Constraint là ràng buộc dữ liệu, ở đây là unique.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Ràng buộc không cho trùng dữ liệu theo khóa quy định",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Một cách fetch dữ liệu",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Command-line argument",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Kiểu dependency injection",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 3,
+              "prompt": "Một transaction trong workflow bao phủ mấy order records mới?",
+              "explanation": "Đoạn mở đầu nêu covers two new order records.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Một",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Mọi order ở mọi DB",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Không có record",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Hai",
+                  "isCorrect": true
+                }
+              ]
+            },
+            {
+              "orderIndex": 4,
+              "prompt": "Service fetch gì trước?",
+              "explanation": "Đoạn nêu first fetches the customer.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Build artifact",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Clock bean",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Customer",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Status code",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 5,
+              "prompt": "Unique constraint kiểm tra gì?",
+              "explanation": "Constraint checks the order numbers.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Order numbers",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Customer display names",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Log levels",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Runtime version",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 6,
+              "prompt": "Nếu duplicate bị phát hiện lúc flush thì workflow làm gì?",
+              "explanation": "Quy tắc workflow mẫu là rollback khi phát hiện duplicate lúc flush.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Luôn commit record đầu",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Đổi duplicate thành null",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Roll back transaction",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Bỏ qua constraint",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 7,
+              "prompt": "Theo isolation giả định, transaction khác đọc được inserts chưa commit không?",
+              "explanation": "Quy tắc giả định được giới hạn rõ: transaction khác không đọc inserts đó.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Có, vì flush đã commit",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Không",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Có, vì persist là public",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Đoạn nói mọi isolation đều giống nhau",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 8,
+              "prompt": "Có thể suy quy tắc rollback mặc định của Spring từ đoạn không?",
+              "explanation": "Đoạn cuối không mô tả chính sách exception-to-rollback mặc định của Spring.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Có; mọi checked exception rollback",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Có; mọi exception đều commit",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Có; annotation tự hoàn tác cả email",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Không; đoạn loại trừ phạm vi đó",
+                  "isCorrect": true
                 }
               ]
             }
           ]
         },
         {
-          "key": "it-vocabulary-reading.w01.l03.a04",
+          "key": "it-reading-pilot.w02.l01.a04",
           "title": "Tóm tắt 3 ý và chọn từ cần ôn",
           "type": "REFLECTION",
           "required": true,
@@ -834,15 +282,567 @@
       ]
     },
     {
-      "key": "it-vocabulary-reading.w01.l04",
-      "title": "Buổi 4: Spring vocabulary: bean, container và lifecycle",
+      "key": "it-reading-pilot.w02.l02",
+      "title": "Buổi 7: React: component, state và luồng dữ liệu",
+      "orderIndex": 2,
+      "estimatedMinutes": 35,
+      "required": true,
+      "contentFile": "lessons/w02-l02-react-state.md",
+      "activities": [
+        {
+          "key": "it-reading-pilot.w02.l02.a01",
+          "title": "Học 8 thuật ngữ trong ngữ cảnh",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc mục 1–2: nghĩa chuyên ngành, cụm dùng và ví dụ dịch. Không cần học lại tiếng Anh giao tiếp.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        },
+        {
+          "key": "it-reading-pilot.w02.l02.a02",
+          "title": "Nhớ lại thuật ngữ trước khi đọc",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Che bảng: mô tả props, state, event handler, derived value; vẽ mũi tên parent → FilterBar và handler → state. Ôn immutable/reference bài 3. Tự viết trước, sau đó đối chiếu bảng và ghi mục còn nhầm.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        },
+        {
+          "key": "it-reading-pilot.w02.l02.a03",
+          "title": "Đọc áp dụng và kiểm tra hiểu",
+          "type": "QUIZ",
+          "required": true,
+          "completionPolicy": "PASS_SCORE",
+          "instructions": "Đọc đoạn Atlas ở mục 4 rồi trả lời các câu hỏi. Phân biệt dữ kiện đoạn với điều ngoài phạm vi. Giải thích hiện sau khi nộp.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ],
+          "quizQuestions": [
+            {
+              "orderIndex": 1,
+              "prompt": "'The count is derived from the list' nghĩa là gì?",
+              "explanation": "Derived là giá trị tính từ dữ liệu có sẵn.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Count bắt buộc lưu ở DB riêng",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "List được tạo từ event handler của count",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Count luôn là props bất biến toàn hệ thống",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Count được tính từ list",
+                  "isCorrect": true
+                }
+              ]
+            },
+            {
+              "orderIndex": 2,
+              "prompt": "'Do not mutate props' yêu cầu tránh gì?",
+              "explanation": "Mutate là thay đổi dữ liệu hiện có; vẫn được đọc props và tính kết quả.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Đọc props trong render",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Truyền props xuống con",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Sửa trực tiếp dữ liệu đầu vào nhận từ cha",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Tính derived value",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 3,
+              "prompt": "ProductPanel nhận products qua đâu?",
+              "explanation": "Receives products through props là dữ kiện của đoạn.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Props",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Chỉ qua biến môi trường",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Status code",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Clock constructor",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 4,
+              "prompt": "Dữ liệu nào được lưu ở state theo đoạn?",
+              "explanation": "Ví dụ chỉ lưu selected category.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Mọi derived count ở state thứ hai",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Selected category",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Tên repository",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Mọi DOM node",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 5,
+              "prompt": "Source of truth của category nằm ở đâu?",
+              "explanation": "Parent panel là source of truth và truyền category xuống FilterBar.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Hai bản sao count độc lập",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "JSON payload của server",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Parent panel state",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Một biến ở mỗi DOM node",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 6,
+              "prompt": "Event handler làm gì khi người dùng chọn category?",
+              "explanation": "Handler requests a state update là hành vi được nêu.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Sửa trực tiếp products prop",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Yêu cầu state update",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Tạo runtime mới",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Commit transaction DB bắt buộc",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 7,
+              "prompt": "Khi ProductEditor đổi product trong editable state riêng, ví dụ tạo gì?",
+              "explanation": "Đây là immutable update được mô tả.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Sửa trực tiếp object cũ trong props",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Chỉ đổi tên biến giữ cùng object rồi sửa",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Tạo repository mới",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Array mới và object mới cho product được đổi",
+                  "isCorrect": true
+                }
+              ]
+            },
+            {
+              "orderIndex": 8,
+              "prompt": "Một lần render có nghĩa mọi DOM node đều thay đổi không?",
+              "explanation": "Render tính UI description; thay đổi DOM thực tế là chuyện khác.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Không",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Có, luôn thay toàn bộ DOM",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Có, vì props luôn bị sửa",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Không, vì render không bao giờ liên quan UI",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "it-reading-pilot.w02.l02.a04",
+          "title": "Tóm tắt 3 ý và chọn từ cần ôn",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Viết 3 ý tiếng Việt về đoạn, giữ ít nhất 3 thuật ngữ. Tự kiểm: đúng chủ thể/hành động, giữ điều kiện và cảnh báo; ghi 2 mục cần ôn. Đây là tự đánh giá, chưa có máy chấm chất lượng tóm tắt.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "it-reading-pilot.w02.l03",
+      "title": "Buổi 8: Async requests: promise, retry và cleanup",
+      "orderIndex": 3,
+      "estimatedMinutes": 35,
+      "required": true,
+      "contentFile": "lessons/w02-l03-async-requests.md",
+      "activities": [
+        {
+          "key": "it-reading-pilot.w02.l03.a01",
+          "title": "Học 8 thuật ngữ trong ngữ cảnh",
+          "type": "READING",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK",
+          "instructions": "Đọc mục 1–2: nghĩa chuyên ngành, cụm dùng và ví dụ dịch. Không cần học lại tiếng Anh giao tiếp.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        },
+        {
+          "key": "it-reading-pilot.w02.l03.a02",
+          "title": "Nhớ lại thuật ngữ trước khi đọc",
+          "type": "PRACTICE",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Nhớ retry, timeout, cleanup, race condition; giải thích hai nghĩa của resolve ở bài 4 và bài này. Tự tạo ví dụ query A trả chậm hơn query B. Tự viết trước, sau đó đối chiếu bảng và ghi mục còn nhầm.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        },
+        {
+          "key": "it-reading-pilot.w02.l03.a03",
+          "title": "Đọc áp dụng và kiểm tra hiểu",
+          "type": "QUIZ",
+          "required": true,
+          "completionPolicy": "PASS_SCORE",
+          "instructions": "Đọc đoạn Atlas ở mục 4 rồi trả lời các câu hỏi. Phân biệt dữ kiện đoạn với điều ngoài phạm vi. Giải thích hiện sau khi nộp.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ],
+          "quizQuestions": [
+            {
+              "orderIndex": 1,
+              "prompt": "Resolve the Clock dependency và resolve a promise có cùng nghĩa cụ thể không?",
+              "explanation": "Cùng từ resolve nhưng ngữ cảnh quyết định nghĩa.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Không; một bên chọn dependency, một bên giải quyết Promise",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Có; đều tạo bean Spring",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Có; đều commit transaction",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Không; cả hai đều xóa object",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 2,
+              "prompt": "Timeout cho biết chắc điều nào?",
+              "explanation": "Timeout mô tả giới hạn chờ; kết quả server có thể chưa rõ.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Server chắc chắn chưa làm gì",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Client không nhận kết quả trong giới hạn chờ",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Payment chắc chắn thất bại, gửi lại tự do",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Promise đã bị xóa khỏi server",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 3,
+              "prompt": "Khi nào loader reject promise theo đoạn?",
+              "explanation": "Đoạn nói rejects it on a network failure.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Mỗi khi nhận kết quả tìm kiếm",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Chỉ khi đổi tên component",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Khi có network failure",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Sau mọi lần render",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 4,
+              "prompt": "Timeout ở ví dụ là bao nhiêu?",
+              "explanation": "Two-second timeout nghĩa là hai giây.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Hai phút",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Một giờ",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Không giới hạn",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Hai giây",
+                  "isCorrect": true
+                }
+              ]
+            },
+            {
+              "orderIndex": 5,
+              "prompt": "Read-only search có thể retry mấy lần sau network failure?",
+              "explanation": "Chính sách client mẫu là retry once.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Vô hạn",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Một lần",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Ba lần",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Không bao giờ",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 6,
+              "prompt": "Chính sách retry này có áp dụng cho payments không?",
+              "explanation": "Đoạn nói không áp dụng chính sách này cho payments.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Có, mọi mutation retry an toàn",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Có, timeout chứng minh server chưa làm",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Có, cleanup tự hoàn tiền",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Không",
+                  "isCorrect": true
+                }
+              ]
+            },
+            {
+              "orderIndex": 7,
+              "prompt": "Cleanup làm gì với request trước?",
+              "explanation": "Inactive request có thể vẫn hoàn tất nhưng response bị bỏ qua.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Đánh dấu inactive để response của nó bị bỏ qua",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Bảo đảm dừng toàn bộ xử lý server",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Luôn commit request",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Sửa query hiện tại về query cũ",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 8,
+              "prompt": "Race condition được ngăn trong ví dụ là gì?",
+              "explanation": "Timing response cũ/mới có thể làm UI hiện kết quả sai nếu không kiểm inactive.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Query mới luôn chạy trước trên server",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Mọi timeout trở thành payment",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Response cũ ghi đè kết quả query mới",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Dependency biến thành Promise",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "it-reading-pilot.w02.l03.a04",
+          "title": "Tóm tắt 3 ý và chọn từ cần ôn",
+          "type": "REFLECTION",
+          "required": true,
+          "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
+          "instructions": "Viết 3 ý tiếng Việt về đoạn, giữ ít nhất 3 thuật ngữ. Tự kiểm: đúng chủ thể/hành động, giữ điều kiện và cảnh báo; ghi 2 mục cần ôn. Đây là tự đánh giá, chưa có máy chấm chất lượng tóm tắt.",
+          "skillTags": [
+            "technical-vocabulary",
+            "reading"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "it-reading-pilot.w02.l04",
+      "title": "Buổi 9: Debug và test: root cause và kết quả kiểm thử",
       "orderIndex": 4,
       "estimatedMinutes": 35,
       "required": true,
-      "contentFile": "lessons/w01-l04-dependency-injection.md",
+      "contentFile": "lessons/w02-l04-debugging-tests.md",
       "activities": [
         {
-          "key": "it-vocabulary-reading.w01.l04.a01",
+          "key": "it-reading-pilot.w02.l04.a01",
           "title": "Học 8 thuật ngữ trong ngữ cảnh",
           "type": "READING",
           "required": true,
@@ -854,19 +854,19 @@
           ]
         },
         {
-          "key": "it-vocabulary-reading.w01.l04.a02",
+          "key": "it-reading-pilot.w02.l04.a02",
           "title": "Nhớ lại thuật ngữ trước khi đọc",
           "type": "PRACTICE",
           "required": true,
           "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
-          "instructions": "Nhớ lại instantiate, inject, resolve a dependency và lifecycle bằng 4 câu ngắn. Ôn instance và constructor từ bài 3. Tự viết trước, sau đó đối chiếu bảng và ghi mục còn nhầm.",
+          "instructions": "Che bảng: định nghĩa fixture, assertion, mock, reproduce bằng ví dụ khác; ôn constraint và transaction bài 6. Viết hai bước điều tra trước khi sửa. Tự viết trước, sau đó đối chiếu bảng và ghi mục còn nhầm.",
           "skillTags": [
             "technical-vocabulary",
             "reading"
           ]
         },
         {
-          "key": "it-vocabulary-reading.w01.l04.a03",
+          "key": "it-reading-pilot.w02.l04.a03",
           "title": "Đọc áp dụng và kiểm tra hiểu",
           "type": "QUIZ",
           "required": true,
@@ -879,224 +879,224 @@
           "quizQuestions": [
             {
               "orderIndex": 1,
-              "prompt": "'The factory instantiates a formatter' nghĩa là gì?",
-              "explanation": "Instantiate nghĩa là tạo instance.",
+              "prompt": "'The assertion expects status 201' mô tả gì?",
+              "explanation": "Assertion kiểm điều kiện kỳ vọng; không tự tạo response.",
               "options": [
                 {
                   "orderIndex": 1,
-                  "content": "Factory tạo một formatter instance",
-                  "isCorrect": true
+                  "content": "Mock luôn trả 201",
+                  "isCorrect": false
                 },
                 {
                   "orderIndex": 2,
-                  "content": "Factory ghi đè cấu hình",
+                  "content": "Log level mới",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 3,
-                  "content": "Formatter bị xóa khỏi repository",
-                  "isCorrect": false
+                  "content": "Phép kiểm tra kỳ vọng mã trạng thái 201",
+                  "isCorrect": true
                 },
                 {
                   "orderIndex": 4,
-                  "content": "Factory luôn trả null",
+                  "content": "Constraint trên mọi bảng",
                   "isCorrect": false
                 }
               ]
             },
             {
               "orderIndex": 2,
-              "prompt": "Resolve a dependency trong ngữ cảnh container là gì?",
-              "explanation": "Resolve có nhiều nghĩa; container ở đây tìm object phù hợp.",
+              "prompt": "Reproduce the failure yêu cầu gì?",
+              "explanation": "Reproduce là làm lỗi xuất hiện lại để quan sát, kiểm giả thuyết.",
               "options": [
                 {
                   "orderIndex": 1,
-                  "content": "Hoàn tất một Promise bất kỳ",
+                  "content": "Xóa test thất bại",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 2,
-                  "content": "Xóa mọi dependency",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Tìm/chọn dependency phù hợp",
+                  "content": "Tái hiện lỗi với bước/điều kiện cụ thể",
                   "isCorrect": true
                 },
                 {
+                  "orderIndex": 3,
+                  "content": "Đổi expected cho bằng actual",
+                  "isCorrect": false
+                },
+                {
                   "orderIndex": 4,
-                  "content": "Đổi dependency thành build artifact",
+                  "content": "Tắt mọi log",
                   "isCorrect": false
                 }
               ]
             },
             {
               "orderIndex": 3,
-              "prompt": "Trước khi inject Clock, training container phải làm gì?",
-              "explanation": "Trình tự là resolve trước, inject qua constructor sau.",
+              "prompt": "Fixture integration test chứa gì?",
+              "explanation": "Fixture được mô tả rõ cho test giả định.",
               "options": [
                 {
                   "orderIndex": 1,
-                  "content": "Đóng application",
+                  "content": "DB production và mật khẩu người học",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 2,
-                  "content": "Resolve dependency Clock",
-                  "isCorrect": true
+                  "content": "Hai order numbers giống nhau",
+                  "isCorrect": false
                 },
                 {
                   "orderIndex": 3,
-                  "content": "Chạy stop callback",
+                  "content": "Chỉ mock mail sender",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 4,
-                  "content": "Tạo repository mới",
-                  "isCorrect": false
+                  "content": "DB rỗng và tệp có hai order numbers khác nhau",
+                  "isCorrect": true
                 }
               ]
             },
             {
               "orderIndex": 4,
-              "prompt": "Có bao nhiêu Clock candidate trong ví dụ?",
-              "explanation": "Đoạn ghi exactly one Clock candidate.",
+              "prompt": "Expected và actual count lần lượt là gì?",
+              "explanation": "Expected count là two, actual là zero.",
               "options": [
                 {
                   "orderIndex": 1,
-                  "content": "Không có",
-                  "isCorrect": false
+                  "content": "Hai và không",
+                  "isCorrect": true
                 },
                 {
                   "orderIndex": 2,
-                  "content": "Hai",
+                  "content": "Không và hai",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 3,
-                  "content": "Không xác định",
+                  "content": "Hai và hai",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 4,
-                  "content": "Một",
-                  "isCorrect": true
+                  "content": "Một và hai",
+                  "isCorrect": false
                 }
               ]
             },
             {
               "orderIndex": 5,
-              "prompt": "Nếu thiếu Clock candidate thì sao theo ví dụ?",
-              "explanation": "Đây là failure rule được nêu cho training container.",
+              "prompt": "Stack trace chỉ tới thao tác nào?",
+              "explanation": "Đoạn nói stack trace points to a connection attempt.",
               "options": [
                 {
                   "orderIndex": 1,
-                  "content": "Tự tạo mọi loại Clock",
+                  "content": "Rendering FilterBar",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 2,
-                  "content": "Bỏ qua constructor",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "Startup thất bại",
+                  "content": "Connection attempt",
                   "isCorrect": true
                 },
                 {
+                  "orderIndex": 3,
+                  "content": "Building JAR",
+                  "isCorrect": false
+                },
+                {
                   "orderIndex": 4,
-                  "content": "Luôn dùng thời gian hệ điều hành",
+                  "content": "Sending invoice email",
                   "isCorrect": false
                 }
               ]
             },
             {
               "orderIndex": 6,
-              "prompt": "Application scope trong đoạn nghĩa là gì?",
-              "explanation": "Đoạn định nghĩa scope riêng cho ví dụ, không khái quát mọi cấu hình Spring.",
+              "prompt": "Root cause của điều tra mẫu là gì?",
+              "explanation": "Thông tin DEBUG cùng connection trace dẫn tới địa chỉ cấu hình sai trong tình huống này.",
               "options": [
                 {
                   "orderIndex": 1,
-                  "content": "Instance mới cho mỗi dòng log",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Một ReportService instance dùng chung suốt đời ứng dụng mẫu",
+                  "content": "Host name trong database address bị viết sai",
                   "isCorrect": true
                 },
                 {
+                  "orderIndex": 2,
+                  "content": "Assertion kiểm count luôn sai",
+                  "isCorrect": false
+                },
+                {
                   "orderIndex": 3,
-                  "content": "Container Docker mới mỗi method",
+                  "content": "Fixture có order numbers trùng",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 4,
-                  "content": "Mọi cấu hình Spring dùng cùng object",
+                  "content": "Mọi database đều hỏng",
                   "isCorrect": false
                 }
               ]
             },
             {
               "orderIndex": 7,
-              "prompt": "Lifecycle của bean mẫu gồm những bước nào?",
-              "explanation": "Ba giai đoạn được nêu trực tiếp trong đoạn.",
+              "prompt": "Vì sao mock-based unit test vẫn pass?",
+              "explanation": "Mock repository không thử kết nối thật.",
               "options": [
                 {
                   "orderIndex": 1,
-                  "content": "Download package, clone repository, deep copy",
+                  "content": "Đã xác nhận host name hợp lệ",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 2,
-                  "content": "Request, response, payload",
+                  "content": "Mock tự sửa địa chỉ production",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 3,
-                  "content": "Chỉ constructor, không callback",
-                  "isCorrect": false
+                  "content": "Không mở kết nối DB thật",
+                  "isCorrect": true
                 },
                 {
                   "orderIndex": 4,
-                  "content": "Creation, start callback, stop callback",
-                  "isCorrect": true
+                  "content": "Integration test không chạy assertion",
+                  "isCorrect": false
                 }
               ]
             },
             {
               "orderIndex": 8,
-              "prompt": "Shared bean có được bảo đảm thread-safe bởi injection không?",
-              "explanation": "Đoạn tách cung cấp collaborator khỏi thread safety và immutability.",
+              "prompt": "Sau sửa địa chỉ, check nào trực tiếp kiểm tương tác bị lỗi?",
+              "explanation": "Integration test với DB test thật kiểm lại tương tác kết nối/import.",
               "options": [
                 {
                   "orderIndex": 1,
-                  "content": "Không; phụ thuộc implementation",
-                  "isCorrect": true
+                  "content": "Chỉ đọc tên fixture",
+                  "isCorrect": false
                 },
                 {
                   "orderIndex": 2,
-                  "content": "Có; shared luôn immutable",
+                  "content": "Chỉ chạy mock unit test rồi kết luận DB ổn",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 3,
-                  "content": "Có; container tự khóa mọi method",
+                  "content": "Bỏ assertion count",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 4,
-                  "content": "Chỉ cần tên bean là đủ",
-                  "isCorrect": false
+                  "content": "Chạy lại integration test liên quan",
+                  "isCorrect": true
                 }
               ]
             }
           ]
         },
         {
-          "key": "it-vocabulary-reading.w01.l04.a04",
+          "key": "it-reading-pilot.w02.l04.a04",
           "title": "Tóm tắt 3 ý và chọn từ cần ôn",
           "type": "REFLECTION",
           "required": true,
@@ -1110,15 +1110,15 @@
       ]
     },
     {
-      "key": "it-vocabulary-reading.w01.l05",
-      "title": "Buổi 5: HTTP/API: request, payload và validation",
+      "key": "it-reading-pilot.w02.l05",
+      "title": "Buổi 10: Migration notes: deprecated, breaking change và ôn tích lũy",
       "orderIndex": 5,
       "estimatedMinutes": 35,
       "required": true,
-      "contentFile": "lessons/w01-l05-http-api.md",
+      "contentFile": "lessons/w02-l05-migration-review.md",
       "activities": [
         {
-          "key": "it-vocabulary-reading.w01.l05.a01",
+          "key": "it-reading-pilot.w02.l05.a01",
           "title": "Học 8 thuật ngữ trong ngữ cảnh",
           "type": "READING",
           "required": true,
@@ -1130,19 +1130,19 @@
           ]
         },
         {
-          "key": "it-vocabulary-reading.w01.l05.a02",
+          "key": "it-reading-pilot.w02.l05.a02",
           "title": "Nhớ lại thuật ngữ trước khi đọc",
           "type": "PRACTICE",
           "required": true,
           "completionPolicy": "MANUAL_CHECK_WITH_RESPONSE",
-          "instructions": "Che nghĩa: diễn giải deserialize, validate, payload, authentication; đặt câu phân biệt request body với response. Ôn required và optional từ bài 2. Tự viết trước, sau đó đối chiếu bảng và ghi mục còn nhầm.",
+          "instructions": "Che bảng: so sánh deprecated/removed và workaround/root cause. Ôn override, optional, authentication, runtime ở bài trước. Viết cảnh báo migration dùng ít nhất ba cụm. Tự viết trước, sau đó đối chiếu bảng và ghi mục còn nhầm.",
           "skillTags": [
             "technical-vocabulary",
             "reading"
           ]
         },
         {
-          "key": "it-vocabulary-reading.w01.l05.a03",
+          "key": "it-reading-pilot.w02.l05.a03",
           "title": "Đọc áp dụng và kiểm tra hiểu",
           "type": "QUIZ",
           "required": true,
@@ -1155,216 +1155,270 @@
           "quizQuestions": [
             {
               "orderIndex": 1,
-              "prompt": "JSON hợp cú pháp nhưng amount=-5 cho thấy cần phân biệt cặp nào?",
-              "explanation": "Đọc được cấu trúc JSON khác với dữ liệu thỏa ràng buộc nghiệp vụ.",
+              "prompt": "Một API 'deprecated but available' có nghĩa gì?",
+              "explanation": "Deprecated không tự đồng nghĩa removed.",
               "options": [
                 {
                   "orderIndex": 1,
-                  "content": "Repository và runtime",
+                  "content": "Đã bị xóa ngay khỏi mọi phiên bản",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 2,
-                  "content": "Constructor và package",
+                  "content": "Được khuyến nghị cho code mới mãi",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 3,
-                  "content": "Deserialization và validation",
-                  "isCorrect": true
+                  "content": "Tự đổi tên trong code client",
+                  "isCorrect": false
                 },
                 {
                   "orderIndex": 4,
-                  "content": "Lifecycle và scope",
-                  "isCorrect": false
+                  "content": "Vẫn dùng được trong phiên bản đang nói nhưng nên chuyển theo hướng dẫn",
+                  "isCorrect": true
                 }
               ]
             },
             {
               "orderIndex": 2,
-              "prompt": "Trong 'Authentication establishes the caller identity', identity là gì?",
-              "explanation": "Authentication xác định danh tính, không tự bảo đảm quyền.",
+              "prompt": "'The workaround avoids the failure' chứng minh root cause đã sửa chưa?",
+              "explanation": "Workaround tránh vấn đề trong điều kiện nhất định, chưa chắc chữa nguyên nhân.",
               "options": [
                 {
                   "orderIndex": 1,
-                  "content": "Quyền tạo mọi tài nguyên",
-                  "isCorrect": false
+                  "content": "Chưa",
+                  "isCorrect": true
                 },
                 {
                   "orderIndex": 2,
-                  "content": "Nội dung mọi response",
+                  "content": "Rồi, workaround luôn là permanent fix",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 3,
-                  "content": "Mã trạng thái 201",
+                  "content": "Rồi, nếu chưa chạy test",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 4,
-                  "content": "Danh tính người gọi",
-                  "isCorrect": true
+                  "content": "Chưa, vì workaround không bao giờ có ích",
+                  "isCorrect": false
                 }
               ]
             },
             {
               "orderIndex": 3,
-              "prompt": "Endpoint trong đoạn là gì?",
-              "explanation": "Đoạn nêu đúng method và URL của endpoint.",
+              "prompt": "sendLegacy ở SDK 2.0 có trạng thái nào?",
+              "explanation": "Đoạn phân biệt deprecated ở 2.0 với removed ở 3.0.",
               "options": [
                 {
                   "orderIndex": 1,
-                  "content": "GET /health",
+                  "content": "Đã removed",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 2,
-                  "content": "POST /invoices",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "PUT /users",
+                  "content": "Là replacement của sendBatch",
                   "isCorrect": false
                 },
                 {
+                  "orderIndex": 3,
+                  "content": "Deprecated nhưng vẫn available",
+                  "isCorrect": true
+                },
+                {
                   "orderIndex": 4,
-                  "content": "DELETE /invoices",
+                  "content": "Bắt buộc dùng thay sendBatch",
                   "isCorrect": false
                 }
               ]
             },
             {
               "orderIndex": 4,
-              "prompt": "Authentication xảy ra lúc nào trong API mẫu?",
-              "explanation": "Authentication runs before body processing.",
+              "prompt": "Trước khi nâng lên 3.0, client gọi sendLegacy cần làm gì?",
+              "explanation": "sendBatch là replacement; sendLegacy bị remove ở 3.0.",
               "options": [
                 {
                   "orderIndex": 1,
-                  "content": "Trước body processing",
-                  "isCorrect": true
-                },
-                {
-                  "orderIndex": 2,
-                  "content": "Sau khi lưu invoice",
+                  "content": "Chỉ đổi timeout thành null",
                   "isCorrect": false
                 },
                 {
+                  "orderIndex": 2,
+                  "content": "Migrate sang sendBatch",
+                  "isCorrect": true
+                },
+                {
                   "orderIndex": 3,
-                  "content": "Chỉ sau response 201",
+                  "content": "Giữ nguyên vì deprecated luôn hoạt động mãi",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 4,
-                  "content": "Sau mọi validation field",
+                  "content": "Xóa authentication",
                   "isCorrect": false
                 }
               ]
             },
             {
               "orderIndex": 5,
-              "prompt": "Sau khi authentication thành công, JSON sai cú pháp nhận mã nào?",
-              "explanation": "Với invalid JSON được mô tả, server trả 400.",
+              "prompt": "Thay đổi nào được đoạn gọi là breaking change?",
+              "explanation": "Client cũ cần đổi tên property bắt buộc.",
               "options": [
                 {
                   "orderIndex": 1,
-                  "content": "201",
-                  "isCorrect": false
+                  "content": "Đổi required destination thành serverUrl",
+                  "isCorrect": true
                 },
                 {
                   "orderIndex": 2,
-                  "content": "401 trong mọi trường hợp",
+                  "content": "Giữ default timeout 3000",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 3,
-                  "content": "204",
+                  "content": "Thêm log staging",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 4,
-                  "content": "400",
-                  "isCorrect": true
+                  "content": "Giữ Java 21 trong repository",
+                  "isCorrect": false
                 }
               ]
             },
             {
               "orderIndex": 6,
-              "prompt": "Không có valid credentials thì API làm gì?",
-              "explanation": "Đoạn nêu 401 before an invoice is saved.",
+              "prompt": "File timeoutMs=8000, command line=2000 thì giá trị hiệu lực là gì?",
+              "explanation": "Command-line value overrides file value theo đoạn.",
               "options": [
                 {
                   "orderIndex": 1,
-                  "content": "Trả 401 trước khi lưu invoice",
-                  "isCorrect": true
+                  "content": "8000",
+                  "isCorrect": false
                 },
                 {
                   "orderIndex": 2,
-                  "content": "Lưu invoice rồi trả 201",
+                  "content": "3000",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 3,
-                  "content": "Chỉ bỏ currency field",
+                  "content": "10000",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 4,
-                  "content": "Tự cấp quyền create",
-                  "isCorrect": false
+                  "content": "2000",
+                  "isCorrect": true
                 }
               ]
             },
             {
               "orderIndex": 7,
-              "prompt": "Thành công tạo invoice trả gì?",
-              "explanation": "Hợp đồng thành công trong đoạn nêu 201 và invoice identifier.",
+              "prompt": "Bỏ serverUrl và không cấu hình timeoutMs có kết quả nào?",
+              "explanation": "timeoutMs optional không làm serverUrl thành optional.",
               "options": [
                 {
                   "orderIndex": 1,
-                  "content": "400 và không có identifier",
+                  "content": "Startup luôn thành công với localhost",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 2,
-                  "content": "401 và payload bị xóa",
-                  "isCorrect": false
-                },
-                {
-                  "orderIndex": 3,
-                  "content": "201 và identifier trong response body",
+                  "content": "Startup thất bại vì thiếu serverUrl",
                   "isCorrect": true
                 },
                 {
+                  "orderIndex": 3,
+                  "content": "serverUrl tự nhận 3000",
+                  "isCorrect": false
+                },
+                {
                   "orderIndex": 4,
-                  "content": "200 và mọi invoice của mọi người",
+                  "content": "Cả hai mục bỏ đều an toàn",
                   "isCorrect": false
                 }
               ]
             },
             {
               "orderIndex": 8,
-              "prompt": "Đã authenticated có chắc được tạo invoice không?",
-              "explanation": "Đoạn tách authentication khỏi quyết định được create hay không.",
+              "prompt": "Authentication thành công đủ bảo đảm request accepted không?",
+              "explanation": "Only if nêu điều kiện cần; đoạn còn yêu cầu permission check.",
               "options": [
                 {
                   "orderIndex": 1,
-                  "content": "Có; authentication gồm mọi permission",
+                  "content": "Có; only if nghĩa là nếu và chỉ nếu",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 2,
-                  "content": "Không; còn permission check riêng",
-                  "isCorrect": true
+                  "content": "Có; không còn điều kiện nào khác",
+                  "isCorrect": false
                 },
                 {
                   "orderIndex": 3,
-                  "content": "Có; JSON tự cấp quyền",
+                  "content": "Không; permission check cũng phải pass",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Không; authentication không liên quan acceptance",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "orderIndex": 9,
+              "prompt": "This requirement trong đoạn trỏ tới gì?",
+              "explanation": "Đoạn chỉ rõ referent là successful authentication.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Permission approval",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Java 21 runtime",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Timeout override",
                   "isCorrect": false
                 },
                 {
                   "orderIndex": 4,
-                  "content": "Chỉ cần omit amount",
+                  "content": "Successful authentication",
+                  "isCorrect": true
+                }
+              ]
+            },
+            {
+              "orderIndex": 10,
+              "prompt": "Tóm tắt nào giữ đúng cảnh báo migration?",
+              "explanation": "Tóm tắt đúng giữ thay đổi bắt buộc, điều kiện và giới hạn workaround.",
+              "options": [
+                {
+                  "orderIndex": 1,
+                  "content": "Migrate API/property trước 3.0; kiểm runtime, quyền và thử staging; workaround chỉ tạm tránh lỗi",
+                  "isCorrect": true
+                },
+                {
+                  "orderIndex": 2,
+                  "content": "Chỉ tăng timeout, mọi API cũ còn ở 3.0",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 3,
+                  "content": "Authentication bảo đảm mọi request; không cần staging",
+                  "isCorrect": false
+                },
+                {
+                  "orderIndex": 4,
+                  "content": "Disable batching sửa vĩnh viễn root cause nên bỏ test",
                   "isCorrect": false
                 }
               ]
@@ -1372,7 +1426,7 @@
           ]
         },
         {
-          "key": "it-vocabulary-reading.w01.l05.a04",
+          "key": "it-reading-pilot.w02.l05.a04",
           "title": "Tóm tắt 3 ý và chọn từ cần ôn",
           "type": "REFLECTION",
           "required": true,
@@ -1381,21 +1435,6 @@
           "skillTags": [
             "technical-vocabulary",
             "reading"
-          ]
-        },
-        {
-          "key": "it-vocabulary-reading.w01.l05.a05",
-          "title": "Tra cứu HTTP tùy chọn",
-          "type": "EXTERNAL_RESOURCE",
-          "required": false,
-          "completionPolicy": "MANUAL_CHECK",
-          "instructions": "Nếu cần, mở tổng quan HTTP và tìm request/response. Không cần đọc hết trang.",
-          "skillTags": [
-            "technical-vocabulary",
-            "reading"
-          ],
-          "resourceKeys": [
-            "res.it.http-overview"
           ]
         }
       ]

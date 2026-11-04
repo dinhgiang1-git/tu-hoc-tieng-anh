@@ -1,6 +1,6 @@
 {
-  "curriculumKey": "it-vocabulary-reading",
-  "version": "1.0.0",
+  "curriculumKey": "it-reading-pilot",
+  "version": "2.0.0",
   "resources": [
     {
       "key": "res.it.http-overview",
