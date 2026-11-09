@@ -1,7 +1,7 @@
 ---
 name: nhai-ui-ux
 description: >-
-  Thiết kế hoặc cải thiện website theo phong cách sổ tay Nhai hoặc Belish: nền kẻ ô, chữ Itim, viền mực, bóng cứng, thẻ màu và layout lộ trình. Dùng khi người dùng yêu cầu phong cách Nhai/Belish hoặc cung cấp skill làm design brief; giữ stack và nội dung của dự án.
+  Thiết kế hoặc cải thiện website theo phong cách sổ tay Nhai/Belish, gồm layout lộ trình và giao diện riêng cho từng phương pháp học như trắc nghiệm, flashcard, gõ từ, đọc và nghe. Dùng khi người dùng yêu cầu phong cách này hoặc cung cấp skill làm design brief; giữ stack, nội dung và chính sách chấm của dự án.
 ---
 
 # Nhai UI/UX — skill độc lập
@@ -12,7 +12,9 @@ description: >-
 
 **Biến thể Belish (bổ sung 09/11/2026):** khi người dùng yêu cầu giống Belish hoặc đưa `belish.net/vi/roadmap` làm tham chiếu, đọc thêm [references/belish-notebook.md](references/belish-notebook.md). Reference quy định palette, nét phác, băng dính, marker và bố cục roadmap; các lựa chọn đó ưu tiên hơn mặc định Warm/Cool và công thức bìa sách ở đây. Giữ hợp đồng semantics, state và bảo toàn dữ liệu. Với biến thể này cần mang theo thư mục `references/` khi chia sẻ skill; các chế độ Nhai cũ vẫn tự chứa trong file này.
 
-Trong môi trường hỗ trợ skill, đặt file này trong thư mục `nhai-ui-ux/`. Với AI chỉ nhận tài liệu, đính kèm file này; nếu yêu cầu Belish thì đính kèm thêm `references/belish-notebook.md`, rồi yêu cầu:
+**Bài học tương tác:** khi thiết kế trắc nghiệm hoặc phân biệt các phương pháp học, đọc [references/learning-methods.md](references/learning-methods.md). Dùng chung shell và primitive nhưng chọn bố cục/tương tác theo mục tiêu học; không ép mọi phương pháp vào một card có textarea và nút hoàn thành. Reference phân biệt nội dung đã khảo sát ở Belish, đề xuất thiết kế và năng lực dữ liệu cần có. Nó không tự yêu cầu thêm các phương pháp học vào website không liên quan.
+
+Trong môi trường hỗ trợ skill, đặt file này trong thư mục `nhai-ui-ux/`. Với AI chỉ nhận tài liệu, đính kèm file này cùng reference liên quan: `belish-notebook.md` cho phong cách Belish, `learning-methods.md` cho bài học tương tác, rồi yêu cầu:
 
 > Đọc skill này và làm website [mục đích] cho [đối tượng]. Dùng thương hiệu/nội dung [của tôi], giữ stack [hiện tại hoặc stack được yêu cầu]. Áp dụng chế độ [danh mục/dashboard/landing page/gói dịch vụ] phù hợp và kiểm tra theo tiêu chí cuối file.
 
@@ -217,6 +219,12 @@ Trong React có thể dùng Button + một hàm variants dùng chung cho ActionL
 **Search/filter:** giữ trạng thái lọc khi quay lại nếu phù hợp; có số kết quả, xóa lọc và empty state hữu ích. Với nội dung tiếng Việt có thể hỗ trợ tìm không dấu. Không dùng kết quả giả hoặc nút không hoạt động mà không nói rõ là prototype.
 
 **Notice:** tối đa một thông báo nổi bật trong vùng đầu trang; pastel + label nhỏ, hành động có liên quan. Không bê mã giảm giá, thời hạn hoặc lời chứng thực từ nguồn sang dự án mới.
+
+### 4.4. Mỗi phương pháp học có một cách trình bày
+
+Với sản phẩm học tập, chọn recipe trong [learning-methods.md](references/learning-methods.md): trắc nghiệm một câu và lựa chọn lớn; flashcard hai mặt; gõ từ có prompt và ô trả lời; đọc hiểu giữ đoạn/câu ngữ cảnh; nghe có player và đầu vào; shadowing có câu đang phát và điều khiển đoạn; phản tư dùng editor. Sự khác nhau nằm ở nội dung trọng tâm, cấu trúc và hành động, không phải mỗi loại một màu/card trang trí.
+
+Một vùng làm bài chính, bộ chuyển phương pháp dễ tìm trước vùng đó, state giữ theo scope thật. Chỉ hiện phương pháp có dữ liệu và hành vi đã hỗ trợ; `type` và `completionPolicy` không thay thế nhau. Bài luyện phản hồi ngay và bài kiểm tra chấm sau nộp là hai chế độ khác nhau: không lộ đáp án hay tự đổi cách tính hoàn thành để bắt chước nguồn. Giữ quy tắc không dùng thanh màu ở mục đầu.
 
 ## 5. UX trang gói dịch vụ — học từ HSK và cải tiến
 

@@ -8,6 +8,8 @@ Sổ tay vẽ phác kiểu Belish: Itim, grid nhẹ, khung giấy nét đôi, th
 
 **Chốt bổ sung theo ảnh và phản hồi 09/11/2026:** không dùng vạch màu cạnh heading, dải màu một cạnh card hoặc đường nhấn trang trí lặp lại. Chữ và spacing tạo thứ bậc; giữ ranh giới control/focus/progress có chức năng. Áp dụng [kế hoạch gỡ thanh màu ở mục 9](#9-fix-bỏ-thanh-màu-trang-trí) trước khi hoàn thiện các đợt còn lại; không đưa lại các vạch này khi triển khai BL-03.
 
+**Bài học theo phương pháp:** [mục 10](#10-giao-diện-riêng-theo-phương-pháp-học) cụ thể hóa BL-03 và phần quiz: một vùng làm bài, mỗi phương pháp có cấu trúc riêng, ưu tiên quiz hiện có trước. Các phương pháp mới cần dữ liệu sẽ triển khai thành phần riêng sau khi có contract, không giả lập từ Markdown.
+
 Đọc AGENTS, FE convention, skill `nhai-ui-ux` và `references/belish-notebook.md`. Kế hoạch này thay hướng visual cũ trong `design-system/english-study/MASTER.md` cho đợt Belish; giữ ràng buộc copy gọn, dữ liệu và state của MASTER/handoff cũ. `THEME_MODE_FIX_PLAN.md` là lịch sử: đối chiếu source để biết lỗi nào đã sửa, không lặp lại toàn bộ danh sách lỗi cũ. Quy trình kiểm tra gọn của AGENTS ưu tiên hơn yêu cầu full suite mỗi lượt trong handoff cũ.
 
 Lượt này chỉ cập nhật skill và kế hoạch. Triển khai FE ở lượt tiếp theo theo BL-01 đến BL-04; không đổi BE/auth/DB/schema/học liệu để tạo hình. Giữ React, TypeScript, Tailwind 3.4, TanStack Query, Lucide, font và primitives sẵn có. Mobile hoãn. Không thêm Premium, chat, bảng xếp hạng hoặc A1–C2 từ nguồn.
@@ -175,3 +177,82 @@ Trước/sau chụp cùng route, viewport, mode và state: Hôm nay; catalog/chi
 - Codex nghiệm thu rồi commit/push đúng phần đạt; báo checks đã/chưa chạy. Source FE vẫn chưa thay đổi bởi lượt cập nhật skill/kế hoạch này.
 
 Kiểm tra lượt tài liệu này: validator chuẩn `quick_validate.py` đạt cho skill Nhai trong repo, bản chia sẻ và UI UX Pro Max; kiểm bản sao, liên kết file và `git diff --check` đạt. Không chạy build/unit/E2E vì chưa sửa FE; chưa có ảnh sau sửa giao diện.
+
+## 10. Giao diện riêng theo phương pháp học
+
+### Nguồn và quyết định sản phẩm
+
+Khảo sát tiếp ngày 09/11/2026: [bài từ vựng A1 của Belish](https://belish.net/vi/vocabulary/a1-nen-tang/chapter-1-lesson-1), năm mode trong bài, và [bài Shadowing học thử](https://belish.net/vi/shadowing/cap-do-14/57990027-7fff-40dd-9edd-35275a9664c1?from=overview). Đã lật flashcard; chọn sai một câu quiz và chuyển câu; gõ đúng một từ rồi kiểm tra; xem câu khuyết Đọc hiểu, Luyện nghe, transcript/controls Shadowing, Nghe–Viết chính tả và Ghép câu. Phiên khách Dark, chưa kiểm lưu/hoàn thành/âm thanh thực tế/microphone. Chi tiết quan sát và giới hạn ở [skill learning-methods](../../.agents/skills/nhai-ui-ux/references/learning-methods.md).
+
+Chốt cách làm: **chung shell/primitive, riêng layout và thao tác của mỗi phương pháp**. Bỏ cách trình bày mọi hoạt động thành một dãy card có nhãn enum và nút Hoàn thành. Phương pháp đang chọn là vùng chính; bộ chọn ở trước vùng làm bài, không đặt dưới bài đọc dài. Không ép bài nào cũng có đủ các mode hoặc bê quy tắc mở khóa Flashcard + một mode của nguồn sang dự án.
+
+Quiz hiện có mặc định là bài kiểm tra nộp toàn bộ, giữ cách chấm này. Chỉ học từ Belish cách tập trung từng câu và bố trí lựa chọn; không sao chép phản hồi ngay vào endpoint hiện tại. Mục 9 về bỏ thanh màu vẫn ưu tiên; đổi phương pháp bằng composition và hành vi, không bằng dải màu hoặc nhiều lớp khung.
+
+### Map phương pháp vào năng lực hiện tại
+
+| Phương pháp | Layout mục tiêu | Nguồn dữ liệu hiện có / phần thiếu |
+|---|---|---|
+| Trắc nghiệm một lựa chọn | Một câu, lựa chọn lớn 2 cột khi ngắn/1 cột khi dài; trước/tiếp/để sau; rà soát và nộp cuối | `QuizDetailResponse` có questionId/prompt/options/order; không có đáp án đúng. `QuizResultResponse` trả đáp án/giải thích sau submit. Làm được bằng FE, giữ API |
+| Đọc tài liệu | Mặt đọc 65–78ch và nhiệm vụ liên quan, không render toàn Markdown ở mỗi activity | Có lesson-level `markdownContent`; giữ một nơi đọc. Không tự cắt heading gán thành payload cho từng activity |
+| Trả lời tự do / phản tư | Đề + editor + lưu nháp/nộp đúng policy | Có instructions/userResponse và completionPolicy; giữ hooks/version/blocker hiện có, không giả đúng/sai |
+| Xem/nghe tài nguyên | Player hoặc liên kết học liệu đúng media type, hướng dẫn thực hành và action hợp lệ | Có resources VIDEO/AUDIO/ARTICLE/PDF. Chưa có transcript/timestamp cho controls theo câu; không dựng controls không chạy |
+| Flashcard | Hai mặt term/IPA ↔ nghĩa/ví dụ; nhớ/chưa nhớ riêng | DTO hiện tại chưa có bộ từ có cấu trúc, state nhớ và policy hoàn thành; cần bổ sung dữ liệu trước |
+| Gõ từ / câu khuyết | Prompt + input hoặc câu ngữ cảnh với lựa chọn; kiểm tra theo đáp án hợp lệ | Chưa có accepted answers/normalization/blank có cấu trúc. PRACTICE không tự xác định là dạng này |
+| Chép chính tả | Audio + ô nhập, transcript chỉ mở theo policy | DICTATION đang bị frontend đánh dấu chưa hỗ trợ; cần chấm/lưu/progress thật, không mở khóa nút hoàn thành thủ công |
+| Shadowing / ghép câu | Media + đoạn đang chọn và transcript; hoặc vùng câu đã ghép + ngân hàng token | Thiếu segments/timestamp/token occurrence/contract chấm. RECORDING chưa hỗ trợ; không làm điểm phát âm/microphone giả |
+
+Không suy phương pháp bằng tên activity, slug curriculum hoặc regex Markdown. Quyết định renderer dựa vào capability/payload rõ ràng; `type` là loại nội dung, `completionPolicy` quyết hành động hoàn thành. Nếu muốn thêm discriminator, xác định contract trước khi viết consumer; không đổi enum/schema chỉ để dựng prototype đẹp.
+
+### LM-01 — quiz hiện có, làm một luồng dùng được trước
+
+Sửa `features/learning/components/QuizActivityView.tsx`, nối state với `ActivityRenderer.tsx` và workspace khi cần; API `quiz.api.ts` giữ endpoint/payload hiện tại. Chỉ tách `QuizQuestion`/navigation khi giảm lặp thực, không làm framework khảo thí.
+
+```text
+Tên nhiệm vụ                  Câu 2 / 8 · Đã trả lời 1 / 8
+
+                  Đề bài đầy đủ
+
+ [A  Lựa chọn]                    [B  Lựa chọn]
+ [C  Lựa chọn]                    [D  Lựa chọn]
+
+ [Câu trước]     [Để làm sau]                     [Câu tiếp]
+                           cuối lượt → Rà soát / Nộp bài
+```
+
+- Lấy số lựa chọn/thứ tự từ API, không ép bốn option. Radio/fieldset/legend và label đủ vùng bấm; đáp án dài xuống dòng, không font 12px hoặc line-clamp. Số 1/2/A/B chỉ là nhãn UI, gửi optionId thật.
+- `activeQuestionId` và answers theo questionId; chuyển câu chỉ điều hướng, không gửi bài/ghi tiến độ. “Để làm sau” giữ unanswered; phân biệt câu đang xem, đã trả lời và chưa trả lời. Cuối lượt chỉ nộp khi đủ câu theo contract hiện tại; có cách quay lại câu thiếu, sửa lựa chọn trước nộp.
+- Một surface cho đề/đáp án, không mỗi câu một card lồng trong card quiz. Với câu ngắn ở 1280×720, prompt/lựa chọn/action nhìn thấy sớm; câu dài cuộn được, không cắt nội dung để ép vừa màn hình.
+- Selected chỉ thể hiện lựa chọn, không đúng/sai trước submit. Kết quả/explanation lấy từ server; sau nộp có danh sách câu sai/cách quay lại xem từng câu, điểm authoritative và nút bắt đầu lượt mới rõ ràng.
+- Giữ answers khi đổi câu/activity/theme, đóng mở notes và lỗi submit. Báo quiz dirty/pending lên unified blocker; hiện `QuizActivityView` giữ answers nội bộ và chưa có callback dirty riêng. Không bỏ qua phần này khi chỉ thêm navigator. Không unmount quiz đang làm để chuyển method; panel ẩn không Tab/đọc được.
+- Nộp một lần cho toàn quiz, giữ expectedVersion, idempotency và read-only/409 recovery; request retry không được vô tình tạo attempt trùng hoặc tái dùng key cho payload khác. Chờ đồng bộ authoritative trước cho phép mutation tiếp theo. Không lấy answer key vào FE để giả phản hồi tức thì.
+- Rút ngôn ngữ kỹ thuật đang hiện như `ON_SUBMIT` thành mô tả hành động/điều kiện dễ hiểu. Không thêm nhiều banner nhắc cùng một yêu cầu hoặc tự đổi passing score.
+
+### LM-02 — workspace và phương pháp đã có
+
+Hoàn thiện BL-03 tại `LessonWorkspacePage.tsx`: bộ chọn task/phương pháp theo activityId thật, một nhiệm vụ được chọn có vùng làm việc riêng; không chỉ anchor số sau toàn bài đọc. Renderer đọc, phản tư, tài nguyên và quiz chọn recipe phù hợp. Giữ một Markdown tham khảo và drawer notes; không ép note thành cột làm hẹp quiz/bài đọc. Giữ instance/draft khi chuyển view, focus mode và thứ tự Escape đã sửa.
+
+Không tạo năm mode chỉ từ một activity text. Với READING không có câu hỏi, vẫn có giao diện đọc; với quiz chỉ có một lựa chọn/đáp án text, không suy ra chép chính tả hay ghép câu. Bộ chọn chỉ hiện những phương pháp thực sự dùng được trong bài.
+
+### LM-03 — dữ liệu cho các phương pháp mới, rồi mới render
+
+Tách khỏi LM-01/02. Trước triển khai chọn một nội dung test có quyền dùng và một phương pháp làm xuyên FE–BE–DB; không xây đồng loạt mọi engine. Ưu tiên bộ từ có cấu trúc và flashcard trước, rồi gõ từ/câu khuyết; audio theo đoạn/Shadowing/Ghép câu sau khi có dữ liệu thích hợp.
+
+- Flashcard cần entryId, term, IPA nếu có, nghĩa, ví dụ/bản dịch và nguồn audio; định nghĩa rõ nhớ/chưa nhớ là trạng thái luyện hay completion. Không gọi đó là SRS nếu chưa có thuật toán/lịch ôn thật.
+- Gõ từ/câu khuyết cần prompt, vị trí blank có cấu trúc, accepted answers/normalization và feedback được cấp quyền đúng thời điểm. Không parse Markdown published thành đáp án hoặc dùng edit-distance tùy ý để đánh dấu đúng.
+- Nghe/Shadowing cần media và segmentId/start/end/transcript/translation theo dữ liệu thật; adapter phải hỗ trợ replay/seek trước khi hiện controls. Không chia đều thời lượng video để tạo timestamp, không lấy TTS làm bản ghi chuẩn.
+- Ghép câu cần token theo occurrence và quy tắc câu hợp lệ; chọn/bỏ bằng bàn phím, không drag-only. Chép chính tả/recording phải có chính sách chấm/lưu/hoàn thành tương ứng, giữ trạng thái chưa hỗ trợ đến khi làm được thật.
+- Chỉ thêm migration khi chức năng dữ liệu cần, không sửa migration đã áp dụng. Cập nhật OpenAPI/generated types nếu đổi contract; owner, version/transaction/idempotency và regression PostgreSQL liên quan theo AGENTS. Không bật nút/mode giả chấm điểm trong lúc contract chưa có.
+
+### Kiểm tra và bàn giao
+
+Codex giao công nhân tuần tự LM-01 → LM-02 → từng lát LM-03; không cùng sửa workspace/renderer với công nhân bỏ stripe. Đọc diff hiện có, không reset hoặc commit phần task khác. Mỗi lát một bàn giao ngắn, nghiệm thu trước khi commit/push.
+
+- LM-01: build + lint, `QuizActivityView.test.tsx` và nhóm workspace/blocker bị tác động một lần. Regression có giá trị: đổi câu giữ answers; câu để sau không tính đã làm; payload cuối chứa đủ IDs/expectedVersion; không lộ đáp án trước nộp; pending gửi một lần, lỗi/409 giữ choices; kết quả và retry đúng contract.
+- LM-02: build + lint; LessonWorkspace, notes/quiz/ActivityRenderer regression liên quan khi composition thay đổi. Thử giữ text/quiz/note khi đổi activity/theme/focus; Tab không lọt panel ẩn, Escape đóng layer trên cùng. Không mặc định chạy lại toàn BE nếu chỉ thay composition.
+- Từng phương pháp mới LM-03: một luồng thật với fixture test cho phép, contract/owner/data/concurrency tests trực tiếp; integration PostgreSQL khi có SQL/transaction mới. Không dùng chỉ screenshot hoặc Mockito kết luận completion đúng.
+- Desktop Light/Dark 1280×720 và 1440×900, câu/đáp án dài, số option khác bốn, keyboard và reflow. Không auto-advance khi chọn radio; không autofocus lúc background refetch; alert feedback không đọc lại toàn trang. Audio có lỗi/retry, transcript không rò vào accessible name bài chép.
+- Sau khi chạm quiz thật: một luồng học cốt lõi trên account test, chọn/nộp → kết quả → xem lại câu sai; nếu ghi note thì lưu/reload đúng scope. Không reset DB hay tài khoản cá nhân. Full FE cuối milestone theo AGENTS; không chạy full suite sau mỗi edit.
+
+Lượt này **chỉ cập nhật skill và kế hoạch**, không sửa FE/BE/DB hay học liệu. Chưa có phương pháp mới được triển khai hoặc nghiệm thu từ lượt khảo sát này. Khác biệt giữa dữ liệu hiện có và nguồn đã được ghi rõ để công nhân không giao một UI trông giống nhưng không học/chấm/lưu được.
+
+Kiểm tra tài liệu: `quick_validate.py` đạt cho bản skill trong repo và bản chia sẻ; bản sao/reference/link nội bộ, UTF-8 và `git diff --check` đạt. Không chạy build/unit/E2E vì lượt này không thay đổi code ứng dụng.

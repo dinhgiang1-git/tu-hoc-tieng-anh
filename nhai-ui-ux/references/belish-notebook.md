@@ -2,6 +2,8 @@
 
 Đọc khi người dùng yêu cầu phong cách Belish; đây là biến thể của `nhai-ui-ux`, giữ thương hiệu, nội dung và chức năng của sản phẩm đích.
 
+Với bài trắc nghiệm/từ vựng/đọc/nghe, đọc thêm [learning-methods.md](learning-methods.md): reference này chỉ quy định hình thức và roadmap; recipe tương tác theo phương pháp và khảo sát bài học bổ sung nằm ở file đó.
+
 **Điều chỉnh theo phản hồi 09/11/2026:** không dùng vạch màu cạnh heading, dải màu một cạnh card hoặc đường nhấn trang trí ở đầu/cuối section. Heading phân cấp bằng chữ và khoảng cách; card không đổi độ dày/màu riêng một cạnh theo nhóm hoặc completion. Quy tắc này ưu tiên hơn ảnh nguồn và các recipe cũ. Bỏ padding dành cho vạch, không thay bằng vạch xám/gradient/gạch chân trang trí. Viền bao trung tính, focus ring, ranh giới control và progress có chức năng vẫn giữ. Trục roadmap dùng nét trung tính chỉ khi có trình tự thật. Marker tô nền chữ, tape và grid không đồng nghĩa với thanh màu ở mép; không tăng chúng để bù trang trí vừa bỏ.
 
 ## Bằng chứng và giới hạn
