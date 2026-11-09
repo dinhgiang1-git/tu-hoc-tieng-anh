@@ -121,3 +121,17 @@ Lượt nghiệm thu sau khi có thay đổi Belish trong working tree: **nền 
 - Chưa kiểm zoom 125%, toàn bộ keyboard/reduced-motion hoặc đo đủ contrast render. Các kiểm tra đó vẫn cần trước khi nghiệm thu hoàn chỉnh, không suy ra từ build/tests xanh.
 
 Sửa trực tiếp hai điểm tài liệu khi nghiệm thu: hướng dẫn chia sẻ Belish phải kèm reference, và smoke consumer chung ngay BL-01. Source FE/BE đang trộn nhiều task chưa có ranh giới bàn giao nên không stage/commit nguyên các file đó trong lượt này; chỉ commit phần tài liệu đã review.
+
+### Thẩm định lại source cập nhật — tối 09/11/2026
+
+**Chưa đạt toàn bộ BL-01–04.** Source đã chuyển catalog và outline sang thẻ ngang/rail; workspace đã bỏ H1 trùng và dùng nút outline cho Bài tiếp khi chưa hoàn thành. Hai điểm này trong báo cáo trước đã được xử lý, không còn là finding hiện tại.
+
+- Chạy full FE: 29 file, 166/167 tests đạt. Một failure là G301Review còn đòi combobox cho trường hợp một enrollment, trong khi UI dùng CTA chọn trực tiếp. Đã cập nhật assertion theo affordance hiện tại, giữ test mutation chọn đúng enrollment.
+- Tái hiện lỗi focus trên web: chế độ tập trung còn 10 control nền trong thứ tự Tab; Escape lúc IPA mở làm thoát focus mode phía sau. Đã sửa trực tiếp: đặt các sibling bị che thành inert trong thời gian focus, khôi phục khi thoát; không xử lý Escape của focus khi modal đang mở. Regression kiểm cả cô lập nền và Escape theo lớp. Xác minh lại browser: 0 control nền có thể Tab; Escape đóng IPA, giữ focus mode và trả focus về nút IPA.
+- Sau sửa chạy đúng nhóm G301Review + LessonWorkspace: 2 file, 6/6 tests đạt. Build và lint sau sửa đạt; còn cảnh báo bundle JS lớn và react-hook-form như lượt trước. Không chạy lại toàn bộ FE sau sửa, không tuyên bố full suite cuối cùng đã đạt.
+- Đo computed colors Hôm nay trên nền đặc: active nav/CTA 5.70:1, marker 10.85:1, chữ phụ Light 6.22–6.50:1, Dark 6.52–7.85:1; heading chính vượt 11:1. Chưa đo toàn app, opacity/disabled/overlay và ảnh hưởng grid không được coi là đã chứng nhận.
+- Xem catalog Light 1440×900 và outline lộ trình A 130 buổi: thẻ ngang/tape và nhóm thu gọn hiển thị đúng, một H1; không tràn ngang ở trạng thái đã kiểm. Detail và form đăng ký Dark tại 1024×576 không tràn ngang; mở rồi hủy, không tạo enrollment. Đây là kiểm tra reflow viewport nhỏ, không phải bằng chứng zoom trình duyệt 125%.
+- **BL-03 vẫn còn thiếu bố cục đã chốt:** navigator chỉ là anchor số đặt dưới toàn bộ bài đọc; các activity vẫn hiển thị liên tiếp, chưa có khu vực tập trung vào nhiệm vụ hiện tại. Ghi chú mở bằng một cột grid 21rem, chưa là drawer và còn làm hẹp bài. Đây là phần chức năng/layout đáng kể, cần triển khai trước khi xác nhận BL-03 hoàn thành; không đổi yêu cầu sang coi việc thêm anchor là đã đạt.
+- Chưa chạy lại vòng nộp bài/ghi chú/quiz thực trên DB hoặc E2E rộng. Không sửa dữ liệu học, backend/auth hay nội dung published trong lượt thẩm định.
+
+Các sửa source nhỏ ở lượt này còn trong working tree: workspace đang phụ thuộc phần IPA/Belish chưa commit từ trước, nên không commit riêng một patch tạo tham chiếu thiếu và không gom cả các task chưa nghiệm thu. Bản thẩm định không thay cho việc tách và nghiệm thu phần triển khai còn lại.
