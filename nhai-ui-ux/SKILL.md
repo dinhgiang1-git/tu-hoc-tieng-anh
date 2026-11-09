@@ -36,6 +36,14 @@ Phản hồi người dùng ngày 09/11/2026: bỏ các vạch màu cạnh tiêu
 - Giữ focus ring bàn phím, ranh giới input/control, progress/chart và trạng thái selected/error có chức năng. Trục timeline chỉ khi thể hiện trình tự thật, dùng nét trung tính nhẹ; không gắn đường nối vào mọi danh sách.
 - Marker tô nền một cụm chữ ngắn, tape và grid là các motif khác; không tự xóa hoặc nhân rộng chúng để bù chỗ vừa bỏ vạch. Chỉ đưa lại thanh nhấn trang trí khi người dùng chủ động yêu cầu cho một trường hợp cụ thể.
 
+### Vùng ứng dụng phủ kín phần màn hình khả dụng
+
+Khi người dùng yêu cầu bỏ khoảng trống quanh nội dung app, nền main phải sát dưới topbar/banner thực tế, sát cạnh sidebar và phủ đến mép phải/đáy vùng còn lại. Không dựng một tờ giấy có khung nổi nằm trong main rồi chừa thêm gutter bên ngoài. Đây là bố cục app; không tự bật Fullscreen API hoặc ẩn thanh điều hướng.
+
+Tách nền khỏi padding nội dung: main không có margin/padding ngoài để bao một sheet; đặt grid/paper trực tiếp trên vùng phủ kín, giữ **một lớp** padding bên trong cho chữ/control, thường 16–24px trên desktop. Không cộng padding main + padding sheet + padding page. Bỏ border/radius/shadow/pseudo-element của sheet gốc nếu chúng tạo khung lồng/gutter hoặc tràn mép; card và control giữ recipe riêng.
+
+Trong flex/grid, dùng phần chiều ngang/cao còn lại, `min-width:0`, `min-height:0` và một vùng cuộn main. Không dùng `100vw`/`w-screen` cho main cạnh sidebar, không thêm `h-screen` cho main dưới header, không hardcode trừ chiều rộng sidebar. Nội dung ngắn vẫn phủ kín nền; nội dung dài cuộn được. Giới hạn chiều dài dòng tại đoạn đọc, không tại wrapper toàn app. Kiểm sidebar mở/thu, banner lỗi và viewport lớn để tránh tái xuất hiện dải trống.
+
 Mặc định khi thiếu lựa chọn: dùng theme **Warm**, giữ stack hiện tại; nếu dự án mới và người dùng không chỉ định công nghệ, chọn giải pháp đơn giản đáp ứng chức năng. Nội dung tiếng Việt, icon nét đơn nhất quán, nền giấy ở shell và nền đặc ở panel. Chỉ dùng Cool khi được yêu cầu hoặc dự án đã có thương hiệu xanh phù hợp. Dữ liệu quan trọng còn thiếu thì làm phần độc lập trước; đánh dấu phần cần dữ liệu, không tự bịa. Có thể dùng nội dung mẫu được gắn rõ là mẫu khi người dùng yêu cầu prototype.
 
 ### Chọn cấu trúc theo nhiệm vụ
@@ -137,7 +145,7 @@ Giữ radius nhỏ và cạnh rõ của TOPIK; lấy sự ấm/chất liệu c�
 
 ### Spacing và responsive
 
-Nhịp 4 px; padding panel 16–24 px; khoảng cách phần 24–32 px (nguồn có khoảng 22 px ở trang chủ). Main tối đa khoảng 1215 px, mobile padding ngang 16 px, desktop 32 px. Đo và điều chỉnh theo nội dung, không ép mọi trang đúng một chiều rộng.
+Nhịp 4 px; padding panel 16–24 px; khoảng cách phần 24–32 px (nguồn có khoảng 22 px ở trang chủ). Với landing/danh mục độc lập, max-width khoảng 1215 px và desktop padding 32 px là điểm khởi đầu. App được yêu cầu phủ kín vùng còn lại áp dụng quy tắc ở đầu skill: nền sát mép, không max-width ở wrapper toàn app, một lớp padding nội dung 16–24 px. Đo và điều chỉnh theo nội dung, không ép mọi trang đúng một chiều rộng.
 
 | Loại trang/thành phần | Mobile | Tablet | Desktop |
 |---|---|---|---|
@@ -147,7 +155,7 @@ Nhịp 4 px; padding panel 16–24 px; khoảng cách phần 24–32 px (nguồn
 | Card mô tả dài | 1 cột | 2 cột nếu đủ rộng | 2–3 cột |
 | Pricing card | 1 cột | 2 cột nếu không chật | 3 cột khi số gói phù hợp; nhiều gói hơn cần nhóm |
 
-Với dashboard được yêu cầu mở rộng hết vùng nội dung desktop, để app shell và wrapper của trang cùng dùng chiều rộng khả dụng (`w-full`, `min-w-0`); bỏ cả max-width/container lồng gây hai dải trống. Giữ padding mép vừa phải và kiểm cả trạng thái sidebar mở/thu. Giới hạn chiều dài dòng cho riêng đoạn văn dài khi cần, không bó cả dashboard theo cột bài đọc.
+Với dashboard được yêu cầu mở rộng hết vùng nội dung desktop, shell và wrapper cùng dùng chiều rộng khả dụng (`w-full`, `min-w-0`); bỏ max-width/container lồng và gutter ngoài sheet, đồng thời phủ đủ chiều cao còn lại. Padding chữ/control nằm trong nền main, không tạo vòng nền khác màu bao quanh trang. Kiểm sidebar mở/thu; giới hạn chiều dài dòng cho riêng đoạn văn dài, không bó cả dashboard theo cột bài đọc. CSS `.content` có max-width ở ví dụ bên dưới dành cho trang độc lập, không sao chép nguyên wrapper đó vào app phủ kín.
 
 Breakpoint mặc định 640/1024 px là điểm bắt đầu, chuyển bố cục khi nội dung thực tế cần. Header cố định phải có phần bù chiều cao; anchor có scroll-margin. Mobile không có tràn ngang toàn trang, kể cả shadow. Bảng rộng chỉ cuộn bên trong vùng có nhãn và chỉ báo phù hợp.
 
@@ -485,6 +493,7 @@ Với dự án có UI lặp lại, dùng gallery/dev view/test harness hiện c�
 - [ ] Tương phản mục tiêu tối thiểu 4.5:1 cho chữ thường, 3:1 cho chữ lớn và dấu hiệu điều khiển; đo các tổ hợp màu thực dùng. Không dựa riêng vào màu để truyền đạt trạng thái.
 - [ ] Điều khiển chính có vùng chạm khoảng 44 × 44 px, focus rõ, dùng được bằng bàn phím; modal xử lý Escape/focus và không bỏ lại overlay.
 - [ ] Không tràn ngang toàn trang, không cắt shadow/label; vị trí anchor không nằm dưới header.
+- [ ] Nếu app yêu cầu phủ kín: nền main sát chrome, không gutter/khung sheet lồng; chỉ một lớp padding nội dung, đủ chiều cao khi ít nội dung, một vùng cuộn khi nội dung dài và không tràn khi sidebar mở/thu.
 - [ ] Loading/empty/error/success được xử lý ở phần có liên quan; nội dung nhập và lựa chọn không bị mất khi lỗi.
 - [ ] Nếu có pricing: giá/chu kỳ/tổng tiền/quyền lợi/giới hạn đồng nhất; không dữ liệu giả, khuyến mãi giả hoặc phí ẩn; test đổi chu kỳ và lựa chọn gói.
 - [ ] Asset/font tải được; không nhầm MIME/weight; reduced-motion không làm mất khả năng dùng.

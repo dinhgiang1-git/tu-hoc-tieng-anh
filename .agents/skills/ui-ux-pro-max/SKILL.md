@@ -13,6 +13,8 @@ Follow the project's AGENTS.md and frontend convention. For this project, priori
 
 Project visual preference (09/11/2026): do not add decorative colored rails beside headings, single-edge accent strips on cards, or repeated accent rules. Use typography and spacing for hierarchy; preserve functional focus/control borders and progress indicators. Follow the [Nhai/Belish skill's decoration rules](../nhai-ui-ux/SKILL.md) when applying that style; generic search examples do not override this preference.
 
+Project app layout: the main background fills the available area below the topbar and beside the sidebar, with no outer gutter or floating sheet frame. Keep a single inner content padding layer (16–24px desktop), limit reading width within articles, and retain one main scroll region. Do not use viewport width/height for a child that must fit beside/below app chrome; this preference does not request browser fullscreen or hidden navigation.
+
 Searchable local UI/UX guidance: 79 searchable styles (50 active), 192 product palettes and exact reasoning profiles, 74 font pairings, 119 UX guidelines, 105 curated icons, 17 GSAP presets, 25 chart types, and 22 technology stacks.
 
 ## When to Apply

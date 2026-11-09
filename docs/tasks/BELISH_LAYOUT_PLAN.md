@@ -4,11 +4,13 @@ Ngày 09/11/2026. **Đã khảo sát nguồn, cập nhật skill và lập kế 
 
 ## 1. Hướng đã chọn
 
-Sổ tay vẽ phác kiểu Belish: Itim, grid nhẹ, khung giấy nét đôi, thẻ ngang có tape pastel, marker vàng, active/action xanh. Main rộng theo vùng còn lại desktop; hành động học xuất hiện sớm. Giữ thương hiệu, chức năng và nội dung dự án.
+Sổ tay vẽ phác kiểu Belish: Itim, grid nhẹ, viền phác ở card, thẻ ngang có tape pastel, marker vàng, active/action xanh. Nền main phủ kín vùng còn lại desktop, không khung sheet nổi/gutter ngoài; hành động học xuất hiện sớm. Giữ thương hiệu, chức năng và nội dung dự án.
 
 **Chốt bổ sung theo ảnh và phản hồi 09/11/2026:** không dùng vạch màu cạnh heading, dải màu một cạnh card hoặc đường nhấn trang trí lặp lại. Chữ và spacing tạo thứ bậc; giữ ranh giới control/focus/progress có chức năng. Áp dụng [kế hoạch gỡ thanh màu ở mục 9](#9-fix-bỏ-thanh-màu-trang-trí) trước khi hoàn thiện các đợt còn lại; không đưa lại các vạch này khi triển khai BL-03.
 
 **Bài học theo phương pháp:** [mục 10](#10-giao-diện-riêng-theo-phương-pháp-học) cụ thể hóa BL-03 và phần quiz: một vùng làm bài, mỗi phương pháp có cấu trúc riêng, ưu tiên quiz hiện có trước. Các phương pháp mới cần dữ liệu sẽ triển khai thành phần riêng sau khi có contract, không giả lập từ Markdown.
+
+**Bỏ khoảng trống quanh main theo ảnh mới:** [mục 11](#11-main-phủ-kín-vùng-màn-hình-còn-lại) thay đề xuất khung giấy nổi trước đây. Nền phủ sát dưới topbar và cạnh sidebar tới mép phải/đáy; chỉ giữ padding nội dung bên trong, không bật fullscreen hoặc ẩn navigation.
 
 Đọc AGENTS, FE convention, skill `nhai-ui-ux` và `references/belish-notebook.md`. Kế hoạch này thay hướng visual cũ trong `design-system/english-study/MASTER.md` cho đợt Belish; giữ ràng buộc copy gọn, dữ liệu và state của MASTER/handoff cũ. `THEME_MODE_FIX_PLAN.md` là lịch sử: đối chiếu source để biết lỗi nào đã sửa, không lặp lại toàn bộ danh sách lỗi cũ. Quy trình kiểm tra gọn của AGENTS ưu tiên hơn yêu cầu full suite mỗi lượt trong handoff cũ.
 
@@ -21,7 +23,7 @@ Baseline Git `8a6e783` kèm nhiều thay đổi FE/BE chưa commit có sẵn. Đ
 | Bằng chứng source | Chuyển đổi cần làm |
 |---|---|
 | Có Itim/grid/press, Warm/Cool/Dark trong styles | Tái dùng nền tảng, thêm recipe Belish và palette xanh; không chỉ đổi primary rồi giữ mọi layout cũ |
-| Sidebar đang 224px/64px; shell có topbar, main cuộn và full-width wrapper | Sidebar mở 240–256px, topbar 64–72px, khung giấy nét phác; giữ collapse/auth/error |
+| Sidebar ở lần rà đầu là 224px/64px; shell có topbar, main cuộn và full-width wrapper | Sidebar mở 240–256px, topbar 64–72px, nền main phủ kín không khung sheet nổi; giữ collapse/auth/error |
 | Catalog lưới hai cột, card có link con | Danh sách thẻ ngang có tape; static wrapper, link con; không nested control |
 | Detail có phase → week → lesson bằng `details` | Giữ disclosure cho nội dung dài, thêm rail/mốc, hàng bài compact |
 | Catalog summary không có số bài/thứ tự curriculum; enrollment summary không có curriculumId | Không bịa số bài, nối các curriculum thành A1→C2 hoặc gán tiến độ theo title |
@@ -36,7 +38,7 @@ Baseline Git `8a6e783` kèm nhiều thay đổi FE/BE chưa commit có sẵn. Đ
 
 ```text
 ┌ Thương hiệu hiện có ─────────────────── Theme / tài khoản ┐
-│ Sidebar       │ Trang giấy kẻ ô, padding 24–32            │
+│ Sidebar       │ Nền kẻ ô sát mép, content padding 16–24   │
 │ 240–256px     │ Hôm nay                                   │
 │ Active xanh   │ ┌ Việc học chính ───────┐ ┌ Tóm tắt gọn ┐ │
 │               │ │ Tên bài / trạng thái │ │ Dữ liệu thật│ │
@@ -256,3 +258,45 @@ Codex giao công nhân tuần tự LM-01 → LM-02 → từng lát LM-03; không
 Lượt này **chỉ cập nhật skill và kế hoạch**, không sửa FE/BE/DB hay học liệu. Chưa có phương pháp mới được triển khai hoặc nghiệm thu từ lượt khảo sát này. Khác biệt giữa dữ liệu hiện có và nguồn đã được ghi rõ để công nhân không giao một UI trông giống nhưng không học/chấm/lưu được.
 
 Kiểm tra tài liệu: `quick_validate.py` đạt cho bản skill trong repo và bản chia sẻ; bản sao/reference/link nội bộ, UTF-8 và `git diff --check` đạt. Không chạy build/unit/E2E vì lượt này không thay đổi code ứng dụng.
+
+## 11. Main phủ kín vùng màn hình còn lại
+
+### Bằng chứng và phạm vi
+
+Ảnh người dùng khoanh khoảng trống phía trên và cạnh trái của tờ giấy nội dung. Source hiện tại giải thích được khoảng này: `AppShell.tsx` đặt `p-3 md:p-5` trên main, bên trong lại có `belish-sheet ... p-5 md:p-7 lg:p-8`; `.belish-sheet` có border/radius/shadow và pseudo-element nét đôi. `w-full` hiện có chỉ làm sheet đầy phần bên trong padding, không xóa gutter. Nhận định này dựa vào ảnh và source, chưa phải đo computed geometry sau sửa.
+
+Chốt: nền grid/paper bắt đầu ngay tại ranh giới main dưới chrome, cạnh sidebar và phủ đến mép phải/đáy. Giữ topbar, sidebar mở/thu và các action. Một lớp padding chữ/control bên trong nền (đề xuất 16px ở 1280, 24px ở màn lớn), không hai lớp lề; giữ gap giữa card và padding trong card. Khoảng nền trống phía dưới khi ít nội dung vẫn là vùng main sử dụng được; không kéo giãn card để lấp đầy hay tự thêm widget.
+
+Lượt này cập nhật skill và kế hoạch, **chưa sửa FE**. Không gộp redesign Today, sửa màu, quiz hoặc auth vào việc bỏ gutter. Quy tắc mới ưu tiên hơn đề xuất sheet có khung ở các mục/lịch sử nghiệm thu cũ.
+
+### Thay đổi cụ thể
+
+| Điểm sửa | Hướng thực hiện |
+|---|---|
+| `app/layouts/AppShell.tsx`: main có outer padding và nền chrome | Bỏ padding/margin tạo gutter; đưa `paper-grid` vào main phủ kín. Giữ flex-1/min-w-0, min-h-0 theo chuỗi flex và overflow-y-auto của main |
+| Wrapper chứa `Outlet` có `belish-sheet`, padding 20–32px | Bỏ class sheet/khung ngoài, chỉ một wrapper full-width/min-height với padding nội dung 16–24px; không max-width/mx-auto làm bó cả app. Không đổi key/mount của Outlet hoặc state auth/theme |
+| `styles/globals.css`: `.belish-sheet` và `::before` | Rà các điểm dùng rồi gỡ recipe không còn dùng hoặc chuyển riêng đúng nơi còn cần. Không để border/shadow/inset âm tạo dải mép, viền kép, overflow hay scrollbar giả; không đụng `.belish-frame` của card/control |
+| Wrapper trang con, đặc biệt Today và workspace | Rà padding/container/max-width chỉ ở lớp bố cục trang. Giữ `max-w-*` cho đoạn đọc, nội dung dialog hoặc form phù hợp; không replace toàn repo. Không chồng thêm padding page để bù wrapper vừa gỡ |
+
+Hình cấu trúc đích, không phải code đã triển khai:
+
+```text
+topbar / banner (chiều cao thật theo layout)
+┌ sidebar ───┬ main: paper-grid, flex-1, min-w-0, min-h-0, scroll ┐
+│            │ wrapper: full width/min-height; padding 16–24     │
+│            │ Outlet → nội dung trang                          │
+└────────────┴───────────────────────────────────────────────────┘
+```
+
+Không dùng `w-screen`/100vw cho main cạnh sidebar, `h-screen` cho main dưới header, absolute/fixed phủ lên chrome hoặc phép trừ hardcode 256/64px. Header/banner và sidebar vẫn tham gia flex layout; nội dung dài cuộn ở main, không sinh scroll body thứ hai. Sidebar rộng/hẹp làm main tự nhận phần còn lại. Không dùng overflow-hidden để che lỗi tràn nội dung/focus.
+
+### Giao việc và nghiệm thu
+
+Một công nhân sửa shell/wrapper/CSS cùng đợt nhỏ, tuần tự với task đang chạm AppShell/styles. Đọc diff có sẵn; không reset hoặc commit các thay đổi chưa nghiệm thu. Không cần API/DB/migration/dependency mới. Codex tự sửa finding nhỏ rồi nghiệm thu/commit phần đạt.
+
+- Chụp trước/sau cùng Today, mode, viewport, sidebar state. Kiểm 1280×720, 1440×900 và một desktop rộng tương đương ảnh người dùng; Light/Dark, sidebar mở/thu. Nền main liền tới các cạnh, không vòng nền chrome hoặc tờ giấy nổi bên trong.
+- Đo geometry tại đầu trang: mép trái main khớp mép phải sidebar; mép trên khớp đáy vùng chrome/banner thực tế; mép phải/đáy khớp vùng còn lại trong viewport, cho phép scrollbar/đường phân vùng chức năng. Wrapper không chừa gutter ngoài; khoảng cách chữ tới cạnh là padding nội dung đã chốt.
+- Today ít nội dung vẫn phủ kín chiều cao; curriculum/workspace dài cuộn bình thường. Thử mở/thu sidebar khi ở giữa trang, đổi route, mở drawer notes/IPA và focus mode; không mất state, không clip tape/focus và không có scrollbar ngang mới.
+- Smoke read-only catalog, lịch, ôn tập, tiến độ, tùy chọn vì dùng chung shell. Login là layout độc lập, không ép form đăng nhập full-width theo quy tắc main của app.
+- Build (đã gồm TypeScript) + lint lúc nghiệm thu. Chọn AppSidebar/TodayPage tests hiện có nếu DOM/props ảnh hưởng; không viết test chỉ so class padding hoặc mặc định full FE/backend/E2E cho thay đổi bố cục này. Một luồng Hôm nay → mở bài để xác nhận không ảnh hưởng điều hướng.
+- Báo riêng geometry/render đã đo, checks đã chạy và điểm chưa xác minh. Chưa có ảnh sau sửa hoặc nghiệm thu UI trong lượt cập nhật tài liệu này.

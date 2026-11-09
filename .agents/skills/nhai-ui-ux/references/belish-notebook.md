@@ -6,6 +6,8 @@ Với bài trắc nghiệm/từ vựng/đọc/nghe, đọc thêm [learning-metho
 
 **Điều chỉnh theo phản hồi 09/11/2026:** không dùng vạch màu cạnh heading, dải màu một cạnh card hoặc đường nhấn trang trí ở đầu/cuối section. Heading phân cấp bằng chữ và khoảng cách; card không đổi độ dày/màu riêng một cạnh theo nhóm hoặc completion. Quy tắc này ưu tiên hơn ảnh nguồn và các recipe cũ. Bỏ padding dành cho vạch, không thay bằng vạch xám/gradient/gạch chân trang trí. Viền bao trung tính, focus ring, ranh giới control và progress có chức năng vẫn giữ. Trục roadmap dùng nét trung tính chỉ khi có trình tự thật. Marker tô nền chữ, tape và grid không đồng nghĩa với thanh màu ở mép; không tăng chúng để bù trang trí vừa bỏ.
 
+**App sát mép theo ảnh phản hồi tiếp theo:** main phủ kín phần màn hình dưới topbar và cạnh sidebar, không có gutter hoặc khung sheet nổi bao quanh. Grid/paper nằm ngay trên main, một lớp padding nội dung 16–24px; bỏ khung/phác/shadow của sheet gốc, giữ recipe card/control. Quan sát nguồn có khung giấy không bắt buộc sao chép vào app đích. Quy tắc này ưu tiên hơn đề xuất main padding/khung cũ; không ẩn navigation hay bật fullscreen trình duyệt.
+
 ## Bằng chứng và giới hạn
 
 Khảo sát [Belish Roadmap](https://belish.net/vi/roadmap) ngày 09/11/2026: tổng quan, mở A1 và Cài đặt; chưa đăng nhập. Xem ở 670×900 và 1440×900, đọc computed style DOM ở desktop. Phiên khảo sát đang Dark/blue và bật switch “Giao diện vẽ tay”. Không xác định đây là mặc định của mọi người truy cập. Chưa đổi cài đặt nguồn, khảo sát Light, mở workspace, lưu tiến độ hay thanh toán.
@@ -16,7 +18,7 @@ Nét phác, tape, marker và layout được quan sát qua ảnh. Chưa đọc c
 
 | Đã quan sát | Quyết định áp dụng |
 |---|---|
-| Topbar ngang toàn trang, sidebar trái, main như trang giấy có khung | Chrome ổn định, một vùng cuộn nội dung, giữ route/menu hiện có |
+| Topbar ngang toàn trang, sidebar trái, main như trang giấy có khung | Giữ chrome/route/menu và một vùng cuộn; app đích dùng nền main sát mép, không khung sheet nổi theo phản hồi người dùng |
 | Itim, grid mờ, viền phác chồng nét | Dùng font sẵn có; decoration CSS mảnh, không làm méo chữ hoặc control |
 | Active nav xanh; tên cấp màu riêng; mô tả đầu trang tô vàng | Một màu action; màu nhóm nếu cần ở nhãn/tape, không ở dải mép card; marker ngắn, không tô đoạn dài |
 | Băng dính pastel hơi lệch trên đầu thẻ | Một pseudo-element không tương tác; không xoay cả card |
@@ -49,7 +51,7 @@ Nguồn có chữ trắng trên primary xanh sáng. Khi triển khai phải đo 
 - Dark bám nền tím than ở trên. Light: paper `#faf7ef`, surface `#fffdf7`, ink `#28232b`, muted `#625969`. Giữ mode đã lưu, không ép Dark theo phiên khảo sát.
 - Action fill `#5194ff`, on-action `#101c32`; action text/focus Light `#2457ad`, Dark `#9dbfff`. Marker `#f2d94e`, chữ `#28232b`. Đo tổ hợp thực dùng trước nghiệm thu.
 - Grid 20px; nét Dark `rgba(241,243,247,.06)`, Light `rgba(40,35,43,.08)`; vùng đọc/form đặc màu.
-- Sidebar mở 240–256px, thu 64–72px; topbar 64–72px; main padding 24–32px và dùng chiều ngang còn lại. Riêng đoạn bài đọc giới hạn 65–78ch.
+- Sidebar mở 240–256px, thu 64–72px; topbar 64–72px; main dùng toàn bộ chiều ngang/cao còn lại, không gutter ngoài. Một wrapper nội dung có padding 16–24px bên trong nền main. Riêng đoạn bài đọc giới hạn 65–78ch.
 - H1 30–34px, H2 22–26px, lesson title 18–20px; body 16–18px. Itim có face 400 thật; IPA dùng fallback hỗ trợ glyph khi cần.
 - Viền chức năng 1–2px; nét phác phụ opacity thấp, lệch 1–3px. Shadow cứng 2px và press 2px cho biến thể này, thống nhất các primitive; không để vài trang giữ offset Warm 4px.
 
@@ -108,6 +110,7 @@ Một recipe frame/panel, một modifier tape. Pseudo-element không có nội d
 
 - Nhận ra phong cách từ font, grid, cạnh phác, tape, marker và phân cấp layout; không cần thương hiệu nguồn.
 - Desktop 1280×720, 1440×900, sidebar mở/thu, zoom 125%, tiêu đề dài; không tràn ngang hoặc cắt focus/tape.
+- Nền main sát topbar/sidebar và phủ tới mép vùng còn lại; không viền kép/khung sheet lồng hoặc gutter ngoài, không dùng width/height viewport khiến tràn dưới chrome.
 - Một heading chính, CTA sớm; không hàng trăm card so le/khoảng trắng vô ích. Semantic list/heading/progress, Tab đúng thứ tự.
 - Không có vạch màu ở heading/card, không còn thụt chữ do vạch cũ và không thêm dải trang trí thay thế; trạng thái vẫn hiểu được bằng nhãn/icon.
 - Đo tương phản Light/Dark thực tế, cả marker và active nav. Decoration không cản click/focus.
