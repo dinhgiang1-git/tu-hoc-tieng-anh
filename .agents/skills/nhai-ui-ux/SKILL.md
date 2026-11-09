@@ -12,7 +12,7 @@ description: >-
 
 **Biến thể Belish (bổ sung 09/11/2026):** khi người dùng yêu cầu giống Belish hoặc đưa `belish.net/vi/roadmap` làm tham chiếu, đọc thêm [references/belish-notebook.md](references/belish-notebook.md). Reference quy định palette, nét phác, băng dính, marker và bố cục roadmap; các lựa chọn đó ưu tiên hơn mặc định Warm/Cool và công thức bìa sách ở đây. Giữ hợp đồng semantics, state và bảo toàn dữ liệu. Với biến thể này cần mang theo thư mục `references/` khi chia sẻ skill; các chế độ Nhai cũ vẫn tự chứa trong file này.
 
-Trong môi trường hỗ trợ skill, đặt file này trong thư mục `nhai-ui-ux/`. Với AI chỉ nhận tài liệu, đính kèm chính file này và yêu cầu:
+Trong môi trường hỗ trợ skill, đặt file này trong thư mục `nhai-ui-ux/`. Với AI chỉ nhận tài liệu, đính kèm file này; nếu yêu cầu Belish thì đính kèm thêm `references/belish-notebook.md`, rồi yêu cầu:
 
 > Đọc skill này và làm website [mục đích] cho [đối tượng]. Dùng thương hiệu/nội dung [của tôi], giữ stack [hiện tại hoặc stack được yêu cầu]. Áp dụng chế độ [danh mục/dashboard/landing page/gói dịch vụ] phù hợp và kiểm tra theo tiêu chí cuối file.
 

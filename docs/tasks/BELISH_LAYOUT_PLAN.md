@@ -90,6 +90,8 @@ Chạy từ `frontend`; mỗi nhóm một lần, chỉ chạy lại khi code đ�
 
 Build dùng `npm run build` đã gồm TypeScript, không chạy thêm typecheck trùng. Lint lúc nghiệm thu `npm run lint`. Tái dùng FE/BE/DB development và fixture/allowlist, không reset dữ liệu cá nhân. BE verify/PostgreSQL integration chỉ khi có đổi business/data/auth/schema/SQL theo AGENTS; kế hoạch này không yêu cầu các thay đổi đó.
 
+Ngay BL-01, token/primitive toàn cục đã tác động các trang chưa chuyển. Smoke read-only một workspace, lịch, ôn tập và Login để phát hiện mất chữ, tràn ngang hoặc control hỏng; không chờ BL-04 mới nhìn các consumer này. Chỉ mở rộng regression khi có lỗi/nghi vấn cụ thể, không mặc định chạy full suite.
+
 ## 6. Tiêu chí kết thúc
 
 - Nhận ra Belish qua shell/thẻ/roadmap, vẫn giữ thương hiệu và nội dung dự án.
@@ -105,3 +107,17 @@ Build dùng `npm run build` đã gồm TypeScript, không chạy thêm typecheck
 Đã khảo sát nguồn thật, đọc computed font/màu/hình học desktop; rà shell/styles/catalog/detail, generated DTO, convention và handoff. Skill có reference Belish ở cả bản dùng trong repo và bản chia sẻ. UI UX Pro Max design-system trả Claymorphism/trẻ em không phù hợp nên không lưu/áp dụng; query hẹp Neubrutalism khớp cạnh/bóng cứng, còn nét phác và roadmap dựa trên quan sát nguồn.
 
 Chưa chạy app local, build, lint, unit hoặc E2E vì lượt này chỉ sửa tài liệu. Chưa triển khai BL-01; chưa xác minh Light/workspace hoặc ghi tiến độ trên Belish. Đây là kế hoạch sẵn giao công nhân, không phải nghiệm thu UI đã sửa.
+
+## 8. Codex nghiệm thu phần source hiện có — 09/11/2026
+
+Lượt nghiệm thu sau khi có thay đổi Belish trong working tree: **nền tảng/shell/Hôm nay đạt các kiểm tra dưới đây, chưa nghiệm thu toàn bộ BL-01–04**. Không xác nhận các thay đổi BE/auth hoặc tính năng khác đang dở.
+
+- `npm run build` đạt; cảnh báo bundle JS lớn hơn 500kB. `npm run lint` đạt với một warning `react(incompatible-library)` tại EnrollmentDialog (react-hook-form).
+- AppSidebar + TodayPage: 2 file, 17 tests đạt. Theme context: 1 file, 6 tests đạt. Không chạy full FE/backend/E2E.
+- Tái dùng app development, đăng nhập tài khoản audit có sẵn `e2e_readiness_20261028`. Xem Today Dark 1440×900 và Light/Dark 1280×720; tên bài, CTA, marker/tape rõ. CTA Dark 1280 có đáy khoảng 528px, nằm trong viewport 720px; không tràn ngang main/trang ở các trạng thái đã đo.
+- Hôm nay → mở đúng bài pilot; sidebar thu gọn hoạt động. Smoke workspace Light/Dark, lịch Dark và ôn tập empty state; Login đã render trước đăng nhập. Đây là kiểm tra mở/đọc, chưa kiểm chu trình nộp bài/lưu note.
+- Select lộ trình mở được; Escape đóng và trả focus về trigger. IPA mở/đóng bằng Escape, trả focus về nút Bảng IPA. Không gửi bài, sửa ghi chú, đổi enrollment hoặc lịch.
+- Còn lại BL-02/03/04: roadmap chưa nghiệm thu; workspace hiện vẫn lặp hai H1 tên bài và Bài tiếp còn nổi bật trước hoàn thành. Giữ các điểm này trong BL-03; không coi việc thay token là đã hoàn thành workspace.
+- Chưa kiểm zoom 125%, toàn bộ keyboard/reduced-motion hoặc đo đủ contrast render. Các kiểm tra đó vẫn cần trước khi nghiệm thu hoàn chỉnh, không suy ra từ build/tests xanh.
+
+Sửa trực tiếp hai điểm tài liệu khi nghiệm thu: hướng dẫn chia sẻ Belish phải kèm reference, và smoke consumer chung ngay BL-01. Source FE/BE đang trộn nhiều task chưa có ranh giới bàn giao nên không stage/commit nguyên các file đó trong lượt này; chỉ commit phần tài liệu đã review.
