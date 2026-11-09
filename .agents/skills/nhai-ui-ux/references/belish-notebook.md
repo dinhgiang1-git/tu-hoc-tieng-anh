@@ -8,6 +8,8 @@ Với bài trắc nghiệm/từ vựng/đọc/nghe, đọc thêm [learning-metho
 
 **App sát mép theo ảnh phản hồi tiếp theo:** main phủ kín phần màn hình dưới topbar và cạnh sidebar, không có gutter hoặc khung sheet nổi bao quanh. Grid/paper nằm ngay trên main, một lớp padding nội dung 16–24px; bỏ khung/phác/shadow của sheet gốc, giữ recipe card/control. Quan sát nguồn có khung giấy không bắt buộc sao chép vào app đích. Quy tắc này ưu tiên hơn đề xuất main padding/khung cũ; không ẩn navigation hay bật fullscreen trình duyệt.
 
+**Viền card theo ảnh phản hồi mới:** chỉ một viền bao. Bỏ nét phác phụ chạy song song ở bên trong/bên ngoài; không dùng `::before`/inset outline để vẽ thêm khung. Tape riêng và focus ring có chức năng vẫn giữ. Quy tắc này thay recipe double-stroke trước đây.
+
 ## Bằng chứng và giới hạn
 
 Khảo sát [Belish Roadmap](https://belish.net/vi/roadmap) ngày 09/11/2026: tổng quan, mở A1 và Cài đặt; chưa đăng nhập. Xem ở 670×900 và 1440×900, đọc computed style DOM ở desktop. Phiên khảo sát đang Dark/blue và bật switch “Giao diện vẽ tay”. Không xác định đây là mặc định của mọi người truy cập. Chưa đổi cài đặt nguồn, khảo sát Light, mở workspace, lưu tiến độ hay thanh toán.
@@ -19,7 +21,7 @@ Nét phác, tape, marker và layout được quan sát qua ảnh. Chưa đọc c
 | Đã quan sát | Quyết định áp dụng |
 |---|---|
 | Topbar ngang toàn trang, sidebar trái, main như trang giấy có khung | Giữ chrome/route/menu và một vùng cuộn; app đích dùng nền main sát mép, không khung sheet nổi theo phản hồi người dùng |
-| Itim, grid mờ, viền phác chồng nét | Dùng font sẵn có; decoration CSS mảnh, không làm méo chữ hoặc control |
+| Itim, grid mờ, viền phác chồng nét | Giữ font/grid, nhưng app đích chỉ một viền bao theo phản hồi; không sao chép nét chồng gây viền trong viền ngoài |
 | Active nav xanh; tên cấp màu riêng; mô tả đầu trang tô vàng | Một màu action; màu nhóm nếu cần ở nhãn/tape, không ở dải mép card; marker ngắn, không tô đoạn dài |
 | Băng dính pastel hơi lệch trên đầu thẻ | Một pseudo-element không tương tác; không xoay cả card |
 | Tổng quan có trục trái, mốc cấp và thẻ ngang | Chỉ có trục khi các nhóm thực sự có thứ tự; catalog độc lập dùng danh sách thẻ ngang |
@@ -53,7 +55,7 @@ Nguồn có chữ trắng trên primary xanh sáng. Khi triển khai phải đo 
 - Grid 20px; nét Dark `rgba(241,243,247,.06)`, Light `rgba(40,35,43,.08)`; vùng đọc/form đặc màu.
 - Sidebar mở 240–256px, thu 64–72px; topbar 64–72px; main dùng toàn bộ chiều ngang/cao còn lại, không gutter ngoài. Một wrapper nội dung có padding 16–24px bên trong nền main. Riêng đoạn bài đọc giới hạn 65–78ch.
 - H1 30–34px, H2 22–26px, lesson title 18–20px; body 16–18px. Itim có face 400 thật; IPA dùng fallback hỗ trợ glyph khi cần.
-- Viền chức năng 1–2px; nét phác phụ opacity thấp, lệch 1–3px. Shadow cứng 2px và press 2px cho biến thể này, thống nhất các primitive; không để vài trang giữ offset Warm 4px.
+- Viền chức năng 1–2px, một đường bao; không có nét phác phụ lệch/inset. Shadow cứng 2px và press 2px cho biến thể này, thống nhất các primitive; không để vài trang giữ offset Warm 4px.
 
 Palette và mode là hai trục riêng. Map vào semantic tokens hiện có; alias `--nh-*` lấy cùng nguồn, không lập bảng màu độc lập mỗi component. Không cần thêm UI chọn palette chỉ để triển khai phong cách.
 
@@ -71,15 +73,6 @@ Một recipe frame/panel, một modifier tape. Pseudo-element không có nội d
   box-shadow: 2px 2px 0 var(--notebook-shadow);
   isolation: isolate;
 }
-.notebook-panel::before {
-  content: "";
-  position: absolute;
-  inset: 2px -2px -2px 1px;
-  border: 1px solid var(--notebook-sketch);
-  border-radius: inherit;
-  opacity: .4;
-  pointer-events: none;
-}
 .notebook-panel[data-tape]::after {
   content: "";
   position: absolute;
@@ -94,7 +87,7 @@ Một recipe frame/panel, một modifier tape. Pseudo-element không có nội d
 }
 ```
 
-Định nghĩa các biến ở token theme; đưa recipe vào component của stack hiện tại. Chừa chỗ tape; tránh ancestor overflow cắt viền/bóng. Dialog đặt decoration ngoài scroll body. Không phủ nét phác lên input/chart/focus ring. Card tĩnh không nhún; interactive dùng press recipe chung; card có nút/link con không bọc bằng control khác. Giữ keyboard, disabled/loading và reduced-motion theo skill chính.
+Định nghĩa các biến ở token theme; đưa recipe vào component của stack hiện tại. Chừa chỗ tape; tránh ancestor overflow cắt viền/bóng. Không thêm `::before` tạo vòng viền thứ hai. Dialog đặt decoration ngoài scroll body. Card tĩnh không nhún; interactive dùng press recipe chung; card có nút/link con không bọc bằng control khác. Giữ keyboard, disabled/loading và reduced-motion theo skill chính.
 
 ## Công thức bố cục
 

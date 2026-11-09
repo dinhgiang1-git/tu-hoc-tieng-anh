@@ -33,6 +33,7 @@ Phản hồi người dùng ngày 09/11/2026: bỏ các vạch màu cạnh tiêu
 - Heading dùng cỡ chữ, độ đậm và khoảng cách; không mặc định thêm `border-left`, pseudo-element dạng vạch hoặc dải màu phía trên/dưới. Bỏ padding dành riêng cho vạch để chữ thẳng hàng với nội dung.
 - Card dùng mặt nền và viền bao theo vai trò; không gắn dải primary/success/warning vào một cạnh để phân loại hoặc báo hoàn thành. Trạng thái dùng nhãn/icon đã có; không thêm badge lặp khi trạng thái đã rõ. Không thay vạch màu bằng vạch xám, gradient, gạch chân trang trí hoặc thêm khung bao khác.
 - Không tự tạo thêm lớp viền cho mỗi vùng chữ. Với nội dung lồng nhau, chỉ giữ khung có ích cho nhóm tương tác/nhập liệu; ưu tiên spacing để tách phần nhỏ.
+- Mỗi card/panel có **một đường viền bao**. Không thêm pseudo-element nét phác/inset outline chạy sát phía trong hoặc ngoài đường viền để giả vẽ tay. Bóng lệch không blur có thể giữ nếu không tạo vòng viền thứ hai; focus ring chỉ xuất hiện khi tương tác cần nó. Quy tắc này thay recipe viền đôi cũ, kể cả khi nguồn tham khảo có nét chồng.
 - Giữ focus ring bàn phím, ranh giới input/control, progress/chart và trạng thái selected/error có chức năng. Trục timeline chỉ khi thể hiện trình tự thật, dùng nét trung tính nhẹ; không gắn đường nối vào mọi danh sách.
 - Marker tô nền một cụm chữ ngắn, tape và grid là các motif khác; không tự xóa hoặc nhân rộng chúng để bù chỗ vừa bỏ vạch. Chỉ đưa lại thanh nhấn trang trí khi người dùng chủ động yêu cầu cho một trường hợp cụ thể.
 

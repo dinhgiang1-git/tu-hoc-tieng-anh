@@ -4,7 +4,7 @@ Ngày 09/11/2026. **Đã khảo sát nguồn, cập nhật skill và lập kế 
 
 ## 1. Hướng đã chọn
 
-Sổ tay vẽ phác kiểu Belish: Itim, grid nhẹ, viền phác ở card, thẻ ngang có tape pastel, marker vàng, active/action xanh. Nền main phủ kín vùng còn lại desktop, không khung sheet nổi/gutter ngoài; hành động học xuất hiện sớm. Giữ thương hiệu, chức năng và nội dung dự án.
+Sổ tay kiểu Belish: Itim, grid nhẹ, một viền bao mỗi card, thẻ ngang có tape pastel, marker vàng, active/action xanh. Nền main phủ kín vùng còn lại desktop, không khung sheet nổi/gutter ngoài; hành động học xuất hiện sớm. Giữ thương hiệu, chức năng và nội dung dự án.
 
 **Chốt bổ sung theo ảnh và phản hồi 09/11/2026:** không dùng vạch màu cạnh heading, dải màu một cạnh card hoặc đường nhấn trang trí lặp lại. Chữ và spacing tạo thứ bậc; giữ ranh giới control/focus/progress có chức năng. Áp dụng [kế hoạch gỡ thanh màu ở mục 9](#9-fix-bỏ-thanh-màu-trang-trí) trước khi hoàn thiện các đợt còn lại; không đưa lại các vạch này khi triển khai BL-03.
 
@@ -300,3 +300,15 @@ Một công nhân sửa shell/wrapper/CSS cùng đợt nhỏ, tuần tự với 
 - Smoke read-only catalog, lịch, ôn tập, tiến độ, tùy chọn vì dùng chung shell. Login là layout độc lập, không ép form đăng nhập full-width theo quy tắc main của app.
 - Build (đã gồm TypeScript) + lint lúc nghiệm thu. Chọn AppSidebar/TodayPage tests hiện có nếu DOM/props ảnh hưởng; không viết test chỉ so class padding hoặc mặc định full FE/backend/E2E cho thay đổi bố cục này. Một luồng Hôm nay → mở bài để xác nhận không ảnh hưởng điều hướng.
 - Báo riêng geometry/render đã đo, checks đã chạy và điểm chưa xác minh. Chưa có ảnh sau sửa hoặc nghiệm thu UI trong lượt cập nhật tài liệu này.
+
+## 12. Bỏ viền trong/ngoài chồng nhau — sửa trực tiếp
+
+Ảnh phản hồi tiếp theo khoanh nét song song sát cạnh trên của card chính và card tiến độ. Nguyên nhân source: các recipe có border thật và `::before` vẽ thêm border 1px với inset lệch. Không phải hai card dữ liệu lồng nhau ở vị trí này.
+
+Đã gỡ định nghĩa `::before` của `.belish-frame`, `.belish-sheet`, `.nhai-panel` và `.nhai-card-interactive` tại `frontend/src/styles/globals.css`; giữ border chính, shadow offset, tape `::after` và focus ring chức năng. Không thêm CSS override ẩn nét, không sửa logic học. Các kế hoạch bỏ stripe/gutter và phương pháp học vẫn là việc riêng, chưa được coi hoàn thành từ sửa này.
+
+Skill và CSS ví dụ đã đổi sang một đường viền bao; quan sát nguồn có nét chồng được giữ dưới dạng bằng chứng lịch sử, không còn là recipe bắt buộc. Bản chia sẻ đồng bộ quy tắc này.
+
+Kiểm tra thực tế Hôm nay bằng account audit đã có: Light/Dark, computed border card là 2px, `::before` content none/border 0px; tape còn, Light không tràn ngang. Build/lint chạy sau sửa CSS, kết quả kiểm tra được báo trong bàn giao. Không viết test class cho thay đổi CSS đơn giản, không chạy lại full FE/backend/E2E.
+
+Sửa CSS ở working tree đang dựa trên hệ Belish chưa commit từ trước; không stage nguyên file cùng thay đổi task khác chưa nghiệm thu. Commit tài liệu/skill riêng không có nghĩa CSS ứng dụng đã được push.
