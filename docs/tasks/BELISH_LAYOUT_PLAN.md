@@ -326,3 +326,63 @@ Sửa CSS ở working tree đang dựa trên hệ Belish chưa commit từ trư�
 - Điểm tinh gọn không chặn: quiz 1280×720 còn nhiều nội dung giới thiệu/nhắc điều kiện trước câu hỏi, phải cuộn để thấy hết lựa chọn/action; chưa cắt hoặc mất nội dung. Có thể giảm lặp khi hoàn thiện, không mở thêm vòng sửa vì đổi sở thích. Chưa đo native zoom 125%, toàn bộ contrast mọi route hoặc hành vi âm thanh/ghi âm/phương pháp mới.
 
 Không sửa code trong lượt nghiệm thu này. Source ứng dụng vẫn là working tree đang trộn các task chưa tách, bao gồm auth/BE; không stage toàn bộ theo kết quả kiểm tra FE. Chỉ lưu/push bản ghi nghiệm thu này, chưa tuyên bố source ứng dụng đã được push hoặc toàn milestone hoàn thành.
+
+## 14. Gom tài khoản và đăng xuất vào bảng mở từ topbar
+
+Ngày lập 10/11/2026. **Kế hoạch, chưa sửa UI.** Dựa trên hai ảnh người dùng: topbar đã có avatar/tên, còn đáy sidebar lặp avatar/tên, `@username`, role và Đăng xuất. Người dùng muốn gom cụm này vào nơi bấm tên trên topbar. Chưa quan sát bảng tài khoản Belish trong phiên đăng nhập; không coi ảnh/giả định về Belish là contract phải sao chép.
+
+### Bố cục và hành vi đã chọn
+
+Dùng **popover tài khoản không modal**, neo dưới avatar/tên góc phải, thay vì modal giữa màn hình. Nội dung ít, không cần che nền hoặc khóa cuộn; bấm xem rồi đóng nhanh. Toàn bộ avatar + tên + chevron là một button đủ vùng bấm, không chỉ avatar. Tên trên trigger được truncate khi dài; tên trong panel có thể xuống dòng và đọc đủ.
+
+```text
+topbar                             [D  Dinh Giang  ▾]
+                                         ┌───────────────────────┐
+                                         │ Dinh Giang            │
+                                         │ @dinhgiang1           │
+                                         │ Người học             │
+                                         │                       │
+                                         │ [↪ Đăng xuất]         │
+                                         └───────────────────────┘
+sidebar: chỉ còn điều hướng, không lặp profile/Đăng xuất ở đáy
+```
+
+Panel khoảng 280–320px, canh phải theo trigger và giới hạn trong viewport. Một surface/viền bao, không card profile lồng trong card popover, không tape hoặc dải màu trang trí mới. Dùng primitives/token sẵn có, Light/Dark đồng nhất; không thay topbar height hoặc tạo lại gutter quanh main. ThemeToggle giữ vị trí độc lập hiện tại.
+
+### Dữ liệu và phạm vi
+
+- `User` và generated `UserResponse` hiện có username/fullName/role, **chưa có email**. Dòng `@dinhgiang1` trong ảnh là username. Hiển thị `fullName || displayName || username`, `@username`, và role có nhãn Việt (`LEARNER` → Người học, `ADMIN` → Quản trị viên). Email chỉ xuất hiện khi contract có trường thật; không ghép username thành email hay thêm field rỗng. Không cần mở scope DB/auth chỉ để đủ dòng email trong mockup.
+- Dùng `useAuth` làm nguồn user, pending/error và thao tác logout. Không fetch thêm profile chỉ để mở popover; không sao chép user vào localStorage hoặc một state tài khoản riêng.
+- Bỏ profile và logout ở **cả desktop sidebar và drawer hiện có**, giữ đường truy cập tài khoản qua topbar. Không mở sprint mobile; tránh để drawer cũ còn bản sao logout bị ẩn nhưng vẫn Tab được.
+- Không tự thêm trang Hồ sơ, đổi mật khẩu, chỉnh email, billing hoặc đăng xuất tất cả thiết bị. Vai trò chỉ đọc; không cho đổi quyền trong panel.
+
+### File và cách triển khai
+
+| File/phạm vi | Thay đổi |
+|---|---|
+| `features/auth/components/AccountPopover.tsx` (component mới nhỏ, tên dự kiến) | Sở hữu trigger, panel, open state, tương tác bàn phím và logout qua public auth hook; không tạo component toolkit/popover framework |
+| `features/auth/index.ts` | Export component công khai để AppShell composition theo convention; không đưa component đọc auth vào `components/ui`/`shared` |
+| `app/layouts/AppShell.tsx` | Thay cụm avatar/tên đang là div/span bằng AccountPopover; giữ theme, layout sát mép, loading/error/auth guard và banner lỗi logout hiện có |
+| `app/layouts/AppSidebar.tsx` | Gỡ footer profile/Đăng xuất, import/đọc auth không còn dùng; giữ nav, collapse và focus behavior của drawer. Sidebar vẫn dùng hết chiều cao, nav dài cuộn được |
+| Tests liên quan | Thêm AccountPopover tests theo hành vi; cập nhật AppSidebar tests nếu focus targets/markup đổi, giữ các regression trap/Escape hiện có |
+
+### Keyboard, đóng mở và logout
+
+- Trigger là button, có tên truy cập được, `aria-expanded`, `aria-controls`; nếu panel dùng `role="dialog"` thì `aria-haspopup="dialog"`, tên “Tài khoản” và không `aria-modal=true`. Không gắn `role="menu"` chỉ vì panel trông như menu nhưng chứa thông tin profile tĩnh.
+- Enter/Space mở; đưa focus vào panel hoặc điều khiển đầu phù hợp để người dùng bàn phím tiếp tục được. Tab theo thứ tự tự nhiên, không trap như modal. Panel đóng không nằm trong thứ tự Tab/accessibility tree.
+- Escape đóng và trả focus về trigger. Click ngoài/focus ra ngoài đóng nhưng không giật focus khỏi control người dùng vừa chọn. Click lại trigger đóng; đổi route/user/logout hoặc vào focus mode dọn open state, không còn popover nổi trên workspace. Không tự tạo overlay trong suốt chặn click toàn trang.
+- Neo panel không bị ancestor overflow cắt. Chỉ dùng portal khi cấu trúc thực sự cần; nếu dùng phải giữ outside-click/focus handling đúng cho cả trigger và panel. Kiểm z-index với notes/IPA và main scroll, không đưa popover trên modal đang hoạt động.
+- Đăng xuất gọi luồng `logout()` sẵn có đúng một lần; pending có “Đang đăng xuất…”, aria-busy/disabled và chặn gửi trùng. Catch promise rejection ở UI để tránh unhandled rejection; không tự clear user/cache hoặc navigate trước khi server xác nhận.
+- Lỗi logout: giữ phiên và dữ liệu, dùng banner retry hiện có của AppShell để lỗi vẫn thấy nếu panel đóng. Không tạo thêm một error state/banner trùng trong popover hoặc hiển thị thành công giả. Không thêm xác nhận đăng xuất nếu luồng hiện tại không cần.
+
+### Giao việc và nghiệm thu
+
+Giao một công nhân làm một lát FE này, tuần tự với task AppShell/AppSidebar đang dở. Đọc diff hiện có; không reset, không gộp BE/auth/register task khác vào commit. Codex nghiệm thu và commit/push đúng phần đạt.
+
+- Desktop 1280×720 và 1440×900, sáng/tối, sidebar mở/thu: một trigger tài khoản trên topbar, không footer tài khoản/logout trùng; panel không cắt tên dài, không tràn hoặc đẩy topbar/main. Username không bị ghi nhãn email.
+- Component test: mở bằng click/keyboard, Escape trả focus, outside-click không cướp focus; pending chỉ một logout; failure giữ phiên/hiển thị được retry theo shell; user thiếu displayName/fullName và nhãn role đúng. Không test chỉ tên class CSS.
+- Build + lint, nhóm AccountPopover/AppSidebar và auth-shell tests hiện có bị ảnh hưởng một lần. Không mặc định full backend/DB suite khi auth contract/logout service không đổi; chỉ mở rộng khi có failure hoặc nghi vấn thực tế.
+- Web thật dùng account test đã cho phép: mở/đóng panel → điều hướng học vẫn dùng được → đăng xuất thành công về Login → đăng nhập lại. Kiểm fail/pending bằng component/API mock phù hợp, không tắt server hoặc sửa session/mật khẩu cá nhân để tạo lỗi.
+- Thử từ workspace có draft và notes/focus mode: không mất dữ liệu do mount/unmount panel; giữ blocker và lifecycle logout hiện có. Ghi rõ vấn đề lifecycle nếu phát hiện, không bypass bảo vệ để làm popover trông chạy được.
+
+Lượt lập kế hoạch đã đối chiếu ảnh, source AppShell/AppSidebar và UserResponse. Chưa sửa component, chưa chạy build/unit/E2E vì chỉ thay tài liệu; chưa kiểm popover trên web hoặc thay session người dùng.
