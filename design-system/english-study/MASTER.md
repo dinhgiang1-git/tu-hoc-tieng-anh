@@ -1,5 +1,7 @@
 # English Study — hệ thống thiết kế web desktop
 
+> Cập nhật 09/11/2026: người dùng chọn tham chiếu Belish. Đợt tu sửa tiếp theo dùng [BELISH_LAYOUT_PLAN.md](../../docs/tasks/BELISH_LAYOUT_PLAN.md) và [biến thể skill Belish](../../.agents/skills/nhai-ui-ux/references/belish-notebook.md) cho visual/layout. Nội dung dưới giữ làm lịch sử và ràng buộc hành vi/dữ liệu; palette xanh trầm, font Segoe UI, radius lớn và quy tắc không dịch hover cũ không ghi đè recipe mới. Đợt Belish hiện ở trạng thái kế hoạch, chưa triển khai UI.
+
 Chốt thiết kế: 29/10/2026. Chủ trì: Codex. Áp dụng cho đợt UI-01 đến UI-04 trong `docs/tasks/UI_REFRESH_HANDOFF.md`.
 
 ## Hướng thiết kế đã chọn
