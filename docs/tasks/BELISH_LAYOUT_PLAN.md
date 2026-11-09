@@ -6,6 +6,8 @@ Ngày 09/11/2026. **Đã khảo sát nguồn, cập nhật skill và lập kế 
 
 Sổ tay vẽ phác kiểu Belish: Itim, grid nhẹ, khung giấy nét đôi, thẻ ngang có tape pastel, marker vàng, active/action xanh. Main rộng theo vùng còn lại desktop; hành động học xuất hiện sớm. Giữ thương hiệu, chức năng và nội dung dự án.
 
+**Chốt bổ sung theo ảnh và phản hồi 09/11/2026:** không dùng vạch màu cạnh heading, dải màu một cạnh card hoặc đường nhấn trang trí lặp lại. Chữ và spacing tạo thứ bậc; giữ ranh giới control/focus/progress có chức năng. Áp dụng [kế hoạch gỡ thanh màu ở mục 9](#9-fix-bỏ-thanh-màu-trang-trí) trước khi hoàn thiện các đợt còn lại; không đưa lại các vạch này khi triển khai BL-03.
+
 Đọc AGENTS, FE convention, skill `nhai-ui-ux` và `references/belish-notebook.md`. Kế hoạch này thay hướng visual cũ trong `design-system/english-study/MASTER.md` cho đợt Belish; giữ ràng buộc copy gọn, dữ liệu và state của MASTER/handoff cũ. `THEME_MODE_FIX_PLAN.md` là lịch sử: đối chiếu source để biết lỗi nào đã sửa, không lặp lại toàn bộ danh sách lỗi cũ. Quy trình kiểm tra gọn của AGENTS ưu tiên hơn yêu cầu full suite mỗi lượt trong handoff cũ.
 
 Lượt này chỉ cập nhật skill và kế hoạch. Triển khai FE ở lượt tiếp theo theo BL-01 đến BL-04; không đổi BE/auth/DB/schema/học liệu để tạo hình. Giữ React, TypeScript, Tailwind 3.4, TanStack Query, Lucide, font và primitives sẵn có. Mobile hoãn. Không thêm Premium, chat, bảng xếp hạng hoặc A1–C2 từ nguồn.
@@ -135,3 +137,41 @@ Sửa trực tiếp hai điểm tài liệu khi nghiệm thu: hướng dẫn chi
 - Chưa chạy lại vòng nộp bài/ghi chú/quiz thực trên DB hoặc E2E rộng. Không sửa dữ liệu học, backend/auth hay nội dung published trong lượt thẩm định.
 
 Các sửa source nhỏ ở lượt này còn trong working tree: workspace đang phụ thuộc phần IPA/Belish chưa commit từ trước, nên không commit riêng một patch tạo tham chiếu thiếu và không gom cả các task chưa nghiệm thu. Bản thẩm định không thay cho việc tách và nghiệm thu phần triển khai còn lại.
+
+## 9. Fix bỏ thanh màu trang trí
+
+### Phạm vi và quyết định
+
+Người dùng cung cấp bốn ảnh cắt giao diện: thấy rõ vạch xanh cạnh heading và dải xanh lá ở mép card. Các ảnh còn cho thấy nhiều lớp khung trong bài/quiz; rà độ cần thiết trong vùng sửa, không tự suy ra yêu cầu xóa toàn bộ viền của ứng dụng. Đây là điều chỉnh sở thích thiết kế của người dùng, không phải bằng chứng xác định tác giả một giao diện.
+
+Lượt này cập nhật skill và kế hoạch, **chưa sửa FE**. Skill Nhai/Belish và hướng dẫn local của UI UX Pro Max đã nhận quy tắc không dùng thanh nhấn trang trí mặc định. Bản skill chia sẻ phải đồng bộ. Các phần nghiệp vụ/BL-03 còn thiếu ở mục 8 giữ nguyên phạm vi.
+
+### Điểm phải sửa đã xác định trong source
+
+| Nơi sinh vạch/dải | Thay đổi cụ thể |
+|---|---|
+| `components/shared/PageHeader.tsx`: `pl-3.5 border-l-4 border-primary` | Bỏ border và padding dành cho vạch; căn title/description cùng mép vùng nội dung. Giữ action, thứ bậc heading và khả năng wrap |
+| `styles/globals.css`: `.nhai-section-heading` có `border-left:4px` và padding | Bỏ recipe vạch ở nguồn; bỏ class/wrapper không còn vai trò tại Workspace (tên bài, nhóm nhiệm vụ), CurriculumDetail (Nội dung học), Preferences (mục tiêu). Không chỉ đổi màu vạch |
+| `curricula/pages/CurriculaPage.tsx`: `CURRICULUM_ACCENTS`, `border-l-[6px]` và `accentClass` | Xóa map/class dải mép; giữ border bao đều, layout ngang và tape đang có. Không đổi dải màu thành dải trung tính, không tăng decoration khác |
+| `learning/components/ActivityRenderer.tsx` và `ActivityProgressPanel.tsx`: completed → `border-l-[6px] border-l-success` | Bỏ accent cạnh và độ dày khác biệt. Giữ nhãn/icon hoàn thành đã có, trạng thái read-only và hành động đúng policy. Không thêm badge hoàn thành thứ hai |
+| `review/components/ReviewBookmarkedCard.tsx`: note dùng `border-l-4 border-l-[hsl(var(--warning))]` | Bỏ cạnh vàng và bề dày lệch; phân biệt trích dẫn bằng nội dung/spacing hoặc nền nhẹ hiện có, không thêm khung ngoài mới |
+| `learning/components/MarkdownContent.tsx`: blockquote có `border-l-4 border-primary` | Bỏ vạch màu, chỉnh padding/bo góc còn lại cho cân; giữ semantic blockquote, nội dung trích dẫn, giới hạn chiều dài dòng và sanitizer. Không sửa markdown published |
+
+Rà thêm các pseudo-element có nền màu và class ghép động trong phạm vi thay đổi. Không thay toàn cục mọi `border-l`/`border-r`: đường phân vùng sidebar/tài khoản, bảng, input, đáp án đang chọn/sai, focus ring, progress và dữ liệu biểu đồ phải được phân loại theo chức năng trước. Trục roadmap trung tính biểu đạt thứ tự thật được giữ; không xóa kết nối dữ liệu chỉ vì là đường dọc. Vạch màu thuần trang trí ở bất kỳ cạnh nào cũng thuộc diện gỡ.
+
+### Cách giao và thứ tự
+
+Giao một công nhân xử lý các điểm trên trong một đợt nhỏ, tránh trùng file với công nhân BL-03. Đọc diff hiện có trước khi sửa; không reset/stash hoặc gom các task chưa nghiệm thu. Làm PageHeader/recipe dùng chung trước, rồi các consumer; sau đó gỡ map/class thừa. Không sửa API, DB, completion/version, autosave, auth hoặc đổi thư viện để bỏ một kiểu trang trí. Codex tự xử lý finding nhỏ khi nghiệm thu.
+
+Trước/sau chụp cùng route, viewport, mode và state: Hôm nay; catalog/chi tiết; workspace có ít nhất một activity hoàn thành và một activity chưa hoàn thành; trích dẫn Markdown/ghi chú bookmark nếu có fixture phù hợp. Dùng test scope có sẵn, không hoàn thành bài hoặc ghi dữ liệu cá nhân chỉ để tạo ảnh.
+
+### Kiểm tra và điểm kết thúc
+
+- Xem desktop 1280×720 và 1440×900 ở Light/Dark; sidebar mở/thu. Không còn thanh màu ở heading/card/quote, không còn khoảng thụt dành cho thanh cũ; title/nội dung/action vẫn căn hợp lý, nhãn dài không tràn.
+- Màn nhiều activity/quiz: không dùng thêm wrapper/đường viền thay cho thanh vừa gỡ. Giữ ranh giới câu hỏi, đáp án/input có chức năng; chỉ bỏ wrapper phụ khi source/render xác nhận không cần để nhóm tương tác. Không mở rộng thành redesign toàn bộ quiz.
+- Cùng một activity trước/sau có cùng status/CTA; màu không là dấu hiệu duy nhất của hoàn thành hoặc selected/error. Focus ring bàn phím và thông tin tiến độ vẫn nhận ra được.
+- `npm run build` (gồm TypeScript), `npm run lint` lúc nghiệm thu. Do chỉ đổi presentation, dùng kiểm tra render; nếu consumer/markup bị tác động thì chọn các file test hiện có tương ứng: `Curricula.test.tsx`, `ActivityProgressPanel.test.tsx`, `LessonWorkspacePage.test.tsx` (consumer ActivityRenderer), `ReviewPage.test.tsx` và `MarkdownContent.test.tsx`. Không thêm test chỉ so border/class, không bắt chạy full suite/E2E rộng cho việc gỡ stripe.
+- Mở một luồng Hôm nay → bài; Tab tới action và mở/đóng ghi chú, giữ draft/state nếu có thay đổi wrapper. Chỉ chạy lại test khi thay đổi/failure/nghi vấn cụ thể; không viết lại test nghiệp vụ cho mỗi chi tiết CSS.
+- Codex nghiệm thu rồi commit/push đúng phần đạt; báo checks đã/chưa chạy. Source FE vẫn chưa thay đổi bởi lượt cập nhật skill/kế hoạch này.
+
+Kiểm tra lượt tài liệu này: validator chuẩn `quick_validate.py` đạt cho skill Nhai trong repo, bản chia sẻ và UI UX Pro Max; kiểm bản sao, liên kết file và `git diff --check` đạt. Không chạy build/unit/E2E vì chưa sửa FE; chưa có ảnh sau sửa giao diện.

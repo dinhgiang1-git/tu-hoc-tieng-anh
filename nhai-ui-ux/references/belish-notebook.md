@@ -2,6 +2,8 @@
 
 Đọc khi người dùng yêu cầu phong cách Belish; đây là biến thể của `nhai-ui-ux`, giữ thương hiệu, nội dung và chức năng của sản phẩm đích.
 
+**Điều chỉnh theo phản hồi 09/11/2026:** không dùng vạch màu cạnh heading, dải màu một cạnh card hoặc đường nhấn trang trí ở đầu/cuối section. Heading phân cấp bằng chữ và khoảng cách; card không đổi độ dày/màu riêng một cạnh theo nhóm hoặc completion. Quy tắc này ưu tiên hơn ảnh nguồn và các recipe cũ. Bỏ padding dành cho vạch, không thay bằng vạch xám/gradient/gạch chân trang trí. Viền bao trung tính, focus ring, ranh giới control và progress có chức năng vẫn giữ. Trục roadmap dùng nét trung tính chỉ khi có trình tự thật. Marker tô nền chữ, tape và grid không đồng nghĩa với thanh màu ở mép; không tăng chúng để bù trang trí vừa bỏ.
+
 ## Bằng chứng và giới hạn
 
 Khảo sát [Belish Roadmap](https://belish.net/vi/roadmap) ngày 09/11/2026: tổng quan, mở A1 và Cài đặt; chưa đăng nhập. Xem ở 670×900 và 1440×900, đọc computed style DOM ở desktop. Phiên khảo sát đang Dark/blue và bật switch “Giao diện vẽ tay”. Không xác định đây là mặc định của mọi người truy cập. Chưa đổi cài đặt nguồn, khảo sát Light, mở workspace, lưu tiến độ hay thanh toán.
@@ -14,7 +16,7 @@ Nét phác, tape, marker và layout được quan sát qua ảnh. Chưa đọc c
 |---|---|
 | Topbar ngang toàn trang, sidebar trái, main như trang giấy có khung | Chrome ổn định, một vùng cuộn nội dung, giữ route/menu hiện có |
 | Itim, grid mờ, viền phác chồng nét | Dùng font sẵn có; decoration CSS mảnh, không làm méo chữ hoặc control |
-| Active nav xanh; tên cấp màu riêng; mô tả đầu trang tô vàng | Một màu action; màu nhóm ổn định; marker ngắn, không tô đoạn dài |
+| Active nav xanh; tên cấp màu riêng; mô tả đầu trang tô vàng | Một màu action; màu nhóm nếu cần ở nhãn/tape, không ở dải mép card; marker ngắn, không tô đoạn dài |
 | Băng dính pastel hơi lệch trên đầu thẻ | Một pseudo-element không tương tác; không xoay cả card |
 | Tổng quan có trục trái, mốc cấp và thẻ ngang | Chỉ có trục khi các nhóm thực sự có thứ tự; catalog độc lập dùng danh sách thẻ ngang |
 | Chi tiết A1 có summary, CTA tiếp tục, các buổi so le quanh trục giữa | Chỉ so le nhóm ngắn trên desktop; giáo trình dài cần nhóm/thu gọn |
@@ -92,7 +94,7 @@ Một recipe frame/panel, một modifier tape. Pseudo-element không có nội d
 
 ## Công thức bố cục
 
-**Catalog:** title + marker mô tả hữu ích → thẻ ngang. Mỗi thẻ có tên, mô tả 1–2 dòng, metadata có nguồn, link mở. Nếu API xác định thứ tự nhóm, thêm rail trái 64–80px và đường nối. Các khóa độc lập không nối thành hành trình bắt buộc. Màu nhóm không tự biểu đạt proficiency.
+**Catalog:** title + marker mô tả hữu ích → thẻ ngang có viền bao trung tính, không có dải màu một cạnh. Mỗi thẻ có tên, mô tả 1–2 dòng, metadata có nguồn, link mở. Nếu API xác định thứ tự nhóm, có thể thêm rail trái 64–80px và đường nối trung tính. Các khóa độc lập không nối thành hành trình bắt buộc. Màu nhóm không tự biểu đạt proficiency.
 
 **Chi tiết roadmap:** quay lại → title/metadata → CTA hợp lệ → các phase/chặng. Dùng ordered list cho thứ tự buổi, disclosure có label. Trục giữa/so le chỉ cho nhóm ngắn đang mở, khoảng 8–12 mục trở xuống và đủ ngang; đây là ngưỡng thiết kế đề xuất. Danh sách dài dùng trục trái, thẻ compact và thu gọn. DOM giữ thứ tự học, không CSS order làm lệch Tab.
 
@@ -105,6 +107,7 @@ Một recipe frame/panel, một modifier tape. Pseudo-element không có nội d
 - Nhận ra phong cách từ font, grid, cạnh phác, tape, marker và phân cấp layout; không cần thương hiệu nguồn.
 - Desktop 1280×720, 1440×900, sidebar mở/thu, zoom 125%, tiêu đề dài; không tràn ngang hoặc cắt focus/tape.
 - Một heading chính, CTA sớm; không hàng trăm card so le/khoảng trắng vô ích. Semantic list/heading/progress, Tab đúng thứ tự.
+- Không có vạch màu ở heading/card, không còn thụt chữ do vạch cũ và không thêm dải trang trí thay thế; trạng thái vẫn hiểu được bằng nhãn/icon.
 - Đo tương phản Light/Dark thực tế, cả marker và active nav. Decoration không cản click/focus.
 - Giữ quyền, version, date-only và state khi đổi theme; test liên quan, build nếu sửa FE, lint lúc nghiệm thu theo AGENTS.
 

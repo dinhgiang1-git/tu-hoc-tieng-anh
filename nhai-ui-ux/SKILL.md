@@ -24,6 +24,16 @@ Lần đầu đọc toàn file để hiểu hệ thống. Khi thực thi: chọn
 
 Ưu tiên theo thứ tự: yêu cầu rõ ràng của người dùng → chức năng và khả dụng → quy ước/stack dự án → quy tắc phong cách → ví dụ minh họa. Có xung đột thì giữ ý định người dùng và giải thích lựa chọn ảnh hưởng hình thức. Không thêm trang hoặc luồng chỉ để dùng đủ mọi component trong skill.
 
+### Không dùng thanh màu làm trang trí mặc định
+
+Phản hồi người dùng ngày 09/11/2026: bỏ các vạch màu cạnh tiêu đề, dải màu một cạnh card và đường nhấn lặp lại giữa các section. Quy tắc này áp dụng cho cả Nhai và Belish, ưu tiên hơn công thức marker/viền nhấn cũ trong tài liệu hoặc ví dụ nguồn.
+
+- Heading dùng cỡ chữ, độ đậm và khoảng cách; không mặc định thêm `border-left`, pseudo-element dạng vạch hoặc dải màu phía trên/dưới. Bỏ padding dành riêng cho vạch để chữ thẳng hàng với nội dung.
+- Card dùng mặt nền và viền bao theo vai trò; không gắn dải primary/success/warning vào một cạnh để phân loại hoặc báo hoàn thành. Trạng thái dùng nhãn/icon đã có; không thêm badge lặp khi trạng thái đã rõ. Không thay vạch màu bằng vạch xám, gradient, gạch chân trang trí hoặc thêm khung bao khác.
+- Không tự tạo thêm lớp viền cho mỗi vùng chữ. Với nội dung lồng nhau, chỉ giữ khung có ích cho nhóm tương tác/nhập liệu; ưu tiên spacing để tách phần nhỏ.
+- Giữ focus ring bàn phím, ranh giới input/control, progress/chart và trạng thái selected/error có chức năng. Trục timeline chỉ khi thể hiện trình tự thật, dùng nét trung tính nhẹ; không gắn đường nối vào mọi danh sách.
+- Marker tô nền một cụm chữ ngắn, tape và grid là các motif khác; không tự xóa hoặc nhân rộng chúng để bù chỗ vừa bỏ vạch. Chỉ đưa lại thanh nhấn trang trí khi người dùng chủ động yêu cầu cho một trường hợp cụ thể.
+
 Mặc định khi thiếu lựa chọn: dùng theme **Warm**, giữ stack hiện tại; nếu dự án mới và người dùng không chỉ định công nghệ, chọn giải pháp đơn giản đáp ứng chức năng. Nội dung tiếng Việt, icon nét đơn nhất quán, nền giấy ở shell và nền đặc ở panel. Chỉ dùng Cool khi được yêu cầu hoặc dự án đã có thương hiệu xanh phù hợp. Dữ liệu quan trọng còn thiếu thì làm phần độc lập trước; đánh dấu phần cần dữ liệu, không tự bịa. Có thể dùng nội dung mẫu được gắn rõ là mẫu khi người dùng yêu cầu prototype.
 
 ### Chọn cấu trúc theo nhiệm vụ
@@ -190,7 +200,7 @@ Trong React có thể dùng Button + một hàm variants dùng chung cho ActionL
 
 **Panel:** nền surface của theme, viền 2 px, radius 5 px, shadow theo token theme (Cool 2 px, Warm 4 px). Tiêu đề và nội dung có khoảng cách rõ. Không biến mọi panel thành click target nếu không có hành động.
 
-**Section heading:** marker trái 4 px + padding trái 12 px, tiêu đề ngắn, một dòng mô tả. Không thêm sticker cạnh mọi dòng.
+**Section heading:** tiêu đề ngắn, phân cấp bằng typography và khoảng cách; mô tả chỉ khi hữu ích. Thẳng hàng với nội dung bên dưới, không có marker trái hoặc padding chừa vạch. Không thêm sticker cạnh mọi dòng.
 
 **Button:** tối thiểu 44 px chiều cao, label rõ hành động và đối tượng; primary theo theme (Cool xanh, Warm vàng), surface cho secondary, link cho tertiary. Hover/active dịch bằng offset shadow của theme và bỏ shadow, khoảng 150 ms. Có focus rõ và trạng thái đang xử lý/disabled. Bảo đảm thao tác không bị gửi lặp. Link không có thuộc tính disabled: nếu cần vô hiệu hóa, dùng trạng thái semantics phù hợp và chặn kích hoạt thật, không chỉ giảm opacity.
 
@@ -462,6 +472,7 @@ Với dự án có UI lặp lại, dùng gallery/dev view/test harness hiện c�
 
 - [ ] Phong cách nhận ra qua font, ô lưới, viền, bóng và màu; không cần sao chép nội dung hay bố cục nguồn.
 - [ ] Có một hành động ưu tiên theo ngữ cảnh; không để banner/mascot/sticky che hoặc cạnh tranh với tác vụ chính.
+- [ ] Không có vạch màu cạnh heading/card hoặc dải nhấn trang trí lặp lại; bỏ cả padding thừa, không thay bằng đường/khung trang trí khác. Viền control, focus và thông tin tiến độ vẫn rõ.
 - [ ] Đọc được dấu tiếng Việt; text thường ít nhất 16 px; zoom/reflow không làm mất nội dung thiết yếu.
 - [ ] Tương phản mục tiêu tối thiểu 4.5:1 cho chữ thường, 3:1 cho chữ lớn và dấu hiệu điều khiển; đo các tổ hợp màu thực dùng. Không dựa riêng vào màu để truyền đạt trạng thái.
 - [ ] Điều khiển chính có vùng chạm khoảng 44 × 44 px, focus rõ, dùng được bằng bàn phím; modal xử lý Escape/focus và không bỏ lại overlay.

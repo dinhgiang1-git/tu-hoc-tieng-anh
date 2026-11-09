@@ -11,6 +11,8 @@ This skill is installed at `.agents/skills/ui-ux-pro-max/` in the project. Resol
 
 Follow the project's AGENTS.md and frontend convention. For this project, prioritize desktop web; mobile work is deferred. Generated suggestions are inputs to design judgment, not authorization to replace the stack, add packages, overwrite existing design decisions, or change backend/data.
 
+Project visual preference (09/11/2026): do not add decorative colored rails beside headings, single-edge accent strips on cards, or repeated accent rules. Use typography and spacing for hierarchy; preserve functional focus/control borders and progress indicators. Follow the [Nhai/Belish skill's decoration rules](../nhai-ui-ux/SKILL.md) when applying that style; generic search examples do not override this preference.
+
 Searchable local UI/UX guidance: 79 searchable styles (50 active), 192 product palettes and exact reasoning profiles, 74 font pairings, 119 UX guidelines, 105 curated icons, 17 GSAP presets, 25 chart types, and 22 technology stacks.
 
 ## When to Apply
