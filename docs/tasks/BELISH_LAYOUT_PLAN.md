@@ -386,3 +386,13 @@ Giao một công nhân làm một lát FE này, tuần tự với task AppShell/
 - Thử từ workspace có draft và notes/focus mode: không mất dữ liệu do mount/unmount panel; giữ blocker và lifecycle logout hiện có. Ghi rõ vấn đề lifecycle nếu phát hiện, không bypass bảo vệ để làm popover trông chạy được.
 
 Lượt lập kế hoạch đã đối chiếu ảnh, source AppShell/AppSidebar và UserResponse. Chưa sửa component, chưa chạy build/unit/E2E vì chỉ thay tài liệu; chưa kiểm popover trên web hoặc thay session người dùng.
+
+
+### Kết quả nghiệm thu 10/11/2026 — account popover
+
+- Bố cục đạt trên desktop 1280×720 và 1440×900, sáng/tối, sidebar mở/thu: một cụm tài khoản trên topbar, panel neo đúng vị trí, không tràn; sidebar không còn profile/logout trùng. Hiển thị tên, @username và vai trò tiếng Việt; API chưa có email nên không tự bịa email.
+- Đã kiểm Escape trả focus, click ngoài không cướp focus, đổi route đóng panel. Component test giữ regression khi ancestor inert/focus mode.
+- Phát hiện lỗi thực tế: logout gọi API trực tiếp từ workspace làm mất bản nháp chưa lưu. Đã sửa bằng route nội bộ `/logout`: chỉ mount trang gọi logout sau khi navigation blocker cho phép rời bài. Nút retry cũng đi qua bước này; AuthContext và backend không đổi. Lỗi API được catch, giữ phiên và trở lại trang nguồn cùng banner retry. Chặn effect gửi trùng trong StrictMode.
+- Web thật với account audit: tạo bản nháp giả chưa lưu → Đăng xuất → cảnh báo; chọn “Ở lại trang” giữ nguyên nội dung/phiên; thử lại và chọn “Rời khỏi không lưu” mới kết thúc phiên, về Login. Không lưu/nộp bản nháp thử nghiệm lên máy chủ.
+- Check sau sửa: 4 file test AccountPopover/LogoutPage/AppShell/AppSidebar, **15/15 đạt**; frontend build và lint đạt. Còn warning cũ bundle >500 kB và react-hook-form EnrollmentDialog. Không chạy full FE/backend suite trong lượt này; nhánh failure/retry được kiểm bằng HTTP mock, không tạo lỗi trên server thật.
+- Mã FE vẫn ở working tree cùng các thay đổi giao diện/auth khác đã tồn tại; không stage hàng loạt hoặc ghép task đăng ký/backend chưa nghiệm thu. Commit báo cáo này chỉ chứa tài liệu.
